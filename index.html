@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="nomi-logo.svg">
+    <link rel="stylesheet" href="nomi-studio.css">
+    <title>MISC STUDIO</title>
+</head>
+<body>
+  <!-- Loading screen: geometric shapes morph into "MISC" (GSAP MorphSVG) -->
+  <div class="loader" id="loader">
+    <svg class="loader__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" aria-label="MISC Studio">
+      <defs>
+        <linearGradient id="mino-grad" x1="44.8" y1="200" x2="715.2" y2="200" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#ffffff"></stop>
+          <stop offset="1" stop-color="#8f8f8f"></stop>
+        </linearGradient>
+        <!-- MISC in Poppins Bold, glyph outlines taken straight from the font so
+             the four letters stay consistent with each other. Cap height spans
+             y 125-275; S and C overshoot slightly, as round letters should. -->
+        <g id="misc-letters">
+          <path id="ltr-m" d="M212.33 125L255.28 125L255.28 275L218.74 275L218.74 185.04L185.20 275L155.71 275L121.95 184.83L121.95 275L85.41 275L85.41 125L128.57 125L170.67 228.85Z"></path>
+          <path id="ltr-i" d="M300.96 125L337.50 125L337.50 275L300.96 275Z"></path>
+          <path id="ltr-s" d="M437.67 276.50Q421.22 276.50 408.18 271.15Q395.15 265.81 387.35 255.34Q379.55 244.87 379.12 230.13L418.01 230.13Q418.87 238.46 423.78 242.84Q428.70 247.22 436.60 247.22Q444.72 247.22 449.42 243.48Q454.12 239.74 454.12 233.12Q454.12 227.56 450.38 223.93Q446.64 220.30 441.20 217.95Q435.75 215.60 425.70 212.61Q411.17 208.12 401.99 203.63Q392.80 199.15 386.17 190.38Q379.55 181.62 379.55 167.52Q379.55 146.58 394.72 134.72Q409.89 122.86 434.25 122.86Q459.04 122.86 474.21 134.72Q489.38 146.58 490.45 167.74L450.92 167.74Q450.49 160.47 445.58 156.30Q440.66 152.14 432.97 152.14Q426.35 152.14 422.29 155.66Q418.23 159.19 418.23 165.81Q418.23 173.08 425.06 177.14Q431.90 181.20 446.43 185.90Q460.96 190.81 470.04 195.30Q479.12 199.79 485.75 208.33Q492.37 216.88 492.37 230.34Q492.37 243.16 485.85 253.63Q479.34 264.10 466.94 270.30Q454.55 276.50 437.67 276.50Z"></path>
+          <path id="ltr-c" d="M528.01 199.79Q528.01 177.56 537.63 160.15Q547.24 142.74 564.44 133.01Q581.64 123.29 603.44 123.29Q630.15 123.29 649.16 137.39Q668.18 151.50 674.59 175.85L634.42 175.85Q629.93 166.45 621.71 161.54Q613.48 156.62 603.01 156.62Q586.13 156.62 575.66 168.38Q565.19 180.13 565.19 199.79Q565.19 219.44 575.66 231.20Q586.13 242.95 603.01 242.95Q613.48 242.95 621.71 238.03Q629.93 233.12 634.42 223.72L674.59 223.72Q668.18 248.08 649.16 262.07Q630.15 276.07 603.44 276.07Q581.64 276.07 564.44 266.35Q547.24 256.62 537.63 239.32Q528.01 222.01 528.01 199.79Z"></path>
+        </g>
+      </defs>
+      <!-- each shape sits centred on the letter it morphs into -->
+      <rect id="shp-m" fill="url(#mino-grad)" x="127.84" y="157.5" width="85" height="85"></rect>
+      <polygon id="shp-i" fill="url(#mino-grad)" points="319.23,157.5 361.73,200 319.23,242.5 276.73,200"></polygon>
+      <polygon id="shp-s" fill="url(#mino-grad)" points="435.75,157.5 393.25,242.5 478.25,242.5"></polygon>
+      <circle id="shp-c" fill="url(#mino-grad)" cx="601.30" cy="200" r="42.5"></circle>
+      <text id="loader-studio" x="380" y="342" text-anchor="middle" fill="url(#mino-grad)">STUDIO</text>
+    </svg>
+  </div>
+
+  <!-- Wave transition that sweeps up to reveal the page when the loader ends -->
+  <div class="loader-wave" id="loader-wave" aria-hidden="true">
+    <svg class="loader-wave__svg" viewBox="0 0 1440 1520" preserveAspectRatio="none">
+      <path fill="#3a3a3a" d="M0.0 101.4 L30.0 118.0 L60.0 129.6 L90.0 134.8 L120.0 132.9 L150.0 124.1 L180.0 109.5 L210.0 91.2 L240.0 71.3 L270.0 52.6 L300.0 37.5 L330.0 27.9 L360.0 25.0 L390.0 29.3 L420.0 40.2 L450.0 56.3 L480.0 75.4 L510.0 95.2 L540.0 112.9 L570.0 126.4 L600.0 133.9 L630.0 134.3 L660.0 127.7 L690.0 114.9 L720.0 97.6 L750.0 77.9 L780.0 58.6 L810.0 42.0 L840.0 30.4 L870.0 25.2 L900.0 27.1 L930.0 35.9 L960.0 50.5 L990.0 68.8 L1020.0 88.7 L1050.0 107.4 L1080.0 122.5 L1110.0 132.1 L1140.0 135.0 L1170.0 130.7 L1200.0 119.8 L1230.0 103.7 L1260.0 84.6 L1290.0 64.8 L1320.0 47.1 L1350.0 33.6 L1380.0 26.1 L1410.0 25.7 L1440.0 32.3 L1440.0 1407.1 L1410.0 1408.6 L1380.0 1415.3 L1350.0 1426.4 L1320.0 1440.7 L1290.0 1456.6 L1260.0 1472.4 L1230.0 1486.2 L1200.0 1496.5 L1170.0 1502.1 L1140.0 1502.5 L1110.0 1497.5 L1080.0 1487.8 L1050.0 1474.3 L1020.0 1458.7 L990.0 1442.7 L960.0 1428.1 L930.0 1416.5 L900.0 1409.2 L870.0 1407.0 L840.0 1410.3 L810.0 1418.5 L780.0 1430.9 L750.0 1445.9 L720.0 1462.0 L690.0 1477.3 L660.0 1490.1 L630.0 1498.9 L600.0 1502.9 L570.0 1501.4 L540.0 1494.7 L510.0 1483.6 L480.0 1469.3 L450.0 1453.4 L420.0 1437.6 L390.0 1423.8 L360.0 1413.5 L330.0 1407.9 L300.0 1407.5 L270.0 1412.5 L240.0 1422.2 L210.0 1435.7 L180.0 1451.3 L150.0 1467.3 L120.0 1481.9 L90.0 1493.5 L60.0 1500.8 L30.0 1503.0 L0.0 1499.7 Z"></path>
+      <path fill="#1c1c1c" d="M0.0 240.3 L30.0 246.8 L60.0 244.0 L90.0 232.1 L120.0 213.1 L150.0 189.8 L180.0 165.8 L210.0 144.7 L240.0 129.7 L270.0 123.2 L300.0 126.0 L330.0 137.9 L360.0 156.9 L390.0 180.2 L420.0 204.2 L450.0 225.3 L480.0 240.3 L510.0 246.8 L540.0 244.0 L570.0 232.1 L600.0 213.1 L630.0 189.8 L660.0 165.8 L690.0 144.7 L720.0 129.7 L750.0 123.2 L780.0 126.0 L810.0 137.9 L840.0 156.9 L870.0 180.2 L900.0 204.2 L930.0 225.3 L960.0 240.3 L990.0 246.8 L1020.0 244.0 L1050.0 232.1 L1080.0 213.1 L1110.0 189.8 L1140.0 165.8 L1170.0 144.7 L1200.0 129.7 L1230.0 123.2 L1260.0 126.0 L1290.0 137.9 L1320.0 156.9 L1350.0 180.2 L1380.0 204.2 L1410.0 225.3 L1440.0 240.3 L1440.0 1305.2 L1410.0 1300.1 L1380.0 1302.8 L1350.0 1312.8 L1320.0 1329.1 L1290.0 1349.3 L1260.0 1370.9 L1230.0 1391.1 L1200.0 1407.3 L1170.0 1417.3 L1140.0 1419.9 L1110.0 1414.7 L1080.0 1402.3 L1050.0 1384.5 L1020.0 1363.5 L990.0 1342.0 L960.0 1322.9 L930.0 1308.6 L900.0 1301.0 L870.0 1301.0 L840.0 1308.7 L810.0 1323.1 L780.0 1342.3 L750.0 1363.7 L720.0 1384.7 L690.0 1402.5 L660.0 1414.8 L630.0 1419.9 L600.0 1417.2 L570.0 1407.2 L540.0 1390.9 L510.0 1370.7 L480.0 1349.1 L450.0 1328.9 L420.0 1312.7 L390.0 1302.7 L360.0 1300.1 L330.0 1305.3 L300.0 1317.7 L270.0 1335.5 L240.0 1356.5 L210.0 1378.0 L180.0 1397.1 L150.0 1411.4 L120.0 1419.0 L90.0 1419.0 L60.0 1411.3 L30.0 1396.9 L0.0 1377.7 Z"></path>
+    </svg>
+  </div>
+
+  <!-- Gooey filter used by every .blob-btn (referenced via filter: url(#goo)) -->
+  <svg class="goo-defs" xmlns="http://www.w3.org/2000/svg" version="1.1" aria-hidden="true">
+    <defs>
+      <filter id="goo">
+        <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
+        <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
+      </filter>
+    </defs>
+  </svg>
+  <header class="header">
+    <div class="flex-wrapper">
+      <div class="logo-wrap">
+        <img class="logo-img" src="nomi-logo.svg" alt="">
+        <div class="logo-text">
+          <span class="btn-2">MISC</span>
+          <span class="btn-2">STUDIO</span>
+        </div>
+      </div>
+      <ul class="header-menu">
+        <li class="header-menu__item header-text-1">
+          <a href="#services">Services</a>
+        </li>
+        <li class="header-menu__item header-text-1">
+          <a href="#contact">Contact</a>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <section class="hero">
+    <!-- the logo, sampled into dots that scatter under the cursor. Purely
+         decorative: hero-particles.js paints it, nothing here depends on it. -->
+    <canvas class="hero__particles" aria-hidden="true"></canvas>
+    <div class="container">
+      <div class="title-block">
+        <div class="title-h1">
+          <div class="title-row title-row-1">
+            <div class="title-charts-cont" id="go"><span>Go</span></div>
+            <div class="title-charts-cont" id="od"><span>od</span></div>
+            <div class="title-charts-cont" id="des"><span>des</span></div>
+            <div class="title-charts-cont" id="ign"><span>ign</span></div>
+          </div>
+          <div class="title-row title-row-2">
+            <div class="title-charts-cont" id="ear"><span>ear</span></div>
+            <div class="title-charts-cont" id="ns"><span>ns</span></div>
+            <div class="title-charts-cont" id="tru"><span>tru</span></div>
+            <div class="title-charts-cont" id="st"><span>st</span></div>
+          </div>
+        </div>
+        <div class="first-desc">
+          <span class="desc-1">Creative Developer</span>
+        </div>
+      </div>
+
+      <div class="copyright">
+          <span class="desc-1" id="local-time">Netherlands</span>
+      </div>
+
+      <!-- Companies worked with. Same two-group trick as the techstack marquee:
+           the row holds the list twice and slides left by exactly half its width,
+           so the loop is seamless. The second group is aria-hidden so screen
+           readers only hear each company once.
+           Logos are flattened to white in CSS. bia.jpg is the odd one out — a
+           JPEG with no alpha, a light mark on solid black — so it carries the
+           --opaque modifier and gets a different treatment. alt="" throughout
+           because the company name sits right next to each logo as real text. -->
+      <div class="partners" aria-label="Companies I have worked with">
+        <div class="partners__row">
+          <div class="partners__group">
+            <span class="partner"><span class="partner__mark"><img src="logo-company/hva-logo.png" alt=""></span><span class="partner__name">Hogeschool van Amsterdam</span></span>
+            <span class="partner"><span class="partner__mark partner__mark--opaque"><img src="logo-company/bia.jpg" alt=""></span><span class="partner__name">Build in Amsterdam</span></span>
+            <span class="partner"><span class="partner__mark"><img src="logo-company/ecocharting.png" alt=""></span><span class="partner__name">Ecocharting</span></span>
+          </div>
+          <div class="partners__group" aria-hidden="true">
+            <span class="partner"><span class="partner__mark"><img src="logo-company/hva-logo.png" alt=""></span><span class="partner__name">Hogeschool van Amsterdam</span></span>
+            <span class="partner"><span class="partner__mark partner__mark--opaque"><img src="logo-company/bia.jpg" alt=""></span><span class="partner__name">Build in Amsterdam</span></span>
+            <span class="partner"><span class="partner__mark"><img src="logo-company/ecocharting.png" alt=""></span><span class="partner__name">Ecocharting</span></span>
+          </div>
+        </div>
+      </div>
+      <a class="book-btn blob-btn" href="#contact" aria-label="Get in touch">
+        <div class="book-btn__circle"></div>
+        <span class="blob-btn__inner">
+          <span class="blob-btn__blobs">
+            <span class="blob-btn__blob"></span>
+            <span class="blob-btn__blob"></span>
+            <span class="blob-btn__blob"></span>
+            <span class="blob-btn__blob"></span>
+          </span>
+        </span>
+        <div class="btn-text">
+          <span class="btn-1">
+            Get in touch
+          </span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="Horizontal">
+    <h3 class="Horizontal__text heading-xl">I prototype in Figma, design the interface, then build the thing and ship it.</h3>
+  </section>
+
+  <!-- <section class="testimonials">
+    <div class="container testimonials__container">
+    <h2 class="testimonials__title">Different expertise, <br>builds a <span class="focus__title-accent">strong team</span></h2>
+
+      <div class="tcards">
+        <article class="tcard tcard--left">
+          <div class="tcard__photo tcard__photo--1" role="img" aria-label="Mitchell Scholte"></div>
+          <div class="tcard__body">
+            <p class="tcard__quote">&ldquo;Crafting digital experiences that leave a lasting impression.&rdquo;</p>
+            <span class="tcard__divider"></span>
+            <div class="tcard__person">
+              <span class="tcard__name">Mitchell Scholte</span>
+              <span class="tcard__role">Co-Founder &amp; Full-Stack Developer</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="tcard tcard--right">
+          <div class="tcard__photo tcard__photo--2" role="img" aria-label="Noah Ruiters"></div>
+          <div class="tcard__body">
+            <p class="tcard__quote">&ldquo;Crafting digital experiences that leave a lasting impression.&rdquo;</p>
+            <span class="tcard__divider"></span>
+            <div class="tcard__person">
+              <span class="tcard__name">Noah Ruiters</span>
+              <span class="tcard__role">Co-Founder &amp; Security Expert</span>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="tcards-hint" aria-hidden="true">
+        <span class="tcards-hint__arrow">‹</span>
+        <span>Swipe the cards</span>
+        <span class="tcards-hint__arrow">›</span>
+      </div>
+    </div>
+  </section> -->
+
+  <section class="focus" id="focusPoints">
+    <span class="focus__eyebrow">What I focus on</span>
+    <h2 class="focus__title">These key points are what makes me <span class="focus__title-accent">unique</span></h2>
+    <div class="focusPoint_container">
+
+      <div class="focusPoint_tile focus-thinking">
+        <div class="focus-art" aria-hidden="true">
+          <svg class="focus-illustration" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <radialGradient id="brainGrad" cx="0.5" cy="0.45" r="0.6">
+                <stop offset="0" stop-color="#9a9a9a" stop-opacity="0.12"/>
+                <stop offset="1" stop-color="#9a9a9a" stop-opacity="0.02"/>
+              </radialGradient>
+            </defs>
+            <!-- brain silhouette -->
+            <path class="brain-outline"
+                  d="M100,28 C112,22 128,24 134,34 C146,32 154,44 150,55 C160,60 160,74 150,80 C152,92 140,100 128,96 C120,103 108,102 100,97 C92,102 80,103 72,96 C60,100 48,92 50,80 C40,74 40,60 50,55 C46,44 54,32 66,34 C72,24 88,22 100,28 Z"
+                  fill="url(#brainGrad)" stroke="#9a9a9a" stroke-width="1.8" stroke-linejoin="round"/>
+            <!-- central groove between the hemispheres -->
+            <path class="brain-groove" d="M100,30 C96,42 104,50 100,62 C96,74 104,84 100,95"
+                  fill="none" stroke="#c8c8c8" stroke-width="1.4" stroke-linecap="round"/>
+            <!-- folds -->
+            <g class="brain-folds" fill="none" stroke="#7a7a7a" stroke-width="1.3" stroke-linecap="round">
+              <path d="M64,44 C74,48 76,56 70,62"/>
+              <path d="M58,62 C68,64 70,72 62,78"/>
+              <path d="M76,70 C84,72 84,80 78,86"/>
+              <path d="M136,44 C126,48 124,56 130,62"/>
+              <path d="M142,62 C132,64 130,72 138,78"/>
+              <path d="M124,70 C116,72 116,80 122,86"/>
+            </g>
+            <!-- firing synapses -->
+            <circle class="synapse s1" cx="70"  cy="62" r="3.2" fill="#b8b8b8"/>
+            <circle class="synapse s2" cx="62"  cy="78" r="3.2" fill="#b8b8b8"/>
+            <circle class="synapse s3" cx="78"  cy="86" r="3.2" fill="#b8b8b8"/>
+            <circle class="synapse s4" cx="130" cy="62" r="3.2" fill="#b8b8b8"/>
+            <circle class="synapse s5" cx="138" cy="78" r="3.2" fill="#b8b8b8"/>
+            <circle class="synapse s6" cx="122" cy="86" r="3.2" fill="#b8b8b8"/>
+            <circle class="synapse s7" cx="100" cy="62" r="3.6" fill="#e8e8e8"/>
+          </svg>
+        </div>
+        <div class="focus-text">
+          <h3>Thinking outside the box</h3>
+          <p>I don't ship the first idea that works. Every problem gets a second look, which is usually where the good version turns up.</p>
+        </div>
+      </div>
+
+      <div class="focusPoint_tile focus-accessibility">
+        <div class="focus-art" aria-hidden="true">
+          <svg class="focus-illustration" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <radialGradient id="coreGrad" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0"  stop-color="#e8e8e8"/>
+                <stop offset="1"  stop-color="#9a9a9a"/>
+              </radialGradient>
+            </defs>
+            <g class="spokes" stroke="#9a9a9a" stroke-width="1" opacity="0.45">
+              <line x1="100" y1="65" x2="30"  y2="20"/>
+              <line x1="100" y1="65" x2="170" y2="20"/>
+              <line x1="100" y1="65" x2="20"  y2="65"/>
+              <line x1="100" y1="65" x2="180" y2="65"/>
+              <line x1="100" y1="65" x2="30"  y2="110"/>
+              <line x1="100" y1="65" x2="170" y2="110"/>
+            </g>
+            <circle class="ring r1" cx="100" cy="65" r="22" fill="none" stroke="#9a9a9a" stroke-width="1.2" opacity="0.6"/>
+            <circle class="ring r2" cx="100" cy="65" r="34" fill="none" stroke="#9a9a9a" stroke-width="1"   opacity="0.35"/>
+            <circle class="ring r3" cx="100" cy="65" r="46" fill="none" stroke="#9a9a9a" stroke-width="1"   opacity="0.18"/>
+            <circle class="node n1" cx="30"  cy="20"  r="4" fill="#c8c8c8"/>
+            <circle class="node n2" cx="170" cy="20"  r="4" fill="#c8c8c8"/>
+            <circle class="node n3" cx="20"  cy="65"  r="4" fill="#c8c8c8"/>
+            <circle class="node n4" cx="180" cy="65"  r="4" fill="#c8c8c8"/>
+            <circle class="node n5" cx="30"  cy="110" r="4" fill="#c8c8c8"/>
+            <circle class="node n6" cx="170" cy="110" r="4" fill="#c8c8c8"/>
+            <circle cx="100" cy="65" r="11" fill="url(#coreGrad)"/>
+          </svg>
+        </div>
+        <div class="focus-text">
+          <h3>Accessibility</h3>
+          <p>Built for everyone. If a visitor uses a keyboard, a screen reader or a cracked phone, it still works.</p>
+        </div>
+      </div>
+
+      <div class="focusPoint_tile focus-responsive">
+        <div class="focus-art" aria-hidden="true">
+          <svg class="focus-illustration" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet">
+            <g class="device device-monitor">
+              <rect x="14" y="25" width="80" height="58" rx="4" fill="rgba(200,200,200,0.07)" stroke="#9a9a9a" stroke-width="1.6"/>
+              <line x1="42" y1="93" x2="66" y2="93" stroke="#9a9a9a" stroke-width="2" stroke-linecap="round"/>
+              <line x1="22" y1="34" x2="56" y2="34" stroke="#9a9a9a" stroke-width="1.4" opacity="0.7"/>
+              <line x1="22" y1="42" x2="40" y2="42" stroke="#9a9a9a" stroke-width="1.4" opacity="0.4"/>
+              <rect x="22" y="54" width="28" height="20" rx="2" fill="#b8b8b8" opacity="0.2"/>
+              <rect x="54" y="54" width="28" height="20" rx="2" fill="#b8b8b8" opacity="0.2"/>
+            </g>
+            <g class="device device-tablet">
+              <rect x="106" y="32" width="42" height="58" rx="4" fill="rgba(200,200,200,0.07)" stroke="#9a9a9a" stroke-width="1.6"/>
+              <line x1="112" y1="40" x2="138" y2="40" stroke="#9a9a9a" stroke-width="1.4" opacity="0.7"/>
+              <line x1="112" y1="46" x2="128" y2="46" stroke="#9a9a9a" stroke-width="1.4" opacity="0.4"/>
+              <rect x="112" y="58" width="26" height="22" rx="2" fill="#b8b8b8" opacity="0.2"/>
+              <circle cx="127" cy="86" r="1.4" fill="#b8b8b8"/>
+            </g>
+            <g class="device device-phone">
+              <rect x="160" y="40" width="26" height="50" rx="4" fill="rgba(200,200,200,0.07)" stroke="#9a9a9a" stroke-width="1.6"/>
+              <line x1="166" y1="48" x2="180" y2="48" stroke="#9a9a9a" stroke-width="1.4" opacity="0.7"/>
+              <rect x="166" y="55" width="14" height="22" rx="2" fill="#b8b8b8" opacity="0.2"/>
+              <circle cx="173" cy="86" r="1.2" fill="#b8b8b8"/>
+            </g>
+          </svg>
+        </div>
+        <div class="focus-text">
+          <h3>Responsiveness</h3>
+          <p>Phone, tablet, desktop. It holds together on all three, so nobody leaves because the layout broke.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="services" id="services" aria-hidden="true">
+    <div class="container services__container">
+      <!-- Left dial: a big faint ring with 01/02/03 markers that rotate on scroll -->
+      <div class="dial">
+        <div class="dial-ring"></div>
+        <div class="dial-wheel">
+          <div class="dial-num is-active" style="--i:0">
+            <div class="dial-num__inner">
+              <span class="dial-dot"></span>
+              <span class="dial-label">01</span>
+            </div>
+          </div>
+          <div class="dial-num" style="--i:1">
+            <div class="dial-num__inner">
+              <span class="dial-dot"></span>
+              <span class="dial-label">02</span>
+            </div>
+          </div>
+          <div class="dial-num" style="--i:2">
+            <div class="dial-num__inner">
+              <span class="dial-dot"></span>
+              <span class="dial-label">03</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: vertical carousel of services -->
+      <div class="stage">
+        <div class="stage-track">
+          <article class="service">
+            <h2 class="service__title">UX Design</h2>
+            <p class="service__desc">I design interfaces people do not have to puzzle over. It starts with what users are actually trying to do, and ends in the small interaction details.</p>
+            <ul class="service__pills">
+              <li class="pill">User Research</li>
+              <li class="pill">Wireframing</li>
+              <li class="pill">Prototyping</li>
+            </ul>
+            <a class="service__link" href="detail-pages/services/ux-design.html">View service <span class="service__arrow">→</span></a>
+          </article>
+          <article class="service">
+            <h2 class="service__title">Web Development</h2>
+            <p class="service__desc">I build the site or app the design asks for. Clean code, no unnecessary tooling, and it stays quick once real content goes in.</p>
+            <ul class="service__pills">
+              <li class="pill">Frontend</li>
+              <li class="pill">Backend</li>
+              <li class="pill">Performance</li>
+            </ul>
+            <a class="service__link" href="detail-pages/services/web-development.html">View service <span class="service__arrow">→</span></a>
+          </article>
+          <article class="service">
+            <h2 class="service__title">Photography</h2>
+            <p class="service__desc">I shoot the images the design is built around. Product, brand and event work, edited and cropped to drop straight into the site.</p>
+            <ul class="service__pills">
+              <li class="pill">Product</li>
+              <li class="pill">Brand</li>
+              <li class="pill">Editing</li>
+            </ul>
+            <a class="service__link" href="detail-pages/services/photography.html">View service <span class="service__arrow">→</span></a>
+          </article>
+        </div>
+      </div>
+
+      <!-- Right: a line icon that morphs from one service to the next on scroll -->
+      <div class="svc-visual">
+        <svg class="svc-visual__svg" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <path id="icon-ux" d="M3.5 4.5H10.5V11.5H3.5Z M3.5 14H10.5V19.5H3.5Z M13.5 4.5H20.5V19.5H13.5Z"></path>
+            <path id="icon-web" d="M9 8l-4 4 4 4M15 8l4 4-4 4"></path>
+            <path id="icon-photo" d="M3 8.5A1.5 1.5 0 0 1 4.5 7H7.2L8.6 4.8H15.4L16.8 7H19.5A1.5 1.5 0 0 1 21 8.5V17.5A1.5 1.5 0 0 1 19.5 19H4.5A1.5 1.5 0 0 1 3 17.5Z M12 8.9A3.6 3.6 0 1 0 12 16.1 3.6 3.6 0 0 0 12 8.9Z"></path>
+          </defs>
+          <path id="svc-icon" class="svc-icon" d="M3.5 4.5H10.5V11.5H3.5Z M3.5 14H10.5V19.5H3.5Z M13.5 4.5H20.5V19.5H13.5Z"></path>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+    <section class="techstack" id="techstack">
+    <div class="container techstack__head">
+      <span class="techstack__eyebrow">My toolkit</span>
+      <h2 class="techstack__title">The <span class="focus__title-accent">tech</span> I build with</h2>
+    </div>
+    <div class="marquee">
+      <div class="marquee__row marquee__row--left">
+        <div class="marquee__group"><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="10" ry="3.9"/><ellipse cx="12" cy="12" rx="10" ry="3.9" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.9" transform="rotate(120 12 12)"/></svg></span><span class="tech__name">React</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16.2" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">JS</text></svg></span><span class="tech__name">JavaScript</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">5</text></svg></span><span class="tech__name">HTML</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">3</text></svg></span><span class="tech__name">CSS</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M12 3l7.4 4.2v8.6L12 20l-7.4-4.2V7.2z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="15.3" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">N</text></svg></span><span class="tech__name">Node.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">Py</text></svg></span><span class="tech__name">Python</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">D3</text></svg></span><span class="tech__name">D3</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 4.5L4.5 19h15z"/></svg></span><span class="tech__name">Three.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 15c4.5 0 6.5-7 11-7 2.2 0 3.5 1.4 3.5 3.2"/><circle cx="18.3" cy="11.4" r="1.7" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">GSAP</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.4-4-2.4-6-3m12 5v-3.6c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.7 4.7 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a11.9 11.9 0 0 0-6.2 0C6.5 2.7 5.4 3 5.4 3a4.3 4.3 0 0 0-.1 3.2A4.7 4.7 0 0 0 4 9.4c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></span><span class="tech__name">GitHub</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/><circle cx="9" cy="6.5" r="2" fill="none"/><circle cx="15" cy="12" r="2" fill="none"/><circle cx="10.5" cy="17.5" r="2" fill="none"/></svg></span><span class="tech__name">Lightroom</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 3H9a3 3 0 0 0 0 6h3z"/><path d="M12 3h3a3 3 0 0 1 0 6h-3z"/><path d="M12 9H9a3 3 0 0 0 0 6h3z"/><circle cx="15" cy="12" r="3"/><path d="M12 15H9a3 3 0 1 0 3 3z"/></svg></span><span class="tech__name">Figma</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M17 3.5L7 12l10 8.5V3.5z"/><path d="M4 9.8L7 12l-3 2.2z" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">VS Code</span></span></div>
+        <div class="marquee__group" aria-hidden="true"><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="10" ry="3.9"/><ellipse cx="12" cy="12" rx="10" ry="3.9" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.9" transform="rotate(120 12 12)"/></svg></span><span class="tech__name">React</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16.2" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">JS</text></svg></span><span class="tech__name">JavaScript</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">5</text></svg></span><span class="tech__name">HTML</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">3</text></svg></span><span class="tech__name">CSS</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M12 3l7.4 4.2v8.6L12 20l-7.4-4.2V7.2z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="15.3" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">N</text></svg></span><span class="tech__name">Node.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">Py</text></svg></span><span class="tech__name">Python</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">D3</text></svg></span><span class="tech__name">D3</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 4.5L4.5 19h15z"/></svg></span><span class="tech__name">Three.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 15c4.5 0 6.5-7 11-7 2.2 0 3.5 1.4 3.5 3.2"/><circle cx="18.3" cy="11.4" r="1.7" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">GSAP</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.4-4-2.4-6-3m12 5v-3.6c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.7 4.7 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a11.9 11.9 0 0 0-6.2 0C6.5 2.7 5.4 3 5.4 3a4.3 4.3 0 0 0-.1 3.2A4.7 4.7 0 0 0 4 9.4c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></span><span class="tech__name">GitHub</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/><circle cx="9" cy="6.5" r="2" fill="none"/><circle cx="15" cy="12" r="2" fill="none"/><circle cx="10.5" cy="17.5" r="2" fill="none"/></svg></span><span class="tech__name">Lightroom</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 3H9a3 3 0 0 0 0 6h3z"/><path d="M12 3h3a3 3 0 0 1 0 6h-3z"/><path d="M12 9H9a3 3 0 0 0 0 6h3z"/><circle cx="15" cy="12" r="3"/><path d="M12 15H9a3 3 0 1 0 3 3z"/></svg></span><span class="tech__name">Figma</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M17 3.5L7 12l10 8.5V3.5z"/><path d="M4 9.8L7 12l-3 2.2z" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">VS Code</span></span></div>
+      </div>
+      <div class="marquee__row marquee__row--right">
+        <div class="marquee__group"><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M17 3.5L7 12l10 8.5V3.5z"/><path d="M4 9.8L7 12l-3 2.2z" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">VS Code</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 3H9a3 3 0 0 0 0 6h3z"/><path d="M12 3h3a3 3 0 0 1 0 6h-3z"/><path d="M12 9H9a3 3 0 0 0 0 6h3z"/><circle cx="15" cy="12" r="3"/><path d="M12 15H9a3 3 0 1 0 3 3z"/></svg></span><span class="tech__name">Figma</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/><circle cx="9" cy="6.5" r="2" fill="none"/><circle cx="15" cy="12" r="2" fill="none"/><circle cx="10.5" cy="17.5" r="2" fill="none"/></svg></span><span class="tech__name">Lightroom</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.4-4-2.4-6-3m12 5v-3.6c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.7 4.7 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a11.9 11.9 0 0 0-6.2 0C6.5 2.7 5.4 3 5.4 3a4.3 4.3 0 0 0-.1 3.2A4.7 4.7 0 0 0 4 9.4c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></span><span class="tech__name">GitHub</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 15c4.5 0 6.5-7 11-7 2.2 0 3.5 1.4 3.5 3.2"/><circle cx="18.3" cy="11.4" r="1.7" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">GSAP</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 4.5L4.5 19h15z"/></svg></span><span class="tech__name">Three.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">D3</text></svg></span><span class="tech__name">D3</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">Py</text></svg></span><span class="tech__name">Python</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M12 3l7.4 4.2v8.6L12 20l-7.4-4.2V7.2z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="15.3" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">N</text></svg></span><span class="tech__name">Node.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">3</text></svg></span><span class="tech__name">CSS</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">5</text></svg></span><span class="tech__name">HTML</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16.2" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">JS</text></svg></span><span class="tech__name">JavaScript</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="10" ry="3.9"/><ellipse cx="12" cy="12" rx="10" ry="3.9" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.9" transform="rotate(120 12 12)"/></svg></span><span class="tech__name">React</span></span></div>
+        <div class="marquee__group" aria-hidden="true"><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M17 3.5L7 12l10 8.5V3.5z"/><path d="M4 9.8L7 12l-3 2.2z" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">VS Code</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 3H9a3 3 0 0 0 0 6h3z"/><path d="M12 3h3a3 3 0 0 1 0 6h-3z"/><path d="M12 9H9a3 3 0 0 0 0 6h3z"/><circle cx="15" cy="12" r="3"/><path d="M12 15H9a3 3 0 1 0 3 3z"/></svg></span><span class="tech__name">Figma</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/><circle cx="9" cy="6.5" r="2" fill="none"/><circle cx="15" cy="12" r="2" fill="none"/><circle cx="10.5" cy="17.5" r="2" fill="none"/></svg></span><span class="tech__name">Lightroom</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.4-4-2.4-6-3m12 5v-3.6c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.7 4.7 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a11.9 11.9 0 0 0-6.2 0C6.5 2.7 5.4 3 5.4 3a4.3 4.3 0 0 0-.1 3.2A4.7 4.7 0 0 0 4 9.4c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></span><span class="tech__name">GitHub</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 15c4.5 0 6.5-7 11-7 2.2 0 3.5 1.4 3.5 3.2"/><circle cx="18.3" cy="11.4" r="1.7" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">GSAP</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 4.5L4.5 19h15z"/></svg></span><span class="tech__name">Three.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">D3</text></svg></span><span class="tech__name">D3</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">Py</text></svg></span><span class="tech__name">Python</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M12 3l7.4 4.2v8.6L12 20l-7.4-4.2V7.2z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="15.3" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">N</text></svg></span><span class="tech__name">Node.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">3</text></svg></span><span class="tech__name">CSS</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">5</text></svg></span><span class="tech__name">HTML</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16.2" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">JS</text></svg></span><span class="tech__name">JavaScript</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="10" ry="3.9"/><ellipse cx="12" cy="12" rx="10" ry="3.9" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.9" transform="rotate(120 12 12)"/></svg></span><span class="tech__name">React</span></span></div>
+      </div>
+    </div>
+  </section>
+
+    <!-- <section class="process" id="process">
+    <div class="process__header">
+      <h2 class="process__heading">How we <span class="focus__title-accent">work</span></h2>
+    </div>
+    <div class="process__track">
+        <article class="process__step">
+          <span class="process__bignum" aria-hidden="true">01</span>
+          <div class="process__content">
+            <span class="process__step-label">Step 01</span>
+            <h3 class="process__title">Discover</h3>
+            <p class="process__desc">I start with your goals, your users and whatever you are stuck with. Research, plus a workshop to kick it off.</p>
+          </div>
+        </article>
+        <article class="process__step">
+          <span class="process__bignum" aria-hidden="true">02</span>
+          <div class="process__content">
+            <span class="process__step-label">Step 02</span>
+            <h3 class="process__title">Design</h3>
+            <p class="process__desc">I shape it into wireframes and a polished UI, backed by a scalable design system.</p>
+          </div>
+        </article>
+        <article class="process__step">
+          <span class="process__bignum" aria-hidden="true">03</span>
+          <div class="process__content">
+            <span class="process__step-label">Step 03</span>
+            <h3 class="process__title">Build</h3>
+            <p class="process__desc">I turn the designs into code that still makes sense a year from now.</p>
+          </div>
+        </article>
+        <article class="process__step">
+          <span class="process__bignum" aria-hidden="true">04</span>
+          <div class="process__content">
+            <span class="process__step-label">Step 04</span>
+            <h3 class="process__title">Launch</h3>
+            <p class="process__desc">I ship it, monitor it, and stay on for ongoing support and improvements.</p>
+          </div>
+        </article>
+    </div>
+    <div class="process__dots"><span class="process__dot"></span><span class="process__dot"></span><span class="process__dot"></span><span class="process__dot"></span><span class="process__dot"></span></div>
+    <div class="process__hint" aria-hidden="true">Scroll</div>
+  </section> -->
+
+  <section class="showcase" id="showcase">
+    <div class="showcase__bg" aria-hidden="true">
+      <span class="showcase__bgtext">Recent work</span>
+    </div>
+    <div class="container showcase__container">
+      <div class="showcase__head">
+        <span class="showcase__label">Projects</span>
+        <h2 class="showcase__title">Recent work</h2>
+      </div>
+      <!-- Scroll-driven deck. DOM order = stack order: the first card is the one
+           in front, the rest peek out above it. Add a project by dropping in
+           another .work-card — the JS reads however many are here. -->
+      <div class="showcase__deck">
+        <a class="work-card" href="https://mitchellkevin.github.io/scholtes-klusbedrijf/" target="_blank" rel="noopener" aria-label="Scholtes Klusbedrijf, view project">
+          <img src="project-images/scholtes-klusbedrijf.png" alt="Scholtes Klusbedrijf">
+          <span class="work-card__meta">Scholtes Klusbedrijf <span class="showcase__arrow">↗</span></span>
+        </a>
+
+        <a class="work-card" href="https://www.day-to-day.nl/" target="_blank" rel="noopener" aria-label="D2D, view project">
+          <img src="project-images/d2d.png" alt="D2D">
+          <span class="work-card__meta">Day-to-Day <span class="showcase__arrow">↗</span></span>
+        </a>
+        <a class="work-card" href="https://vis-b05f.onrender.com/" target="_blank" rel="noopener" aria-label="Visdeurbel, view project">
+          <img src="project-images/visdeurbel.png" alt="Visdeurbel">
+          <span class="work-card__meta">Visdeurbel Datavis. <span class="showcase__arrow">↗</span></span>
+        </a>
+        <a class="work-card" href="https://wdd-api-scholte.onrender.com/" target="_blank" rel="noopener" aria-label="CMD Casino, view project">
+          <img src="project-images/CMD-casino.png" alt="CMD Casino">
+          <span class="work-card__meta">CMD Casino <span class="showcase__arrow">↗</span></span>
+        </a>
+        <a class="work-card" href="https://mitchellkevin.github.io/HCD/" target="_blank" rel="noopener" aria-label="HCD, view project">
+          <img src="project-images/HCD.png" alt="HCD">
+          <span class="work-card__meta">HCD <span class="showcase__arrow">↗</span></span>
+        </a>
+        <a class="work-card" href="https://mitchellkevin.github.io/Space/" target="_blank" rel="noopener" aria-label="Hackathon, view project">
+          <img src="project-images/hackathon.png" alt="Hackathon">
+          <span class="work-card__meta">Hackathon <span class="showcase__arrow">↗</span></span>
+        </a>
+        <a class="work-card" href="https://mitchellkevin.github.io/PersonalInfoSite/" target="_blank" rel="noopener" aria-label="Mitchopoly, view project">
+          <img src="project-images/mitchopoly.png" alt="Mitchopoly">
+          <span class="work-card__meta">Mitchopoly <span class="showcase__arrow">↗</span></span>
+        </a>
+      </div>
+
+      <div class="showcase__counter"><b id="work-index">01</b> / <span id="work-total">04</span></div>
+    </div>
+  </section>
+
+  <!-- About. The wave from the logo becomes a waterline: scrolling through the
+       section raises it across the portrait, so the mark that opens every page
+       is also what introduces the person behind it. Both wave paths are
+       generated from one sine function in nomi-studio.js — the mask that lights
+       the photo and the visible crest are literally the same curve. -->
+  <section class="about" id="about">
+    <div class="about__inner">
+      <figure class="about__figure">
+        <svg class="about__orb" viewBox="0 0 200 200" aria-hidden="true">
+          <defs>
+            <clipPath id="aboutCircle"><circle cx="100" cy="100" r="100"/></clipPath>
+            <!-- everything below the waterline is white in the mask, so the lit
+                 copy of the photo shows through exactly there -->
+            <mask id="aboutWaterline">
+              <rect x="-100" y="-100" width="400" height="400" fill="black"/>
+              <path class="about__wave about__wave--back" fill="white"></path>
+              <path class="about__wave about__wave--front" fill="white"></path>
+            </mask>
+          </defs>
+          <g clip-path="url(#aboutCircle)">
+            <rect x="0" y="0" width="200" height="200" fill="var(--color-surface)"/>
+            <!-- the crop is aimed at the face: the photo is scaled to 290 wide
+                 and offset so the head lands just above the middle of the orb.
+                 x cannot go above 0 without exposing the left edge of the photo,
+                 so this is about as far out as this shot crops. -->
+            <image class="about__photo" href="img/MS.jpg" x="-10" y="-89" width="290" height="501"/>
+            <image class="about__photo about__photo--lit" mask="url(#aboutWaterline)"
+                   href="img/MS.jpg" x="-10" y="-89" width="290" height="501"/>
+            <!-- the crest, drawn on top so the wave still reads over dark pixels -->
+            <path class="about__crest about__crest--back" fill="none"></path>
+            <path class="about__crest about__crest--front" fill="none"></path>
+          </g>
+          <circle class="about__ring" cx="100" cy="100" r="99.5" fill="none"/>
+        </svg>
+        <figcaption class="about__caption">Mitchell Scholte, founder of MISC STUDIO</figcaption>
+      </figure>
+
+      <div class="about__copy">
+        <span class="about__eyebrow">About</span>
+        <h2 class="about__title">The person behind the <span class="focus__title-accent">wave</span></h2>
+        <!-- same scroll-driven ink fill the service pages use on their overview
+             copy: the lines darken back out above and below your reading spot -->
+        <div class="about__body js-fill">
+          <p class="about__lead fill-text"><span>I'm Mitchell, a designer who codes, based near
+            Amsterdam. I started out in Technical Computer Science, moved over to Communication &amp;
+            Multimedia Design, and never really picked a side. Interfaces, front-end and the
+            photography that fills them all end up on the same desk.</span></p>
+          <p class="about__text fill-text"><span>That mix is the whole point. Because I build what I
+            design, the concept and the thing that actually ships never drift apart. Alongside the
+            studio I'm a frontend developer intern at Build in Amsterdam (BiA), where I get to sharpen my craft on real work.</span></p>
+        </div>
+
+        <dl class="about__facts">
+          <div class="about__fact">
+            <dt>Based near</dt>
+            <dd>Amsterdam, NL</dd>
+          </div>
+          <div class="about__fact">
+            <dt>Local time</dt>
+            <dd id="about-time">—</dd>
+          </div>
+          <div class="about__fact">
+            <dt>Disciplines</dt>
+            <dd>UX · Web · Photo</dd>
+          </div>
+          <div class="about__fact">
+            <dt>Work</dt>
+            <dd>BiA, intern</dd>
+          </div>
+        </dl>
+
+        <a class="about__next" href="#timeline">
+          <span>See the road so far</span>
+          <span class="about__next-arrow" aria-hidden="true">↓</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline. The arrow travels a winding path past each event; the curve,
+       the arrow and every event position are generated from one sine function
+       in nomi-studio.js, so they cannot drift apart. -->
+  <section class="tlpath" id="timeline">
+    <div class="tlpath__head">
+      <span class="tlpath__eyebrow">Timeline</span>
+      <h2 class="tlpath__title">The road so far</h2>
+    </div>
+    <div class="tlpath__viewport">
+      <div class="tlpath__track">
+        <svg class="tlpath__svg" aria-hidden="true">
+          <path class="tlpath__line"></path>
+          <path class="tlpath__trail"></path>
+        </svg>
+        <div class="tlpath__arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" fill="var(--color-black)"></circle>
+            <path d="M9 7l6 5-6 5"></path>
+          </svg>
+        </div>
+        <ol class="tlpath__events">
+          <li class="tlev tlev--above" data-i="0">
+            <span class="tlev__dot" aria-hidden="true"></span>
+            <span class="tlev__stem" aria-hidden="true"></span>
+            <div class="tlev__card">
+              <span class="tlev__year">2021</span>
+              <span class="tlev__type">Education</span>
+              <span class="tlev__what">Technical Computer Science</span>
+              <span class="tlev__where">AUAS</span>
+            </div>
+          </li>
+          <li class="tlev tlev--below" data-i="1">
+            <span class="tlev__dot" aria-hidden="true"></span>
+            <span class="tlev__stem" aria-hidden="true"></span>
+            <div class="tlev__card">
+              <span class="tlev__year">2023</span>
+              <span class="tlev__type">Education</span>
+              <span class="tlev__what">Communication &amp; Multimedia Design</span>
+              <span class="tlev__where">AUAS</span>
+            </div>
+          </li>
+          <li class="tlev tlev--above" data-i="2">
+            <span class="tlev__dot" aria-hidden="true"></span>
+            <span class="tlev__stem" aria-hidden="true"></span>
+            <div class="tlev__card">
+              <span class="tlev__year">2025</span>
+              <span class="tlev__type">Work</span>
+              <span class="tlev__what">First UX/UI Internship</span>
+              <span class="tlev__where">Ecocharting</span>
+            </div>
+          </li>
+          <li class="tlev tlev--below" data-i="3">
+            <span class="tlev__dot" aria-hidden="true"></span>
+            <span class="tlev__stem" aria-hidden="true"></span>
+            <div class="tlev__card">
+              <span class="tlev__year">2025</span>
+              <span class="tlev__type">Venture</span>
+              <span class="tlev__what">Founded a Software Company</span>
+              <span class="tlev__where">Day-to-Day</span>
+            </div>
+          </li>
+          <li class="tlev tlev--above" data-i="4">
+            <span class="tlev__dot" aria-hidden="true"></span>
+            <span class="tlev__stem" aria-hidden="true"></span>
+            <div class="tlev__card">
+              <span class="tlev__year">2025</span>
+              <span class="tlev__type">Certification</span>
+              <span class="tlev__what">Junior Software Developer Certification</span>
+              <span class="tlev__where">Amazon</span>
+            </div>
+          </li>
+          <li class="tlev tlev--below" data-i="5">
+            <span class="tlev__dot" aria-hidden="true"></span>
+            <span class="tlev__stem" aria-hidden="true"></span>
+            <div class="tlev__card">
+              <span class="tlev__year">2025</span>
+              <span class="tlev__type">Work</span>
+              <span class="tlev__what">Teaching Assistant, Front-end Development</span>
+              <span class="tlev__where">AUAS</span>
+            </div>
+          </li>
+          <li class="tlev tlev--above" data-i="6">
+            <span class="tlev__dot" aria-hidden="true"></span>
+            <span class="tlev__stem" aria-hidden="true"></span>
+            <div class="tlev__card">
+              <span class="tlev__year">2025</span>
+              <span class="tlev__type">Certification</span>
+              <span class="tlev__what">Ethical Hacking with Open Source Tools</span>
+              <span class="tlev__where">IBM Specialization</span>
+            </div>
+          </li>
+          <li class="tlev tlev--below" data-i="7">
+            <span class="tlev__dot" aria-hidden="true"></span>
+            <span class="tlev__stem" aria-hidden="true"></span>
+            <div class="tlev__card">
+              <span class="tlev__year">2025</span>
+              <span class="tlev__type">Education</span>
+              <span class="tlev__what">Minor Business Law</span>
+              <span class="tlev__where">AUAS</span>
+            </div>
+          </li>
+          <li class="tlev tlev--above" data-i="8">
+            <span class="tlev__dot" aria-hidden="true"></span>
+            <span class="tlev__stem" aria-hidden="true"></span>
+            <div class="tlev__card">
+              <span class="tlev__year">2026</span>
+              <span class="tlev__type">Education</span>
+              <span class="tlev__what">Minor Web Design &amp; Development</span>
+              <span class="tlev__where">AUAS</span>
+            </div>
+          </li>
+          <li class="tlev tlev--below" data-i="9">
+            <span class="tlev__dot" aria-hidden="true"></span>
+            <span class="tlev__stem" aria-hidden="true"></span>
+            <div class="tlev__card">
+              <span class="tlev__year">2026</span>
+              <span class="tlev__type">Work</span>
+              <span class="tlev__what">Front-end Development Internship</span>
+              <span class="tlev__where">Build in Amsterdam</span>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+    <span class="tlpath__hint">Scroll</span>
+  </section>
+
+  <!-- Credentials. Every field below was read off the actual certificate scan
+       in Certificates/ — issuer, date and verification code all match the
+       document each row links to. Newest first. -->
+  <section class="certs" id="certificates">
+    <div class="container certs__container">
+      <div class="certs__head">
+        <span class="certs__eyebrow">Credentials</span>
+        <h2 class="certs__title">Certified, and <span class="focus__title-accent">verifiable</span></h2>
+      </div>
+
+      <div class="creds">
+        <div class="creds__stage">
+          <article class="cred is-active" data-cred="0">
+            <a class="cred__doc" href="Certificates/londen_fullstack.png" target="_blank" rel="noopener" aria-label="Open the Full-Stack Web Development certificate">
+              <img src="Certificates/londen_fullstack.png" alt="" loading="lazy">
+            </a>
+            <p class="cred__cap"><span>University of London · <time datetime="2026-01-28">2026-01-28</time> · Specialization · 3 courses</span><a class="cred__verify" href="https://coursera.org/verify/specialization/RQP2ETQYTPQ6" target="_blank" rel="noopener">Verify ↗</a></p>
+          </article>
+          <article class="cred" data-cred="1" aria-hidden="true">
+            <a class="cred__doc" href="Certificates/ethicalHacking.png" target="_blank" rel="noopener" aria-label="Open the Ethical Hacking with Open Source Tools certificate">
+              <img src="Certificates/ethicalHacking.png" alt="" loading="lazy">
+            </a>
+            <p class="cred__cap"><span>IBM · SkillUp · <time datetime="2025-10-08">2025-10-08</time> · Professional Certificate · 5 courses</span><a class="cred__verify" href="https://coursera.org/verify/professional-cert/RI1MHCBYI3V0" target="_blank" rel="noopener">Verify ↗</a></p>
+          </article>
+          <article class="cred" data-cred="2" aria-hidden="true">
+            <a class="cred__doc" href="Certificates/amazon_Junior_software_developer.png" target="_blank" rel="noopener" aria-label="Open the Amazon Junior Software Developer certificate">
+              <img src="Certificates/amazon_Junior_software_developer.png" alt="" loading="lazy">
+            </a>
+            <p class="cred__cap"><span>Amazon · <time datetime="2025-08-17">2025-08-17</time> · Professional Certificate · 7 courses</span><a class="cred__verify" href="https://coursera.org/verify/professional-cert/5GOJ9UKHLDHX" target="_blank" rel="noopener">Verify ↗</a></p>
+          </article>
+          <article class="cred" data-cred="3" aria-hidden="true">
+            <a class="cred__doc" href="Certificates/Amazon_Introduction.png" target="_blank" rel="noopener" aria-label="Open the Introduction to Software Development certificate">
+              <img src="Certificates/Amazon_Introduction.png" alt="" loading="lazy">
+            </a>
+            <p class="cred__cap"><span>Amazon · <time datetime="2025-07-04">2025-07-04</time> · Course</span><a class="cred__verify" href="https://coursera.org/verify/V01V12UOGJPJ" target="_blank" rel="noopener">Verify ↗</a></p>
+          </article>
+          <article class="cred" data-cred="4" aria-hidden="true">
+            <a class="cred__doc" href="Certificates/Jr_Penetration_Tester.png" target="_blank" rel="noopener" aria-label="Open the Jr Penetration Tester certificate">
+              <img src="Certificates/Jr_Penetration_Tester.png" alt="" loading="lazy">
+            </a>
+            <p class="cred__cap"><span>TryHackMe · <time datetime="2025-06-08">2025-06-08</time> · Learning Path · 30h 40m</span><span class="cred__verify" style="border:none;color:var(--color-dim)">Ref THM-V8OEOCDDEO</span></p>
+          </article>
+          <article class="cred" data-cred="5" aria-hidden="true">
+            <a class="cred__doc" href="Certificates/Web_Fundamentals.png" target="_blank" rel="noopener" aria-label="Open the Web Fundamentals certificate">
+              <img src="Certificates/Web_Fundamentals.png" alt="" loading="lazy">
+            </a>
+            <p class="cred__cap"><span>TryHackMe · <time datetime="2025-05-29">2025-05-29</time> · Learning Path · 17h 20m</span><span class="cred__verify" style="border:none;color:var(--color-dim)">Ref THM-UUDLEMAULA</span></p>
+          </article>
+          <article class="cred" data-cred="6" aria-hidden="true">
+            <a class="cred__doc" href="Certificates/Cybersecurity_101.png" target="_blank" rel="noopener" aria-label="Open the Cyber Security 101 certificate">
+              <img src="Certificates/Cybersecurity_101.png" alt="" loading="lazy">
+            </a>
+            <p class="cred__cap"><span>TryHackMe · <time datetime="2025-05-19">2025-05-19</time> · Learning Path · 45h 53m</span><span class="cred__verify" style="border:none;color:var(--color-dim)">Ref THM-JFFACCUDPL</span></p>
+          </article>
+        </div>
+
+        <ol class="creds__list">
+          <li>
+            <button type="button" class="cred__row is-active" data-cred="0" aria-pressed="true">
+              <span class="cred__idx">01</span>
+              <span class="cred__name">Full-Stack Web Development</span>
+              <span class="cred__sub">University of London · 2026</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="cred__row" data-cred="1" aria-pressed="false">
+              <span class="cred__idx">02</span>
+              <span class="cred__name">Ethical Hacking with Open Source Tools</span>
+              <span class="cred__sub">IBM · SkillUp · 2025</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="cred__row" data-cred="2" aria-pressed="false">
+              <span class="cred__idx">03</span>
+              <span class="cred__name">Amazon Junior Software Developer</span>
+              <span class="cred__sub">Amazon · 2025</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="cred__row" data-cred="3" aria-pressed="false">
+              <span class="cred__idx">04</span>
+              <span class="cred__name">Introduction to Software Development</span>
+              <span class="cred__sub">Amazon · 2025</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="cred__row" data-cred="4" aria-pressed="false">
+              <span class="cred__idx">05</span>
+              <span class="cred__name">Jr Penetration Tester</span>
+              <span class="cred__sub">TryHackMe · 2025</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="cred__row" data-cred="5" aria-pressed="false">
+              <span class="cred__idx">06</span>
+              <span class="cred__name">Web Fundamentals</span>
+              <span class="cred__sub">TryHackMe · 2025</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="cred__row" data-cred="6" aria-pressed="false">
+              <span class="cred__idx">07</span>
+              <span class="cred__name">Cyber Security 101</span>
+              <span class="cred__sub">TryHackMe · 2025</span>
+            </button>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Blog highlights. The three newest posts live here; the full archive with
+       its filter is on blog.html. PLACEHOLDER CONTENT — titles, excerpts and
+       dates are stand-ins, and blog/<slug>.html does not exist yet apart from
+       the template. Replace before publishing. -->
+  <!-- <section class="blog" id="blog">
+    <div class="container">
+      <div class="blog__head">
+        <div>
+          <span class="blog__eyebrow">Blog</span>
+          <h2 class="blog__title">What I <span class="focus__title-accent">dig into</span></h2>
+        </div>
+        <a class="blog__cta" href="blog.html">All posts <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="blog__grid">
+          <a class="bpost" href="blog/pinning-without-jank.html">
+            <span class="bpost__meta"><span class="bpost__tag">Development</span><time datetime="2026-02-04">2026-02-04</time><span aria-hidden="true">·</span>6 min</span>
+            <span class="bpost__title">Pinning with ScrollTrigger, without the jank</span>
+            <span class="bpost__excerpt">Five pinned sections on one page that still scroll smoothly. What worked, and what I threw away.</span>
+            <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
+            <span class="bpost__media">
+              <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="400" height="260" fill="#0b0b0b"/>
+              <g fill="#141414" stroke="#5f5f5f" stroke-width="2">
+                <rect x="42" y="30" width="228" height="62" rx="8"/>
+                <rect x="42" y="106" width="228" height="62" rx="8" fill="#1f1f1f" stroke="#d8d8d8"/>
+                <rect x="42" y="182" width="228" height="62" rx="8"/>
+              </g>
+              <g stroke="#8f8f8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                <path d="M330 38 V206" stroke-dasharray="5 11"/>
+                <path d="M320 194 l10 16 10-16"/>
+              </g>
+              </svg>
+              <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
+            </span>
+          </a>
+          <a class="bpost" href="blog/monochrome-contrast.html">
+            <span class="bpost__meta"><span class="bpost__tag">Design</span><time datetime="2026-01-19">2026-01-19</time><span aria-hidden="true">·</span>4 min</span>
+            <span class="bpost__title">Contrast in a palette without colour</span>
+            <span class="bpost__excerpt">When everything is black, white or grey, hierarchy has to come from somewhere else. Here is how I get it.</span>
+            <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
+            <span class="bpost__media">
+              <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="400" height="260" fill="#0b0b0b"/>
+              <g>
+                <rect x="42" y="60" width="42" height="140" fill="#1c1c1c"/>
+                <rect x="94" y="60" width="42" height="140" fill="#333333"/>
+                <rect x="146" y="60" width="42" height="140" fill="#585858"/>
+                <rect x="198" y="60" width="42" height="140" fill="#8a8a8a"/>
+                <rect x="250" y="60" width="42" height="140" fill="#c2c2c2"/>
+                <rect x="302" y="60" width="56" height="140" fill="#ffffff"/>
+              </g>
+              <path d="M42 200 H358" stroke="#5f5f5f" stroke-width="2"/>
+              </svg>
+              <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
+            </span>
+          </a>
+          <a class="bpost" href="blog/pcb-bringup.html">
+            <span class="bpost__meta"><span class="bpost__tag">Hardware</span><time datetime="2025-12-08">2025-12-08</time><span aria-hidden="true">·</span>8 min</span>
+            <span class="bpost__title">Bringing up your own PCB without a debugger</span>
+            <span class="bpost__excerpt">Putting power on a board you designed yourself for the first time, and what to do when nothing happens.</span>
+            <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
+            <span class="bpost__media">
+              <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="400" height="260" fill="#0b0b0b"/>
+              <g fill="none" stroke="#6f6f6f" stroke-width="2" stroke-linecap="round">
+                <path d="M40 76 H108 L136 104 H176"/>
+                <path d="M40 130 H176"/>
+                <path d="M40 184 H108 L136 156 H176"/>
+                <path d="M264 76 H332"/>
+                <path d="M264 130 H304 L332 158 H360"/>
+                <path d="M264 184 H332"/>
+              </g>
+              <rect x="176" y="88" width="88" height="84" rx="6" fill="#1c1c1c" stroke="#d8d8d8" stroke-width="2"/>
+              <g fill="#8f8f8f">
+                <circle cx="40" cy="76" r="6"/><circle cx="40" cy="130" r="6"/><circle cx="40" cy="184" r="6"/>
+                <circle cx="360" cy="76" r="6"/><circle cx="360" cy="158" r="6"/><circle cx="360" cy="184" r="6"/>
+              </g>
+              </svg>
+              <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
+            </span>
+          </a>
+      </div>
+    </div>
+  </section> -->
+  
+  <!-- Rates. One card per service rather than three invented tiers, so this
+       section and the services carousel can never tell a different story. The
+       deliverables match what each service detail page lists. -->
+  <section class="pricing" id="pricing">
+    <div class="container pricing__container">
+      <h2 class="pricing__title">Pick the <span class="focus__title-accent">service</span><br>your project needs</h2>
+
+      <div class="pricing__grid">
+        <!-- Photography -->
+        <article class="plan">
+          <div class="plan__head">
+            <span class="plan__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A1.5 1.5 0 0 1 4.5 7h2.7l1.4-2.2h6.8L16.8 7h2.7A1.5 1.5 0 0 1 21 8.5v9A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg>
+            </span>
+            <h3 class="plan__name">Photography</h3>
+          </div>
+          <p class="plan__desc">Images made for the places they end up. Product, brand and event work, shot and edited to sit straight in your site.</p>
+          <span class="plan__divider"></span>
+          <ul class="plan__features">
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9A1.3 1.3 0 0 1 4.8 7.7h2.4l1.2-2h7.2l1.2 2h2.4A1.3 1.3 0 0 1 20.5 9v8a1.3 1.3 0 0 1-1.3 1.3H4.8A1.3 1.3 0 0 1 3.5 17z"/><circle cx="12" cy="12.8" r="3.2"/></svg></span>Car &amp; real estate shoots</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s6.5-6 6.5-10.5a6.5 6.5 0 1 0-13 0C5.5 15 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.4"/></svg></span>On-location coverage</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>Event photography</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6.5h14M5 12h14M5 17.5h14"/><circle cx="9" cy="6.5" r="1.8"/><circle cx="15" cy="12" r="1.8"/><circle cx="10.5" cy="17.5" r="1.8"/></svg></span>Editing &amp; colour grading</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v10"/><path d="M8.5 10.5L12 14l3.5-3.5"/><path d="M4.5 16v3a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3"/></svg></span>Web-ready files, licensed</li>
+          </ul>
+          <span class="plan__divider"></span>
+          <div class="plan__price"><span class="plan__amount">€30</span><span class="plan__period">/ Hour</span></div>
+          <a href="#contact" class="plan__btn blob-btn">Inquire about Photography<span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></a>
+        </article>
+
+        <!-- UX Design -->
+        <article class="plan">
+          <div class="plan__head">
+            <span class="plan__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 4.5H10.5V11.5H3.5Z M3.5 14H10.5V19.5H3.5Z M13.5 4.5H20.5V19.5H13.5Z"/></svg>
+            </span>
+            <h3 class="plan__name">UX Design</h3>
+          </div>
+          <p class="plan__desc">Interfaces built on research, so people can use them without being told how.</p>
+          <span class="plan__divider"></span>
+          <ul class="plan__features">
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></span>User research</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="6.5" width="14" height="13" rx="1.5"/><path d="M6.5 10.5h14"/><path d="M3.5 16V4.8A1.3 1.3 0 0 1 4.8 3.5H16.5"/></svg></span>Wireframes &amp; user flows</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="12" height="9" rx="1.3"/><path d="M5.5 17.5h6M8.5 14v3.5"/><rect x="16" y="8.5" width="5.5" height="10" rx="1.2"/><path d="M18 16.5h1.5"/></svg></span>Interactive Figma prototypes</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 9.3c2.1 0 3 2.7 3.5 2.7s1.4-2.7 3.5-2.7a2.7 2.7 0 0 1 0 5.4c-2.1 0-3-2.7-3.5-2.7s-1.4 2.7-3.5 2.7a2.7 2.7 0 0 1 0-5.4z"/></svg></span>Visual design &amp; design system</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="1.5"/><path d="M8.5 10l1.4 1.4L13 8.5M8 15h8M8 17.5h5"/></svg></span>Usability testing</li>
+          </ul>
+          <span class="plan__divider"></span>
+          <div class="plan__price"><span class="plan__amount">€40</span><span class="plan__period">/ Hour</span></div>
+          <a href="#contact" class="plan__btn blob-btn">Inquire about UX Design<span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></a>
+        </article>
+
+        <!-- Web Development (highlighted) -->
+        <article class="plan plan--dark">
+          <div class="plan__head">
+            <span class="plan__icon plan__icon--accent">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg>
+            </span>
+            <h3 class="plan__name">Web Development</h3>
+          </div>
+          <p class="plan__desc">Fast, sturdy websites and web apps. Clean code that holds up when the site grows.</p>
+          <span class="plan__divider"></span>
+          <ul class="plan__features">
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg></span>Frontend engineering</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="6.5" rx="1.4"/><rect x="3.5" y="13.5" width="17" height="6.5" rx="1.4"/><path d="M7 7.2h.01M7 16.8h.01"/></svg></span>Backend &amp; APIs</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 18a8 8 0 1 1 15 0"/><path d="M12 18l3.6-4.2"/><path d="M12 18h.01"/></svg></span>Performance &amp; Core Web Vitals</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/><path d="M3.5 4.5h2.2l2.1 10.2h10L19.5 8H7"/></svg></span>GSAP Animations</li>
+            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13v-1a7 7 0 0 1 14 0v1"/><rect x="3.5" y="13" width="3.5" height="6" rx="1.2"/><rect x="17" y="13" width="3.5" height="6" rx="1.2"/><path d="M19 19a3 3 0 0 1-3 3h-2.5"/></svg></span>3D Animation</li>
+          </ul>
+          <span class="plan__divider"></span>
+          <div class="plan__price"><span class="plan__amount">€45</span><span class="plan__period">/ Hour</span></div>
+          <a href="#contact" class="plan__btn blob-btn">Inquire about Web Development<span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq">
+    <div class="container faq__container">
+      <div class="faq__intro">
+        <h2 class="faq__title"><span class="focus__title-accent">Questions?</span><br>I am here to help</h2>
+      </div>
+
+      <div class="faq__list">
+        <div class="faq__item">
+          <button class="faq__q" aria-expanded="false">
+            <span class="faq__num">1</span>
+            <span class="faq__question">What services does MISC Studio provide?</span>
+            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <div class="faq__a"><div class="faq__a-inner"><p>Brand identity and strategy, UX design, web development and photography. Enough to design, build and ship a product, plus the images you show it with.</p></div></div>
+        </div>
+
+        <div class="faq__item">
+          <button class="faq__q" aria-expanded="false">
+            <span class="faq__num">2</span>
+            <span class="faq__question">How long does a typical project take?</span>
+            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <div class="faq__a"><div class="faq__a-inner"><p>Most run 4 to 12 weeks, depending on how big it is. You get a real timeline after the first call, not a hopeful one.</p></div></div>
+        </div>
+
+        <div class="faq__item">
+          <button class="faq__q" aria-expanded="false">
+            <span class="faq__num">3</span>
+            <span class="faq__question">Do you work with startups or established companies?</span>
+            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <div class="faq__a"><div class="faq__a-inner"><p>Both. A startup finding its footing needs something different from a company with fifteen years of legacy, so the process bends to fit.</p></div></div>
+        </div>
+
+        <div class="faq__item">
+          <button class="faq__q" aria-expanded="false">
+            <span class="faq__num">4</span>
+            <span class="faq__question">What is your design and development process?</span>
+            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <div class="faq__a"><div class="faq__a-inner"><p>Discovery, strategy, design, build, launch. I check in along the way, so the end result is never a surprise.</p></div></div>
+        </div>
+
+        <div class="faq__item">
+          <button class="faq__q" aria-expanded="false">
+            <span class="faq__num">5</span>
+            <span class="faq__question">Can MISC Studio redesign an existing brand or website?</span>
+            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <div class="faq__a"><div class="faq__a-inner"><p>Yes. That can be a refresh or a full rebuild, keeping whatever already works instead of throwing it out on principle.</p></div></div>
+        </div>
+
+        <div class="faq__item">
+          <button class="faq__q" aria-expanded="false">
+            <span class="faq__num">6</span>
+            <span class="faq__question">Do you provide ongoing support after launch?</span>
+            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <div class="faq__a"><div class="faq__a-inner"><p>Yes. Every project can carry a maintenance and support retainer, and some clients keep me on for the ongoing design work too.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="contact__window">
+      <div class="contact__form-col">
+        <h2 class="contact__title">Get in touch</h2>
+        <p class="contact__subtitle">Got a project, or just a question about one? Send it over and I&rsquo;ll get back to you the same day.</p>
+
+        <form class="cform" onsubmit="return false">
+          <div class="cform__row">
+            <div class="cfield">
+              <label class="cfield__label" for="cf-first">First name</label>
+              <input id="cf-first" type="text" placeholder="First name">
+            </div>
+            <div class="cfield">
+              <label class="cfield__label" for="cf-last">Last name</label>
+              <input id="cf-last" type="text" placeholder="Last name">
+            </div>
+          </div>
+
+          <div class="cfield">
+            <label class="cfield__label" for="cf-company">Company name</label>
+            <input id="cf-company" type="text" placeholder="Company name">
+          </div>
+
+          <div class="cfield">
+            <label class="cfield__label" for="cf-email">Work email</label>
+            <input id="cf-email" type="email" placeholder="you@company.com">
+          </div>
+
+          <div class="cfield">
+            <label class="cfield__label" for="cf-message">Message</label>
+            <textarea id="cf-message" class="cform__textarea" rows="3" placeholder="Tell us a bit about your project…"></textarea>
+          </div>
+
+          <fieldset class="cservice">
+            <legend class="cservice__legend">What services do you need? <span class="cservice__hint">(select all that apply)</span></legend>
+            <div class="cservice__grid">
+              <label class="cservice__card">
+                <input type="checkbox" name="service" value="ux-design">
+                <span class="cservice__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="4.5" width="7" height="7" rx="1"/><rect x="3.5" y="14" width="7" height="5.5" rx="1"/><rect x="13.5" y="4.5" width="7" height="15" rx="1"/></svg>
+                </span>
+                <span class="cservice__text">
+                  <span class="cservice__name">UX Design</span>
+                  <span class="cservice__desc">Research-led flows and interfaces.</span>
+                </span>
+              </label>
+
+              <label class="cservice__card">
+                <input type="checkbox" name="service" value="web-development">
+                <span class="cservice__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg>
+                </span>
+                <span class="cservice__text">
+                  <span class="cservice__name">Web Development</span>
+                  <span class="cservice__desc">Fast, resilient sites and web apps.</span>
+                </span>
+              </label>
+
+              <label class="cservice__card">
+                <input type="checkbox" name="service" value="photography">
+                <span class="cservice__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9A1.3 1.3 0 0 1 4.8 7.7h2.4l1.2-2h7.2l1.2 2h2.4A1.3 1.3 0 0 1 20.5 9v8a1.3 1.3 0 0 1-1.3 1.3H4.8A1.3 1.3 0 0 1 3.5 17z"/><circle cx="12" cy="12.8" r="3.2"/></svg>
+                </span>
+                <span class="cservice__text">
+                  <span class="cservice__name">Photography</span>
+                  <span class="cservice__desc">Product, brand and event shoots.</span>
+                </span>
+              </label>
+
+              <label class="cservice__card">
+                <input type="checkbox" name="service" value="not-sure">
+                <span class="cservice__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.5a2.5 2.5 0 013.9-1.9c1.4 1 1 2.9-.9 3.4-.6.2-1 .7-1 1.3v.4"/><circle cx="12" cy="16.6" r="0.6" fill="currentColor" stroke="none"/></svg>
+                </span>
+                <span class="cservice__text">
+                  <span class="cservice__name">Not sure yet</span>
+                  <span class="cservice__desc">Help me figure out what I need.</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="cform__submit blob-btn">Get in touch<span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></button>
+        </form>
+      </div>
+
+      <div class="contact__media">
+        <!-- add the real photo later: style="background-image:url('your-image.jpg')" on .contact__media-img -->
+        <svg class="contact__media-svg" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="cbg" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stop-color="#333333"/><stop offset="0.55" stop-color="#1e1e1e"/><stop offset="1" stop-color="#0d0d0d"/></linearGradient><radialGradient id="cglow" cx="0.78" cy="0.16" r="0.5"><stop offset="0" stop-color="#ffffff" stop-opacity="0.5"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient></defs><rect width="600" height="800" fill="url(#cbg)"/><circle cx="470" cy="130" r="230" fill="url(#cglow)"/><path d="M0.0 269.2 L13.6 274.7 L27.3 279.5 L40.9 283.5 L54.5 286.7 L68.2 288.8 L81.8 289.9 L95.5 289.9 L109.1 288.8 L122.7 286.7 L136.4 283.5 L150.0 279.5 L163.6 274.7 L177.3 269.2 L190.9 263.1 L204.5 256.8 L218.2 250.2 L231.8 243.6 L245.5 237.3 L259.1 231.2 L272.7 225.7 L286.4 220.8 L300.0 216.7 L313.6 213.5 L327.3 211.3 L340.9 210.2 L354.5 210.1 L368.2 211.1 L381.8 213.2 L395.5 216.2 L409.1 220.2 L422.7 225.0 L436.4 230.5 L450.0 236.4 L463.6 242.8 L477.3 249.3 L490.9 255.9 L504.5 262.3 L518.2 268.4 L531.8 274.0 L545.5 278.9 L559.1 283.0 L572.7 286.3 L586.4 288.6 L600.0 289.8 L600 800 L0 800 Z" fill="#242424" fill-opacity="0.9"/><path d="M0.0 431.2 L13.6 432.0 L27.3 431.0 L40.9 428.4 L54.5 424.1 L68.2 418.4 L81.8 411.4 L95.5 403.3 L109.1 394.5 L122.7 385.2 L136.4 375.8 L150.0 366.4 L163.6 357.6 L177.3 349.4 L190.9 342.3 L204.5 336.4 L218.2 332.0 L231.8 329.2 L245.5 328.0 L259.1 328.6 L272.7 330.9 L286.4 334.8 L300.0 340.2 L313.6 346.9 L327.3 354.7 L340.9 363.4 L354.5 372.6 L368.2 382.0 L381.8 391.4 L395.5 400.4 L409.1 408.7 L422.7 416.1 L436.4 422.3 L450.0 427.1 L463.6 430.3 L477.3 431.9 L490.9 431.7 L504.5 429.8 L518.2 426.3 L531.8 421.2 L545.5 414.8 L559.1 407.2 L572.7 398.7 L586.4 389.6 L600.0 380.2 L600 800 L0 800 Z" fill="#333333" fill-opacity="0.85"/><path d="M0.0 519.1 L13.6 526.1 L27.3 532.7 L40.9 538.8 L54.5 544.1 L68.2 548.5 L81.8 552.0 L95.5 554.5 L109.1 555.8 L122.7 555.9 L136.4 554.9 L150.0 552.8 L163.6 549.6 L177.3 545.4 L190.9 540.3 L204.5 534.5 L218.2 528.0 L231.8 521.1 L245.5 513.9 L259.1 506.6 L272.7 499.4 L286.4 492.5 L300.0 486.0 L313.6 480.1 L327.3 474.9 L340.9 470.7 L354.5 467.4 L368.2 465.2 L381.8 464.1 L395.5 464.2 L409.1 465.4 L422.7 467.7 L436.4 471.1 L450.0 475.5 L463.6 480.8 L477.3 486.8 L490.9 493.3 L504.5 500.3 L518.2 507.5 L531.8 514.8 L545.5 522.0 L559.1 528.8 L572.7 535.2 L586.4 541.0 L600.0 546.0 L600 800 L0 800 Z" fill="#454545" fill-opacity="0.8"/><path d="M0.0 675.6 L13.6 678.2 L27.3 679.7 L40.9 680.0 L54.5 679.1 L68.2 677.1 L81.8 673.9 L95.5 669.8 L109.1 664.9 L122.7 659.2 L136.4 652.9 L150.0 646.2 L163.6 639.4 L177.3 632.6 L190.9 626.0 L204.5 619.8 L218.2 614.2 L231.8 609.4 L245.5 605.4 L259.1 602.5 L272.7 600.7 L286.4 600.0 L300.0 600.5 L313.6 602.1 L327.3 604.9 L340.9 608.7 L354.5 613.4 L368.2 618.9 L381.8 625.0 L395.5 631.5 L409.1 638.3 L422.7 645.1 L436.4 651.8 L450.0 658.2 L463.6 664.0 L477.3 669.1 L490.9 673.3 L504.5 676.6 L518.2 678.8 L531.8 679.9 L545.5 679.8 L559.1 678.5 L572.7 676.1 L586.4 672.7 L600.0 668.3 L600 800 L0 800 Z" fill="#5c5c5c" fill-opacity="0.7"/><path d="M0.0 269.2 L13.6 274.7 L27.3 279.5 L40.9 283.5 L54.5 286.7 L68.2 288.8 L81.8 289.9 L95.5 289.9 L109.1 288.8 L122.7 286.7 L136.4 283.5 L150.0 279.5 L163.6 274.7 L177.3 269.2 L190.9 263.1 L204.5 256.8 L218.2 250.2 L231.8 243.6 L245.5 237.3 L259.1 231.2 L272.7 225.7 L286.4 220.8 L300.0 216.7 L313.6 213.5 L327.3 211.3 L340.9 210.2 L354.5 210.1 L368.2 211.1 L381.8 213.2 L395.5 216.2 L409.1 220.2 L422.7 225.0 L436.4 230.5 L450.0 236.4 L463.6 242.8 L477.3 249.3 L490.9 255.9 L504.5 262.3 L518.2 268.4 L531.8 274.0 L545.5 278.9 L559.1 283.0 L572.7 286.3 L586.4 288.6 L600.0 289.8" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2.5"/><path d="M0.0 431.2 L13.6 432.0 L27.3 431.0 L40.9 428.4 L54.5 424.1 L68.2 418.4 L81.8 411.4 L95.5 403.3 L109.1 394.5 L122.7 385.2 L136.4 375.8 L150.0 366.4 L163.6 357.6 L177.3 349.4 L190.9 342.3 L204.5 336.4 L218.2 332.0 L231.8 329.2 L245.5 328.0 L259.1 328.6 L272.7 330.9 L286.4 334.8 L300.0 340.2 L313.6 346.9 L327.3 354.7 L340.9 363.4 L354.5 372.6 L368.2 382.0 L381.8 391.4 L395.5 400.4 L409.1 408.7 L422.7 416.1 L436.4 422.3 L450.0 427.1 L463.6 430.3 L477.3 431.9 L490.9 431.7 L504.5 429.8 L518.2 426.3 L531.8 421.2 L545.5 414.8 L559.1 407.2 L572.7 398.7 L586.4 389.6 L600.0 380.2" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="2.5"/><path d="M0.0 519.1 L13.6 526.1 L27.3 532.7 L40.9 538.8 L54.5 544.1 L68.2 548.5 L81.8 552.0 L95.5 554.5 L109.1 555.8 L122.7 555.9 L136.4 554.9 L150.0 552.8 L163.6 549.6 L177.3 545.4 L190.9 540.3 L204.5 534.5 L218.2 528.0 L231.8 521.1 L245.5 513.9 L259.1 506.6 L272.7 499.4 L286.4 492.5 L300.0 486.0 L313.6 480.1 L327.3 474.9 L340.9 470.7 L354.5 467.4 L368.2 465.2 L381.8 464.1 L395.5 464.2 L409.1 465.4 L422.7 467.7 L436.4 471.1 L450.0 475.5 L463.6 480.8 L477.3 486.8 L490.9 493.3 L504.5 500.3 L518.2 507.5 L531.8 514.8 L545.5 522.0 L559.1 528.8 L572.7 535.2 L586.4 541.0 L600.0 546.0" fill="none" stroke="#ffffff" stroke-opacity="0.28" stroke-width="2.5"/></svg>
+        <div class="contact__brand"><img class="contact__brand-logo" src="nomi-logo.svg" alt=""> MISC STUDIO</div>
+        <div class="contact__overlay">
+          <p class="contact__quote">Design, build and secure, all in one place. Tell me what you are making.</p>
+          <div class="contact__meta">
+            <div class="contact__author">
+              <span class="contact__author-name">MISC Studio</span>
+              <span class="contact__author-role">Design · Build · Secure</span>
+            </div>
+            <div class="contact__client"><span class="contact__client-mark">◯</span> Available for projects</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <div class="footer__logo-row">
+            <img class="footer__logo-img" src="nomi-logo.svg" alt="">
+            <div class="footer__logo"><span>MISC</span><span>STUDIO</span></div>
+          </div>
+          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
+          <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
+        </div>
+
+        <nav class="footer__nav">
+          <div class="footer__col">
+            <h4 class="footer__heading">Services</h4>
+            <a class="footer__link" href="detail-pages/services/ux-design.html">UX Design</a>
+            <a class="footer__link" href="detail-pages/services/web-development.html">Web Development</a>
+            <a class="footer__link" href="detail-pages/services/photography.html">Photography</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Company</h4>
+            <a class="footer__link" href="#services">Services</a>
+            <a class="footer__link" href="#showcase">Work</a>
+            <!-- <a class="footer__link" href="detail-pages/career.html">Careers</a> -->
+            <a class="footer__link" href="#contact">Contact</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Elsewhere</h4>
+            <a class="footer__link" href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
+            <a class="footer__link" href="https://github.com/MitchellKevin">Github</a>
+            <a class="footer__link" href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
+        <span class="footer__made">Made in the Netherlands 🇳🇱</span>
+      </div>
+    </div>
+  </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/CustomEase.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/MorphSVGPlugin.min.js"></script>
+    <script src="page-transition.js"></script>
+    <script src="nomi-studio.js"></script>
+    <!-- no-ops until the blog strip above is uncommented -->
+    <script src="blog-cards.js"></script>
+    <script src="hero-particles.js"></script>
+</body>
+</html>

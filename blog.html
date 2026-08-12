@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Articles by Mitchell Scholte on development, design, hardware and security.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="nomi-logo.svg">
+    <link rel="stylesheet" href="nomi-studio.css">
+    <title>Blog — Mitchell Scholte</title>
+</head>
+<body>
+  <header class="header">
+    <div class="flex-wrapper">
+      <div class="logo-wrap">
+        <a class="logo-link" href="index.html" aria-label="Back to home">
+          <img class="logo-img" src="nomi-logo.svg" alt="">
+        </a>
+        <div class="logo-text">
+          <span class="btn-2">MITCHELL</span>
+          <span class="btn-2">SCHOLTE</span>
+        </div>
+      </div>
+      <ul class="header-menu">
+        <li class="header-menu__item header-text-1"><a href="index.html#services">Services</a></li>
+        <li class="header-menu__item header-text-1"><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <section class="archive">
+      <div class="container">
+        <span class="blog__eyebrow">Blog</span>
+        <h1 class="archive__title">What I dig into</h1>
+        <p class="archive__intro">Notes on development, design, hardware and security. Usually written right after I broke something myself.</p>
+
+        <!-- Filter. Buttons carry the tag, cards carry data-tag; blog.js just
+             matches the two. Adding a post with a new tag means adding one
+             button here. -->
+        <div class="filters" role="group" aria-label="Filter by topic">
+        <button type="button" class="filters__btn" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" class="filters__btn" data-filter="Development" aria-pressed="false">Development</button>
+        <button type="button" class="filters__btn" data-filter="Design" aria-pressed="false">Design</button>
+        <button type="button" class="filters__btn" data-filter="Hardware" aria-pressed="false">Hardware</button>
+        <button type="button" class="filters__btn" data-filter="Security" aria-pressed="false">Security</button>
+          <span class="filters__count" id="filter-count" aria-live="polite"></span>
+        </div>
+
+        <!-- PLACEHOLDER POSTS — replace with real ones. Each links to
+             blog/<slug>.html; only blog/post-template.html exists so far. -->
+        <div class="blog__grid" id="archive-grid">
+        <a class="bpost" href="blog/pinning-without-jank.html" data-tag="Development">
+          <span class="bpost__meta"><span class="bpost__tag">Development</span><time datetime="2026-02-04">2026-02-04</time><span aria-hidden="true">·</span>6 min</span>
+          <span class="bpost__title">Pinning with ScrollTrigger, without the jank</span>
+          <span class="bpost__excerpt">Five pinned sections on one page that still scroll smoothly. What worked, and what I threw away.</span>
+          <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
+          <span class="bpost__media">
+            <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="400" height="260" fill="#0b0b0b"/>
+            <g fill="#141414" stroke="#5f5f5f" stroke-width="2">
+              <rect x="42" y="30" width="228" height="62" rx="8"/>
+              <rect x="42" y="106" width="228" height="62" rx="8" fill="#1f1f1f" stroke="#d8d8d8"/>
+              <rect x="42" y="182" width="228" height="62" rx="8"/>
+            </g>
+            <g stroke="#8f8f8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <path d="M330 38 V206" stroke-dasharray="5 11"/>
+              <path d="M320 194 l10 16 10-16"/>
+            </g>
+            </svg>
+            <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
+          </span>
+        </a>
+        <a class="bpost" href="blog/monochrome-contrast.html" data-tag="Design">
+          <span class="bpost__meta"><span class="bpost__tag">Design</span><time datetime="2026-01-19">2026-01-19</time><span aria-hidden="true">·</span>4 min</span>
+          <span class="bpost__title">Contrast in a palette without colour</span>
+          <span class="bpost__excerpt">When everything is black, white or grey, hierarchy has to come from somewhere else. Here is where I find it.</span>
+          <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
+          <span class="bpost__media">
+            <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="400" height="260" fill="#0b0b0b"/>
+            <g>
+              <rect x="42" y="60" width="42" height="140" fill="#1c1c1c"/>
+              <rect x="94" y="60" width="42" height="140" fill="#333333"/>
+              <rect x="146" y="60" width="42" height="140" fill="#585858"/>
+              <rect x="198" y="60" width="42" height="140" fill="#8a8a8a"/>
+              <rect x="250" y="60" width="42" height="140" fill="#c2c2c2"/>
+              <rect x="302" y="60" width="56" height="140" fill="#ffffff"/>
+            </g>
+            <path d="M42 200 H358" stroke="#5f5f5f" stroke-width="2"/>
+            </svg>
+            <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
+          </span>
+        </a>
+        <a class="bpost" href="blog/pcb-bringup.html" data-tag="Hardware">
+          <span class="bpost__meta"><span class="bpost__tag">Hardware</span><time datetime="2025-12-08">2025-12-08</time><span aria-hidden="true">·</span>8 min</span>
+          <span class="bpost__title">Bringing up your own PCB without a debugger</span>
+          <span class="bpost__excerpt">Putting power on a board you designed yourself for the first time, and what to do when nothing happens.</span>
+          <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
+          <span class="bpost__media">
+            <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="400" height="260" fill="#0b0b0b"/>
+            <g fill="none" stroke="#6f6f6f" stroke-width="2" stroke-linecap="round">
+              <path d="M40 76 H108 L136 104 H176"/>
+              <path d="M40 130 H176"/>
+              <path d="M40 184 H108 L136 156 H176"/>
+              <path d="M264 76 H332"/>
+              <path d="M264 130 H304 L332 158 H360"/>
+              <path d="M264 184 H332"/>
+            </g>
+            <rect x="176" y="88" width="88" height="84" rx="6" fill="#1c1c1c" stroke="#d8d8d8" stroke-width="2"/>
+            <g fill="#8f8f8f">
+              <circle cx="40" cy="76" r="6"/><circle cx="40" cy="130" r="6"/><circle cx="40" cy="184" r="6"/>
+              <circle cx="360" cy="76" r="6"/><circle cx="360" cy="158" r="6"/><circle cx="360" cy="184" r="6"/>
+            </g>
+            </svg>
+            <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
+          </span>
+        </a>
+        <a class="bpost" href="blog/first-pentest.html" data-tag="Security">
+          <span class="bpost__meta"><span class="bpost__tag">Security</span><time datetime="2025-11-17">2025-11-17</time><span aria-hidden="true">·</span>7 min</span>
+          <span class="bpost__title">What a pentest actually looks like</span>
+          <span class="bpost__excerpt">After the Jr Penetration Tester path: how a real engagement differs from a practice box.</span>
+          <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
+          <span class="bpost__media">
+            <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="400" height="260" fill="#0b0b0b"/>
+            <rect x="46" y="38" width="308" height="184" rx="10" fill="#141414" stroke="#5f5f5f" stroke-width="2"/>
+            <path d="M46 74 H354" stroke="#5f5f5f" stroke-width="2"/>
+            <g fill="#6f6f6f"><circle cx="68" cy="56" r="5"/><circle cx="86" cy="56" r="5"/><circle cx="104" cy="56" r="5"/></g>
+            <g stroke="#8f8f8f" stroke-width="2" stroke-linecap="round">
+              <path d="M70 100 l14 12 -14 12"/><path d="M96 124 H150"/>
+              <path d="M70 152 H130"/><path d="M70 180 H108"/>
+            </g>
+            <g transform="translate(250 116)" fill="none" stroke="#d8d8d8" stroke-width="2">
+              <rect x="-28" y="-6" width="56" height="46" rx="6" fill="#1f1f1f"/>
+              <path d="M-14 -6 v-14 a14 14 0 0 1 28 0 v14"/>
+            </g>
+            </svg>
+            <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
+          </span>
+        </a>
+        <a class="bpost" href="blog/css-without-framework.html" data-tag="Development">
+          <span class="bpost__meta"><span class="bpost__tag">Development</span><time datetime="2025-10-02">2025-10-02</time><span aria-hidden="true">·</span>5 min</span>
+          <span class="bpost__title">Why I built this portfolio without a framework</span>
+          <span class="bpost__excerpt">No build step, no node_modules. What that gets you, and what it costs.</span>
+          <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
+          <span class="bpost__media">
+            <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="400" height="260" fill="#0b0b0b"/>
+            <g fill="none" stroke="#d8d8d8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M120 52 q-26 0 -26 26 v22 q0 26 -26 26 q26 0 26 26 v22 q0 26 26 26"/>
+              <path d="M280 52 q26 0 26 26 v22 q0 26 26 26 q-26 0 -26 26 v22 q0 26 -26 26"/>
+            </g>
+            <g stroke="#6f6f6f" stroke-width="2" stroke-linecap="round">
+              <path d="M148 100 H252"/><path d="M148 130 H228"/><path d="M148 160 H262"/>
+            </g>
+            </svg>
+            <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
+          </span>
+        </a>
+        <a class="bpost" href="blog/thumb-first.html" data-tag="Design">
+          <span class="bpost__meta"><span class="bpost__tag">Design</span><time datetime="2025-09-11">2025-09-11</time><span aria-hidden="true">·</span>4 min</span>
+          <span class="bpost__title">Designing for the thumb, not the mouse</span>
+          <span class="bpost__excerpt">Hover does not exist on a phone. That changes more about an interface than you would think.</span>
+          <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
+          <span class="bpost__media">
+            <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="400" height="260" fill="#0b0b0b"/>
+            <rect x="140" y="26" width="120" height="208" rx="16" fill="#141414" stroke="#5f5f5f" stroke-width="2"/>
+            <path d="M180 44 H220" stroke="#5f5f5f" stroke-width="3" stroke-linecap="round"/>
+            <path d="M148 168 a86 86 0 0 1 104 -76 l0 134 H148 Z" fill="#ffffff" opacity="0.09"/>
+            <path d="M148 168 a86 86 0 0 1 104 -76" fill="none" stroke="#d8d8d8" stroke-width="2" stroke-dasharray="6 8"/>
+            <circle cx="252" cy="212" r="9" fill="#d8d8d8"/>
+            </svg>
+            <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
+          </span>
+        </a>
+        </div>
+        <p class="archive__empty" id="archive-empty">Nog niets in deze categorie.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <div class="footer__logo-row">
+            <img class="footer__logo-img" src="nomi-logo.svg" alt="">
+            <div class="footer__logo"><span>MITCHELL</span><span>SCHOLTE</span></div>
+          </div>
+          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
+          <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
+        </div>
+
+        <nav class="footer__nav">
+          <div class="footer__col">
+            <h4 class="footer__heading">Services</h4>
+            <a class="footer__link" href="detail-pages/services/ux-design.html">UX Design</a>
+            <a class="footer__link" href="detail-pages/services/web-development.html">Web Development</a>
+            <a class="footer__link" href="detail-pages/services/photography.html">Photography</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Company</h4>
+            <a class="footer__link" href="index.html#services">Services</a>
+            <a class="footer__link" href="index.html#showcase">Work</a>
+            <a class="footer__link" href="blog.html">Blog</a>
+            <a class="footer__link" href="index.html#contact">Contact</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Elsewhere</h4>
+            <a class="footer__link" href="#">LinkedIn</a>
+            <a class="footer__link" href="#">Instagram</a>
+            <a class="footer__link" href="#">X (Twitter)</a>
+            <a class="footer__link" href="#">Dribbble</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
+        <span class="footer__made">Made in the Netherlands 🇳🇱</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="blog.js"></script>
+  <script src="blog-cards.js"></script>
+</body>
+</html>

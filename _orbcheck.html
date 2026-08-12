@@ -1,0 +1,19 @@
+<body style="margin:0;background:#000;display:flex;gap:20px;padding:20px">
+<svg width="400" height="400" viewBox="0 0 200 200">
+  <defs>
+    <clipPath id="c"><circle cx="100" cy="100" r="100"/></clipPath>
+    <mask id="m">
+      <rect x="-100" y="-100" width="400" height="400" fill="black"/>
+      <path fill="white" d="M-40,70 L240,70 L240,240 L-40,240 Z"/>
+    </mask>
+  </defs>
+  <g clip-path="url(#c)">
+    <rect width="200" height="200" fill="#101010"/>
+    <image href="img/MS.jpg" x="-6" y="-110" width="340" height="587" style="filter:grayscale(1) brightness(0.4) contrast(1.06)"/>
+    <image mask="url(#m)" href="img/MS.jpg" x="-6" y="-110" width="340" height="587" style="filter:grayscale(1) brightness(1.12) contrast(1.08)"/>
+    <line x1="0" y1="100" x2="200" y2="100" stroke="red" stroke-width="0.5"/>
+    <line x1="100" y1="0" x2="100" y2="200" stroke="red" stroke-width="0.5"/>
+  </g>
+  <circle cx="100" cy="100" r="99.5" fill="none" stroke="#2a2a2a"/>
+</svg>
+</body>
