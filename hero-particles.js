@@ -1,9 +1,12 @@
 // MARK: Hero particles — the logo, rebuilt out of dots that scatter under the
 // cursor and spring back.
 //
-// The mark is not hand-plotted: nomi-logo.svg is rasterised into an offscreen
+// The mark is not hand-plotted: nomi-logo.png is drawn into an offscreen
 // canvas, sampled on a grid, and every light pixel becomes one particle. Change
 // the logo and the particle field follows, no coordinates to maintain.
+// It reads a PNG rather than the old filtered SVG on purpose — drawing an SVG
+// that carries its own filter into a canvas is inconsistent across browsers,
+// and over file:// it tainted the canvas outright (see the catch below).
 //
 // Dependency-free on purpose — this runs before GSAP has anything to do, and a
 // canvas loop has no business waiting on a CDN.
@@ -168,5 +171,5 @@
     draw();      // paint the resting mark even if the loop never starts
     start();
   });
-  logo.src = 'nomi-logo.svg';
+  logo.src = 'nomi-logo.png';
 })();
