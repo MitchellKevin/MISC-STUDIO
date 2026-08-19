@@ -87,17 +87,28 @@
     <div class="container">
       <div class="title-block">
         <div class="title-h1">
+          <!-- the chunks are paired into words so mobile can stack one word per
+               line; the ids and their overflow masks are untouched, so the
+               slide-in timeline in nomi-studio.js still targets the same spans -->
           <div class="title-row title-row-1">
-            <div class="title-charts-cont" id="go"><span>Go</span></div>
-            <div class="title-charts-cont" id="od"><span>od</span></div>
-            <div class="title-charts-cont" id="des"><span>des</span></div>
-            <div class="title-charts-cont" id="ign"><span>ign</span></div>
+            <div class="title-word">
+              <div class="title-charts-cont" id="go"><span>Go</span></div>
+              <div class="title-charts-cont" id="od"><span>od</span></div>
+            </div>
+            <div class="title-word">
+              <div class="title-charts-cont" id="des"><span>des</span></div>
+              <div class="title-charts-cont" id="ign"><span>ign</span></div>
+            </div>
           </div>
           <div class="title-row title-row-2">
-            <div class="title-charts-cont" id="ear"><span>ear</span></div>
-            <div class="title-charts-cont" id="ns"><span>ns</span></div>
-            <div class="title-charts-cont" id="tru"><span>tru</span></div>
-            <div class="title-charts-cont" id="st"><span>st</span></div>
+            <div class="title-word">
+              <div class="title-charts-cont" id="ear"><span>ear</span></div>
+              <div class="title-charts-cont" id="ns"><span>ns</span></div>
+            </div>
+            <div class="title-word">
+              <div class="title-charts-cont" id="tru"><span>tru</span></div>
+              <div class="title-charts-cont" id="st"><span>st</span></div>
+            </div>
           </div>
         </div>
         <div class="first-desc">

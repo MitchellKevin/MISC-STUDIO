@@ -378,6 +378,11 @@ body {
       .title-row {
         display: flex;
       }
+      /* one word = the two chunks it is split into; keeps GOOD from ever
+         breaking into GO / OD when the row wraps on narrow screens */
+      .title-word {
+        display: flex;
+      }
       .title-charts-cont {
         display: flex;
         overflow: hidden;
@@ -541,26 +546,27 @@ body {
   .hero .hero__particles {
     display: none;
   }
-  /* the bottom corners are busier on mobile — sit the strip above the
-     "Get in touch" circle and let it run the full width */
+  /* on mobile the strip runs the full width along the very bottom edge,
+     underneath the local time and the "Get in touch" circle — those two
+     are lifted to clear it (see the hero mobile block further down) */
   .hero .partners {
     left: 0;
     right: 0;
-    bottom: 5.3rem;
+    bottom: 0.5rem;
   }
   .partners__group {
     gap: 1.1rem;
     padding-right: 1.1rem;
   }
   .partner {
-    gap: 0.34rem;
+    gap: 0.42rem;
   }
   .partner__mark {
-    width: 0.95rem;
-    height: 0.95rem;
+    width: 1.18rem;
+    height: 1.18rem;
   }
   .partner__name {
-    font-size: 0.42rem;
+    font-size: 0.52rem;
   }
 }
 
@@ -3749,6 +3755,30 @@ body {
 /* on the vw-based rem; bump them so they stay readable on mobile.      */
 /* ------------------------------------------------------------------ */
 @media (max-width: 700px) {
+  /* Centred on mobile. The desktop layout hangs the headline off a fixed
+     left indent with the eyebrow pinned to its right — that only works in a
+     wide column. Here the block takes the full width and the headline is
+     centred inside it at its own size, so the two rows keep the stagger
+     they have everywhere else. */
+  .hero .title-block {
+    width: 100%;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+  }
+  .hero .title-block .title-h1 {
+    width: max-content;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* spans the block so the eyebrow can centre over the headline, instead of
+     hanging off its right edge the way it does on desktop */
+  .hero .title-block .first-desc {
+    left: 0;
+    right: 0;
+    justify-content: center;
+  }
+
   .hero .first-desc .desc-1,
   .hero .second-desc .desc-1 {
     font-size: 0.44rem;
@@ -3756,37 +3786,38 @@ body {
   }
   .hero .copyright .desc-1,
   .hero .scroll-to .desc-1 {
-    font-size: 0.4rem;
-    line-height: 0.46rem;
+    font-size: 0.5rem;
+    line-height: 0.58rem;
   }
   .hero .scroll-to {
     width: auto;
     left: auto;
     right: 0.6rem;
   }
+  /* lifted clear of the partner strip now sitting below them */
   .hero .copyright {
     left: 0.6rem;
-    bottom: 0.6rem;
+    bottom: 2.2rem;
   }
   .hero .scroll-to {
-    bottom: 0.6rem;
+    bottom: 2.2rem;
   }
   .hero .book-btn {
-    bottom: 1.7rem;
+    bottom: 3.5rem;
     right: 0.6rem;
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 3.9rem;
+    height: 3.9rem;
   }
   .hero .book-btn .book-btn__circle {
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 3.9rem;
+    height: 3.9rem;
   }
   .hero .book-btn .btn-text {
-    width: 2.4rem;
+    width: 2.9rem;
   }
   .hero .book-btn .btn-1 {
-    font-size: 0.44rem;
-    line-height: 0.5rem;
+    font-size: 0.54rem;
+    line-height: 0.62rem;
   }
 }
 
@@ -4480,11 +4511,13 @@ html.theme-sweep::view-transition-old(root) {
   .theme-toggle__disc { transition: none; }
 }
 
-@media (max-width: 767px) {
-  .theme-toggle { width: 0.72rem; height: 0.72rem; }
-  .theme-toggle__disc { width: 0.44rem; height: 0.44rem; box-shadow: inset 0 0 0 2px currentColor; }
-  .sound-toggle { width: 0.72rem; height: 0.72rem; gap: 0.07rem; padding: 0.14rem 0; }
-  .sound-toggle i { width: 0.05rem; }
-  .sound-toggle-item.header-menu__item:not(:last-child) { margin-right: 0.3rem; }
+/* 700px is the site's breakpoint everywhere else — matching it keeps the
+   controls from going phone-sized while the rest of the page is still wide */
+@media (max-width: 700px) {
+  .theme-toggle { width: 0.8rem; height: 0.8rem; }
+  .theme-toggle__disc { width: 0.5rem; height: 0.5rem; box-shadow: inset 0 0 0 2px currentColor; }
+  .sound-toggle { width: 0.8rem; height: 0.8rem; gap: 0.1rem; padding: 0.15rem 0; }
+  .sound-toggle i { width: 0.09rem; }
+  .sound-toggle-item.header-menu__item:not(:last-child) { margin-right: 0.32rem; }
   .footer__credit { font-size: 0.34rem; }
 }
