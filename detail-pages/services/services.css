@@ -20,6 +20,37 @@ html {
   --surface: #101010;
   --surface-2: #1a1a1a;
   --dim: #767676;
+  --track: #333333;
+  --glass-bg: rgba(12, 12, 12, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: rgba(0, 0, 0, 0.5);
+  --shadow-color: rgba(0, 0, 0, 0.45);
+}
+
+/* light mode — the same eleven-value inversion the main sheet does */
+:root[data-theme="light"] {
+  --bg: #ffffff;
+  --blue: #6a6a6a;
+  --ink: #000000;
+  --muted: #5a5a5a;
+  --line: #d9d9d9;
+  --surface: #f4f4f4;
+  --surface-2: #ebebeb;
+  --dim: #8a8a8a;
+  --track: #c9c9c9;
+  --glass-bg: rgba(250, 250, 250, 0.62);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-shadow: rgba(0, 0, 0, 0.12);
+  --shadow-color: rgba(0, 0, 0, 0.14);
+}
+:root[data-theme="light"] .site-header__logo img { filter: invert(1); }
+
+/* selecting text inverts rather than going the browser's blue; both tokens
+   already swap with the theme */
+::selection {
+  background: var(--ink);
+  color: var(--bg);
+  text-shadow: none;
 }
 
 * {
@@ -68,11 +99,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(12, 12, 12, 0.6);
+  background: var(--glass-bg);
   -webkit-backdrop-filter: blur(18px) saturate(1.5);
   backdrop-filter: blur(18px) saturate(1.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0.06rem 0.3rem rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 0.06rem 0.3rem var(--glass-shadow);
 }
 .site-header__logo {
   display: flex;
@@ -314,8 +345,8 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  background-color: #333333;
-  background-image: linear-gradient(135deg, #ffffff 50%, #333333 60%);
+  background-color: var(--track);
+  background-image: linear-gradient(135deg, var(--ink) 50%, var(--track) 60%);
   background-repeat: no-repeat;
   background-position: 0 0;
   background-size: 0% 200%;
@@ -343,8 +374,8 @@ body {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .feature-card:hover {
-  border-color: #454545;
-  box-shadow: 0 0.1rem 0.4rem rgba(0, 0, 0, 0.45);
+  border-color: var(--dim);
+  box-shadow: 0 0.1rem 0.4rem var(--shadow-color);
 }
 .feature-card__icon {
   width: 0.5rem;
@@ -470,8 +501,8 @@ body {
 
 /* ---------- Footer (dark) ---------- */
 .footer {
-  background: #000000;
-  color: #ffffff;
+  background: var(--bg);
+  color: var(--ink);
   padding: 0.9rem 0.4rem 0.5rem;
 }
 .footer__inner {
@@ -483,7 +514,7 @@ body {
   grid-template-columns: 1.3fr 2fr;
   gap: 0.6rem;
   padding-bottom: 0.6rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--line);
 }
 .footer__logo-row {
   display: flex;
@@ -504,7 +535,7 @@ body {
   font-size: 0.24rem;
   font-weight: 600;
   line-height: 1.02;
-  color: #ffffff;
+  color: var(--ink);
 }
 .footer__logo span:last-child {
   position: relative;
@@ -513,7 +544,7 @@ body {
 .footer__tagline {
   font-size: 0.16rem;
   line-height: 0.24rem;
-  color: #94959b;
+  color: var(--muted);
   max-width: 3.7rem;
 }
 .footer__nav {
@@ -530,17 +561,17 @@ body {
   font-weight: 600;
   letter-spacing: 0.03rem;
   text-transform: uppercase;
-  color: #7a7b81;
+  color: var(--dim);
   margin-bottom: 0.22rem;
 }
 .footer__link {
   font-size: 0.16rem;
-  color: #d3d4d8;
+  color: var(--ink);
   padding: 0.08rem 0;
   transition: color 0.2s ease;
 }
 .footer__link:hover {
-  color: #ffffff;
+  color: var(--ink);
 }
 .footer__bottom {
   display: flex;
@@ -548,7 +579,7 @@ body {
   align-items: center;
   padding-top: 0.3rem;
   font-size: 0.14rem;
-  color: #7a7b81;
+  color: var(--dim);
 }
 
 /* ------------------------------------------------------------------ */
@@ -786,14 +817,14 @@ body {
   font-weight: 600;
   letter-spacing: 0.01rem;
   text-transform: uppercase;
-  color: #7a7d82;
+  color: var(--dim);
   margin-bottom: 0.2rem;
 }
 .positions-status__dot {
   width: 0.1rem;
   height: 0.1rem;
   border-radius: 50%;
-  background: #d4d4d4;
+  background: var(--muted);
 }
 .positions-empty__title {
   font-size: 0.34rem;
@@ -857,4 +888,70 @@ body {
   width: 100%;
   height: 150vh;
   display: block;
+}
+
+/* ------------------------------------------------------------------ */
+/* Theme switch + wave sweep — see nomi-studio.css for the full note.  */
+/* ------------------------------------------------------------------ */
+:root { --theme-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 2000' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M-120 2200 L-120 1021.4 L0.0 1021.4 L30.0 1038.0 L60.0 1049.6 L90.0 1054.8 L120.0 1052.9 L150.0 1044.1 L180.0 1029.5 L210.0 1011.2 L240.0 991.3 L270.0 972.6 L300.0 957.5 L330.0 947.9 L360.0 945.0 L390.0 949.3 L420.0 960.2 L450.0 976.3 L480.0 995.4 L510.0 1015.2 L540.0 1032.9 L570.0 1046.4 L600.0 1053.9 L630.0 1054.3 L660.0 1047.7 L690.0 1034.9 L720.0 1017.6 L750.0 997.9 L780.0 978.6 L810.0 962.0 L840.0 950.4 L870.0 945.2 L900.0 947.1 L930.0 955.9 L960.0 970.5 L990.0 988.8 L1020.0 1008.7 L1050.0 1027.4 L1080.0 1042.5 L1110.0 1052.1 L1140.0 1055.0 L1170.0 1050.7 L1200.0 1039.8 L1230.0 1023.7 L1260.0 1004.6 L1290.0 984.8 L1320.0 967.1 L1350.0 953.6 L1380.0 946.1 L1410.0 945.7 L1440.0 952.3 L1560 952.3 L1560 2200 Z'/%3E%3C/svg%3E"); }
+
+.theme-toggle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.34rem;
+  height: 0.34rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+.theme-toggle:hover { opacity: 1; }
+.theme-toggle:focus-visible { outline: 1px solid var(--ink); outline-offset: 0.04rem; }
+.theme-toggle__disc {
+  display: block;
+  width: 0.18rem;
+  height: 0.18rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px currentColor;
+  background: linear-gradient(90deg, currentColor 0 50%, transparent 50% 100%);
+  transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+}
+:root[data-theme="light"] .theme-toggle__disc { transform: rotate(180deg); }
+
+::view-transition-old(root),
+::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+html.theme-sweep::view-transition-new(root) { z-index: 0; }
+html.theme-sweep::view-transition-old(root) {
+  z-index: 1;
+  -webkit-mask-image: var(--theme-wave);
+  mask-image: var(--theme-wave);
+  -webkit-mask-size: 100% 200%;
+  mask-size: 100% 200%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  filter: drop-shadow(0 -0.015rem 0 var(--blue));
+  animation: theme-wave-down 900ms cubic-bezier(0.66, 0, 0.34, 1) forwards;
+}
+@keyframes theme-wave-down {
+  from { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+  to   { -webkit-mask-position: 0 0%;   mask-position: 0 0%;   }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.theme-sweep::view-transition-old(root) {
+    filter: none;
+    animation: theme-wave-fade 200ms linear forwards;
+  }
+  @keyframes theme-wave-fade { to { opacity: 0; } }
+  .theme-toggle__disc { transition: none; }
+}
+@media (max-width: 767px) {
+  .theme-toggle { width: 0.9rem; height: 0.9rem; }
+  .theme-toggle__disc { width: 0.46rem; height: 0.46rem; }
 }

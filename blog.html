@@ -8,6 +8,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="nomi-logo.svg">
+    <script>
+      /* read the saved theme before first paint — otherwise a light-mode
+         reload flashes the black page for a frame */
+      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
+    </script>
     <link rel="stylesheet" href="nomi-studio.css">
     <title>Blog — Mitchell Scholte</title>
 </head>
@@ -229,5 +234,6 @@
 
   <script src="blog.js"></script>
   <script src="blog-cards.js"></script>
+    <script src="theme-toggle.js"></script>
 </body>
 </html>

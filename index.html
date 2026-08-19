@@ -7,6 +7,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="nomi-logo.svg">
+    <script>
+      /* read the saved theme before first paint — otherwise a light-mode
+         reload flashes the black page for a frame */
+      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
+    </script>
     <link rel="stylesheet" href="nomi-studio.css">
     <title>MISC STUDIO</title>
 </head>
@@ -1173,6 +1178,11 @@
         <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
         <span class="footer__made">Made in the Netherlands 🇳🇱</span>
       </div>
+      <p class="footer__credit">
+        Royalty Free Music: <a href="https://www.bensound.com" target="_blank" rel="noopener">Bensound.com</a><br>
+        License code: TTAJRAXT3KMQMEPT<br>
+        Artist: Yunior Arronte
+      </p>
     </div>
   </footer>
 
@@ -1185,5 +1195,7 @@
     <!-- no-ops until the blog strip above is uncommented -->
     <script src="blog-cards.js"></script>
     <script src="hero-particles.js"></script>
+    <script src="theme-toggle.js"></script>
+    <script src="sound-toggle.js"></script>
 </body>
 </html>

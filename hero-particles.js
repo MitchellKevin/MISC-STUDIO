@@ -83,9 +83,19 @@
     }
   };
 
+  // the canvas paints itself, so it has to read the theme token rather than
+  // inherit it; theme-toggle.js fires themechange after the swap
+  let dotColor = '#ffffff';
+  const readDotColor = () => {
+    const v = getComputedStyle(document.documentElement).getPropertyValue('--color-white').trim();
+    if (v) dotColor = v;
+  };
+  readDotColor();
+  window.addEventListener('themechange', () => { readDotColor(); draw(); });
+
   const draw = () => {
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = dotColor;
     ctx.beginPath();
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
