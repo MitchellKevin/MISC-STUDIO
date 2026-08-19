@@ -7,6 +7,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="../../nomi-logo.svg">
+    <script>
+      /* read the saved theme before first paint — otherwise a light-mode
+         reload flashes the black page for a frame */
+      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
+    </script>
     <link rel="stylesheet" href="services.css">
     <title>Web Development — MISC STUDIO</title>
 </head>
@@ -173,5 +178,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
     <script src="../../page-transition.js"></script>
     <script src="services.js"></script>
+    <script src="../../theme-toggle.js"></script>
 </body>
 </html>

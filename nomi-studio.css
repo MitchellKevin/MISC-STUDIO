@@ -31,6 +31,27 @@ html {
   /* the giant faded words sitting behind the showcase / process sections */
   --color-faint: #161616;
 
+  /* glassmorphism on the header / floating pills */
+  --glass-bg: rgba(12, 12, 12, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: rgba(0, 0, 0, 0.5);
+  /* the drop shadow every raised card uses */
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  /* testimonial / showcase card gradient stops */
+  --card-grad-top: #1f1f1f;
+  --card-grad-bottom: #0a0a0a;
+  --card-grad-top-2: #2b2b2b;
+  --card-grad-bottom-2: #0d0d0d;
+  /* unfilled tracks: the process dots and the scroll-fill headline's base */
+  --color-track: #3a3a3a;
+  /* the highlight plan card is inverted against the page, so anything drawn
+     on top of it needs its own ramp running the opposite way */
+  --invert-glow: rgba(255, 255, 255, 0.14);
+  --on-invert-text: #1e1e1e;
+  --on-invert-strong: rgba(0, 0, 0, 0.72);
+  --on-invert-soft: rgba(0, 0, 0, 0.62);
+  --on-invert-line: rgba(0, 0, 0, 0.22);
+
   --font-size-h1: 1.41rem;
   --font-size-desc-1: 0.16rem;
   --font-size-desc-2: 0.16rem;
@@ -44,6 +65,71 @@ html {
   --line-height-header-text-1: 0.14rem;
   --line-height-btn-1: 0.18rem;
   --line-height-btn-2: 0.18rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Light mode — a true inversion of the palette above, not a separate  */
+/* design. Every rule in this file reads the tokens, so flipping these */
+/* eleven values flips the whole site. Set by theme-toggle.js.         */
+/* ------------------------------------------------------------------ */
+:root[data-theme="light"] {
+  --color-black: #ffffff;
+  --color-white: #000000;
+
+  --color-accent: #6a6a6a;
+
+  --color-surface: #f4f4f4;
+  --color-surface-2: #ebebeb;
+  --color-border: #d9d9d9;
+
+  --color-heading: #000000;
+  --color-body: #111111;
+  --color-muted: #5a5a5a;
+  --color-dim: #8a8a8a;
+
+  --color-faint: #f0f0f0;
+
+  --glass-bg: rgba(250, 250, 250, 0.62);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-shadow: rgba(0, 0, 0, 0.12);
+  --shadow-color: rgba(0, 0, 0, 0.14);
+
+  --card-grad-top: #f7f7f7;
+  --card-grad-bottom: #e6e6e6;
+  --card-grad-top-2: #ffffff;
+  --card-grad-bottom-2: #e0e0e0;
+
+  --color-track: #c9c9c9;
+
+  --invert-glow: rgba(0, 0, 0, 0.18);
+  --on-invert-text: #e8e8e8;
+  --on-invert-strong: rgba(255, 255, 255, 0.78);
+  --on-invert-soft: rgba(255, 255, 255, 0.68);
+  --on-invert-line: rgba(255, 255, 255, 0.24);
+}
+
+/* the logo is a baked monochrome raster, so it has to be flipped by filter */
+:root[data-theme="light"] .logo-img {
+  filter: invert(1);
+}
+
+/* the partner marks are forced to solid white further down; on a white page
+   they have to be forced the other way instead */
+:root[data-theme="light"] .partner__mark img {
+  filter: brightness(0);
+}
+:root[data-theme="light"] .partner__mark--opaque img {
+  filter: grayscale(1) brightness(2.4) invert(1);
+}
+
+/* Text selection — the browser default is blue, which is the one colour the
+   site never uses. Selecting simply inverts instead: the two tokens already
+   swap with the theme, so it goes white-on-black in dark mode and
+   black-on-white in light without a second rule. */
+::selection {
+  background: var(--color-white);
+  color: var(--color-black);
+  text-shadow: none;
 }
 
 .title-h1 {
@@ -177,11 +263,11 @@ body {
   z-index: 100;
   border-radius: 0.24rem;
   /* glassmorphism */
-  background: rgba(12, 12, 12, 0.6);
+  background: var(--glass-bg);
   -webkit-backdrop-filter: blur(18px) saturate(1.5);
   backdrop-filter: blur(18px) saturate(1.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0.06rem 0.3rem rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 0.06rem 0.3rem var(--glass-shadow);
   .flex-wrapper {
     display: flex;
     justify-content: space-between;
@@ -290,6 +376,11 @@ body {
         overflow-y: hidden;
       }
       .title-row {
+        display: flex;
+      }
+      /* one word = the two chunks it is split into; keeps GOOD from ever
+         breaking into GO / OD when the row wraps on narrow screens */
+      .title-word {
         display: flex;
       }
       .title-charts-cont {
@@ -455,26 +546,27 @@ body {
   .hero .hero__particles {
     display: none;
   }
-  /* the bottom corners are busier on mobile — sit the strip above the
-     "Get in touch" circle and let it run the full width */
+  /* on mobile the strip runs the full width along the very bottom edge,
+     underneath the local time and the "Get in touch" circle — those two
+     are lifted to clear it (see the hero mobile block further down) */
   .hero .partners {
     left: 0;
     right: 0;
-    bottom: 5.3rem;
+    bottom: 0.5rem;
   }
   .partners__group {
     gap: 1.1rem;
     padding-right: 1.1rem;
   }
   .partner {
-    gap: 0.34rem;
+    gap: 0.42rem;
   }
   .partner__mark {
-    width: 0.95rem;
-    height: 0.95rem;
+    width: 1.18rem;
+    height: 1.18rem;
   }
   .partner__name {
-    font-size: 0.42rem;
+    font-size: 0.52rem;
   }
 }
 
@@ -847,11 +939,11 @@ body {
   gap: 0.07rem;
   padding: 0.08rem 0.17rem;
   border-radius: 0.16rem;
-  background: rgba(12, 12, 12, 0.6);
+  background: var(--glass-bg);
   -webkit-backdrop-filter: blur(18px) saturate(1.5);
   backdrop-filter: blur(18px) saturate(1.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0.04rem 0.2rem rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 0.04rem 0.2rem var(--glass-shadow);
   font-family: var(--sub-font);
   font-size: 0.125rem;
   font-weight: 500;
@@ -1525,7 +1617,7 @@ body {
   border: 1px solid var(--color-border);
   border-radius: 0.1rem;
   background: var(--color-surface);
-  box-shadow: 0 0.14rem 0.5rem rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0.14rem 0.5rem var(--shadow-color);
   will-change: transform;
 }
 .cred__doc img {
@@ -1727,7 +1819,7 @@ body {
   border: 1px solid var(--color-border);
   border-radius: 0.18rem;
   padding: 0.32rem;
-  box-shadow: 0 0.08rem 0.36rem rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0.08rem 0.36rem var(--shadow-color);
   color: var(--color-heading);
 }
 /* the highlight plan inverts: a near-white card on the black page */
@@ -1735,7 +1827,7 @@ body {
   background: var(--color-white);
   border-color: var(--color-white);
   color: var(--color-black);
-  box-shadow: 0 0.08rem 0.42rem rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0.08rem 0.42rem var(--invert-glow);
 }
 
 .plan__head {
@@ -1777,7 +1869,7 @@ body {
   min-height: 0.5rem;
 }
 .plan--dark .plan__desc {
-  color: rgba(0, 0, 0, 0.72);
+  color: var(--on-invert-strong);
 }
 
 .plan__divider {
@@ -1787,7 +1879,7 @@ body {
   margin: 0.22rem 0;
 }
 .plan--dark .plan__divider {
-  border-top-color: rgba(0, 0, 0, 0.22);
+  border-top-color: var(--on-invert-line);
 }
 
 .plan__features {
@@ -1807,7 +1899,7 @@ body {
   color: var(--color-body);
 }
 .plan--dark .plan__feature {
-  color: #1e1e1e;
+  color: var(--on-invert-text);
 }
 .plan__ficon {
   width: 0.17rem;
@@ -1816,7 +1908,7 @@ body {
   color: var(--color-dim);
 }
 .plan--dark .plan__ficon {
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--on-invert-soft);
 }
 .plan__ficon svg {
   width: 100%;
@@ -1844,7 +1936,7 @@ body {
   color: var(--color-dim);
 }
 .plan--dark .plan__period {
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--on-invert-soft);
 }
 
 .plan__btn {
@@ -2155,7 +2247,7 @@ body {
   letter-spacing: 0.02rem;
   text-transform: uppercase;
   color: var(--color-body);
-  box-shadow: 0 0.04rem 0.16rem rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0.04rem 0.16rem var(--shadow-color);
   margin-bottom: 0.34rem;
 }
 .faq__badge-dot {
@@ -2340,8 +2432,8 @@ body {
   padding: 0.4rem 0.36rem 0.44rem;
   border-radius: 0.28rem;
   border: 2px solid var(--color-border);
-  background: linear-gradient(180deg, #1f1f1f 0%, #0a0a0a 100%);
-  box-shadow: 0 0.2rem 0.7rem rgba(0, 0, 0, 0.55);
+  background: linear-gradient(180deg, var(--card-grad-top) 0%, var(--card-grad-bottom) 100%);
+  box-shadow: 0 0.2rem 0.7rem var(--shadow-color);
   transform: rotate(var(--rot)) translateY(var(--ty));
   /* transform is animated by GSAP (see the scroll reveal in the JS), so only
      box-shadow transitions here to avoid fighting the scrubbed animation */
@@ -2358,11 +2450,11 @@ body {
   --ty: 0.1rem;
   z-index: 3;
   margin-left: -0.2rem;
-  background: linear-gradient(180deg, #2b2b2b 0%, #0d0d0d 100%);
+  background: linear-gradient(180deg, var(--card-grad-top-2) 0%, var(--card-grad-bottom-2) 100%);
 }
 .tcard:hover {
   z-index: 4;
-  box-shadow: 0 0.32rem 0.9rem rgba(0, 0, 0, 0.32);
+  box-shadow: 0 0.32rem 0.9rem var(--shadow-color);
 }
 
 .tcard__photo {
@@ -2377,7 +2469,7 @@ body {
   justify-content: center;
   font-family: var(--main-font);
   font-size: 0.5rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-dim);
 }
 .tcard__photo--1 { background-image: url("img/MS.jpg"); background-size: cover; background-position: center; }
 .tcard__photo--2 { background-image: url("img/NR.jpg"); background-size: cover; background-position: center; }
@@ -2402,7 +2494,7 @@ body {
   display: block;
   width: 100%;
   height: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid var(--color-border);
   margin: 0.34rem 0 0.28rem;
 }
 .tcard__person {
@@ -2415,7 +2507,7 @@ body {
   font-family: var(--sub-font);
   font-size: 0.17rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-white);
 }
 .tcard__role {
   font-family: var(--sub-font);
@@ -2563,7 +2655,7 @@ body {
   background: var(--color-surface);
   border-radius: 0.3rem;
   overflow: hidden;
-  box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0.2rem 0.8rem var(--shadow-color);
 }
 
 /* Left — the form */
@@ -2686,7 +2778,7 @@ body {
 .cphone__country svg {
   width: 0.16rem;
   height: 0.16rem;
-  color: #6a6a6a;
+  color: var(--color-dim);
 }
 .cphone input,
 .cform .cphone input[type=tel] {
@@ -2727,7 +2819,7 @@ body {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .cservice__card:hover {
-  border-color: #454545;
+  border-color: var(--color-dim);
 }
 .cservice__card:has(input:checked) {
   border-color: var(--color-white);
@@ -3006,8 +3098,8 @@ body {
 /* ------------------------------------------------------------------ */
 .footer {
   width: 100vw;
-  background: #000000;
-  color: #ffffff;
+  background: var(--color-black);
+  color: var(--color-white);
   padding: 1rem 0.32rem 0.5rem;
 }
 .footer__inner {
@@ -3019,7 +3111,7 @@ body {
   grid-template-columns: 1.3fr 2fr;
   gap: 0.6rem;
   padding-bottom: 0.6rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--color-border);
 }
 .footer__logo-row {
   display: flex;
@@ -3043,7 +3135,7 @@ body {
   font-weight: 600;
   line-height: 1.02;
   letter-spacing: 0.01rem;
-  color: #ffffff;
+  color: var(--color-white);
 }
 .footer__logo span:last-child {
   position: relative;
@@ -3054,7 +3146,7 @@ body {
   font-size: 0.16rem;
   line-height: 0.24rem;
   font-weight: 400;
-  color: #94959b;
+  color: var(--color-muted);
   max-width: 3.7rem;
   margin-bottom: 0.28rem;
 }
@@ -3065,14 +3157,14 @@ body {
   font-family: var(--sub-font);
   font-size: 0.15rem;
   font-weight: 500;
-  color: #d3d4d8;
+  color: var(--color-body);
 }
 .footer__dot {
   width: 0.1rem;
   height: 0.1rem;
   border-radius: 50%;
-  background: #d4d4d4;
-  box-shadow: 0 0 0 0.04rem rgba(255, 255, 255, 0.2);
+  background: var(--color-muted);
+  box-shadow: 0 0 0 0.04rem var(--glass-border);
 }
 .footer__nav {
   display: grid;
@@ -3089,20 +3181,20 @@ body {
   font-weight: 600;
   letter-spacing: 0.03rem;
   text-transform: uppercase;
-  color: #7a7b81;
+  color: var(--color-dim);
   margin-bottom: 0.22rem;
 }
 .footer__link {
   font-family: var(--sub-font);
   font-size: 0.16rem;
   font-weight: 400;
-  color: #d3d4d8;
+  color: var(--color-body);
   text-decoration: none;
   padding: 0.08rem 0;
   transition: color 0.2s ease;
 }
 .footer__link:hover {
-  color: #ffffff;
+  color: var(--color-white);
 }
 .footer__bottom {
   display: flex;
@@ -3112,7 +3204,7 @@ body {
   font-family: var(--sub-font);
   font-size: 0.14rem;
   font-weight: 400;
-  color: #7a7b81;
+  color: var(--color-dim);
 }
 
 @media (max-width: 700px) {
@@ -3320,7 +3412,7 @@ body {
   overflow: hidden;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0.3rem 1rem var(--shadow-color);
   text-decoration: none;
   /* scale from the bottom edge so the deck fans upward */
   transform-origin: 50% 100%;
@@ -3347,7 +3439,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.1rem;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--glass-bg);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   color: var(--color-white);
@@ -3529,7 +3621,7 @@ body {
   width: 0.2rem;
   height: 0.06rem;
   border-radius: 0.03rem;
-  background: #3a3a3a;
+  background: var(--color-track);
   transition: background 0.3s ease, width 0.3s ease;
 }
 .process__dot.is-active {
@@ -3663,6 +3755,30 @@ body {
 /* on the vw-based rem; bump them so they stay readable on mobile.      */
 /* ------------------------------------------------------------------ */
 @media (max-width: 700px) {
+  /* Centred on mobile. The desktop layout hangs the headline off a fixed
+     left indent with the eyebrow pinned to its right — that only works in a
+     wide column. Here the block takes the full width and the headline is
+     centred inside it at its own size, so the two rows keep the stagger
+     they have everywhere else. */
+  .hero .title-block {
+    width: 100%;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+  }
+  .hero .title-block .title-h1 {
+    width: max-content;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* spans the block so the eyebrow can centre over the headline, instead of
+     hanging off its right edge the way it does on desktop */
+  .hero .title-block .first-desc {
+    left: 0;
+    right: 0;
+    justify-content: center;
+  }
+
   .hero .first-desc .desc-1,
   .hero .second-desc .desc-1 {
     font-size: 0.44rem;
@@ -3670,37 +3786,38 @@ body {
   }
   .hero .copyright .desc-1,
   .hero .scroll-to .desc-1 {
-    font-size: 0.4rem;
-    line-height: 0.46rem;
+    font-size: 0.5rem;
+    line-height: 0.58rem;
   }
   .hero .scroll-to {
     width: auto;
     left: auto;
     right: 0.6rem;
   }
+  /* lifted clear of the partner strip now sitting below them */
   .hero .copyright {
     left: 0.6rem;
-    bottom: 0.6rem;
+    bottom: 2.2rem;
   }
   .hero .scroll-to {
-    bottom: 0.6rem;
+    bottom: 2.2rem;
   }
   .hero .book-btn {
-    bottom: 1.7rem;
+    bottom: 3.5rem;
     right: 0.6rem;
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 3.9rem;
+    height: 3.9rem;
   }
   .hero .book-btn .book-btn__circle {
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 3.9rem;
+    height: 3.9rem;
   }
   .hero .book-btn .btn-text {
-    width: 2.4rem;
+    width: 2.9rem;
   }
   .hero .book-btn .btn-1 {
-    font-size: 0.44rem;
-    line-height: 0.5rem;
+    font-size: 0.54rem;
+    line-height: 0.62rem;
   }
 }
 
@@ -3768,7 +3885,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 0.08rem 0.36rem rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0.08rem 0.36rem var(--shadow-color);
   transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
   opacity: 0;
   transform: translateY(0.3rem);
@@ -4027,7 +4144,7 @@ body {
   height: auto;
   border-radius: 50%;
   /* the same soft lift the credential cards use */
-  box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0.2rem 0.6rem var(--shadow-color);
 }
 /* two copies of one photo: the dark base and the lit copy the wave reveals */
 .about__photo {
@@ -4108,8 +4225,8 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  background-color: #3a3a3a;
-  background-image: linear-gradient(135deg, #ffffff 50%, #3a3a3a 60%);
+  background-color: var(--color-track);
+  background-image: linear-gradient(135deg, var(--color-white) 50%, var(--color-track) 60%);
   background-repeat: no-repeat;
   background-position: 0 0;
   background-size: 0% 200%;
@@ -4223,4 +4340,184 @@ body {
     font-size: 0.5rem;
     gap: 0.25rem;
   }
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Theme switch — a split circle sitting at the end of the header nav. */
+/* Half the disc is filled in the current text colour; toggling spins  */
+/* it 180deg so the filled half changes sides. No icons, so it reads   */
+/* the same in either theme.                                           */
+/* ------------------------------------------------------------------ */
+/* the <li> inherits the root 100px font size, which would give it a line box
+   far taller than the button and drop the disc below the nav baseline —
+   flex + zero line-height collapses it onto the same centre line. The gap to
+   "Contact" comes from that item's own margin-right, so the button adds none. */
+.theme-toggle-item,
+.sound-toggle-item {
+  display: flex;
+  align-items: center;
+  font-size: 0;
+  line-height: 0;
+}
+/* the two icon controls belong together, so they sit closer than the nav gap */
+.sound-toggle-item.header-menu__item:not(:last-child) {
+  margin-right: 0.12rem;
+}
+.theme-toggle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.26rem;
+  height: 0.26rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+.theme-toggle:hover { opacity: 1; }
+.theme-toggle:focus-visible {
+  outline: 1px solid var(--color-white);
+  outline-offset: 0.04rem;
+}
+.theme-toggle__disc {
+  display: block;
+  width: 0.155rem;
+  height: 0.155rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px currentColor;
+  /* left half solid, right half empty — the ring keeps the circle readable */
+  background: linear-gradient(90deg, currentColor 0 50%, transparent 50% 100%);
+  transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Sound switch — four bars that stand still while the track is off    */
+/* and bounce while it plays, so the control states its own state      */
+/* without a label. Same monochrome vocabulary as the theme disc.      */
+/* ------------------------------------------------------------------ */
+.sound-toggle {
+  flex: none;
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.025rem;
+  width: 0.26rem;
+  height: 0.26rem;
+  padding: 0.055rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+.sound-toggle:hover { opacity: 1; }
+.sound-toggle:focus-visible {
+  outline: 1px solid var(--color-white);
+  outline-offset: 0.04rem;
+  border-radius: 0.03rem;
+}
+.sound-toggle i {
+  display: block;
+  width: 0.017rem;
+  height: 22%;
+  background: currentColor;
+  transition: height 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.sound-toggle[aria-pressed="true"] i {
+  animation: sound-bar 1.05s ease-in-out infinite;
+}
+.sound-toggle[aria-pressed="true"] i:nth-child(1) { animation-delay: -0.9s; }
+.sound-toggle[aria-pressed="true"] i:nth-child(2) { animation-delay: -0.35s; }
+.sound-toggle[aria-pressed="true"] i:nth-child(3) { animation-delay: -0.65s; }
+.sound-toggle[aria-pressed="true"] i:nth-child(4) { animation-delay: -0.15s; }
+
+@keyframes sound-bar {
+  0%, 100% { height: 24%; }
+  50%      { height: 100%; }
+}
+
+/* the music credit Bensound's licence asks for, kept quiet under the footer */
+.footer__credit {
+  margin-top: 0.16rem;
+  font-family: var(--sub-font);
+  font-size: 0.115rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-dim);
+}
+.footer__credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.02rem;
+}
+.footer__credit a:hover { color: var(--color-white); }
+:root[data-theme="light"] .theme-toggle__disc { transform: rotate(180deg); }
+
+/* ------------------------------------------------------------------ */
+/* Theme sweep — the wave crossing the screen IS the boundary between  */
+/* the two themes, not a curtain drawn over them. The View Transitions */
+/* API paints the outgoing theme over the incoming one; masking that   */
+/* top layer with the logo's wave and sliding the mask down erases the */
+/* old theme progressively, so the page changes under the crest.       */
+/* Same curve as the page-to-page transition (page-transition.js).     */
+/* ------------------------------------------------------------------ */
+:root {
+  --theme-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 2000' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M-120 2200 L-120 1021.4 L0.0 1021.4 L30.0 1038.0 L60.0 1049.6 L90.0 1054.8 L120.0 1052.9 L150.0 1044.1 L180.0 1029.5 L210.0 1011.2 L240.0 991.3 L270.0 972.6 L300.0 957.5 L330.0 947.9 L360.0 945.0 L390.0 949.3 L420.0 960.2 L450.0 976.3 L480.0 995.4 L510.0 1015.2 L540.0 1032.9 L570.0 1046.4 L600.0 1053.9 L630.0 1054.3 L660.0 1047.7 L690.0 1034.9 L720.0 1017.6 L750.0 997.9 L780.0 978.6 L810.0 962.0 L840.0 950.4 L870.0 945.2 L900.0 947.1 L930.0 955.9 L960.0 970.5 L990.0 988.8 L1020.0 1008.7 L1050.0 1027.4 L1080.0 1042.5 L1110.0 1052.1 L1140.0 1055.0 L1170.0 1050.7 L1200.0 1039.8 L1230.0 1023.7 L1260.0 1004.6 L1290.0 984.8 L1320.0 967.1 L1350.0 953.6 L1380.0 946.1 L1410.0 945.7 L1440.0 952.3 L1560 952.3 L1560 2200 Z'/%3E%3C/svg%3E");
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  /* kill the default cross-fade; the mask does all the work */
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html.theme-sweep::view-transition-new(root) { z-index: 0; }
+
+html.theme-sweep::view-transition-old(root) {
+  z-index: 1;
+  /* the mask is two viewports tall: transparent above the crest, opaque
+     below it. Sliding it from 100% to 0% walks the crest down the screen. */
+  -webkit-mask-image: var(--theme-wave);
+  mask-image: var(--theme-wave);
+  -webkit-mask-size: 100% 200%;
+  mask-size: 100% 200%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  /* a hairline of accent riding just ahead of the crest, drawn from the
+     masked layer's own alpha edge so it follows the curve exactly */
+  filter: drop-shadow(0 -0.015rem 0 var(--color-accent));
+  animation: theme-wave-down 900ms cubic-bezier(0.66, 0, 0.34, 1) forwards;
+}
+
+@keyframes theme-wave-down {
+  from { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+  to   { -webkit-mask-position: 0 0%;   mask-position: 0 0%;   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.theme-sweep::view-transition-old(root) {
+    filter: none;
+    animation: theme-wave-fade 200ms linear forwards;
+  }
+  @keyframes theme-wave-fade { to { opacity: 0; } }
+  .theme-toggle__disc { transition: none; }
+}
+
+/* 700px is the site's breakpoint everywhere else — matching it keeps the
+   controls from going phone-sized while the rest of the page is still wide */
+@media (max-width: 700px) {
+  .theme-toggle { width: 0.8rem; height: 0.8rem; }
+  .theme-toggle__disc { width: 0.5rem; height: 0.5rem; box-shadow: inset 0 0 0 2px currentColor; }
+  .sound-toggle { width: 0.8rem; height: 0.8rem; gap: 0.1rem; padding: 0.15rem 0; }
+  .sound-toggle i { width: 0.09rem; }
+  .sound-toggle-item.header-menu__item:not(:last-child) { margin-right: 0.32rem; }
+  .footer__credit { font-size: 0.34rem; }
 }
