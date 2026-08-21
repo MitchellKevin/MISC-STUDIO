@@ -1202,6 +1202,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/MorphSVGPlugin.min.js"></script>
     <script src="page-transition.js"></script>
+    <!-- shared with about.html; must load before nomi-studio.js, which calls
+         them at the right point in ScrollTrigger's pin order -->
+    <script src="showcase.js"></script>
+    <script src="timeline.js"></script>
     <script src="nomi-studio.js"></script>
     <!-- no-ops until the blog strip above is uncommented -->
     <script src="blog-cards.js"></script>

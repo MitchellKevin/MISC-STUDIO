@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mitchell Scholte — designer who codes, based near Amsterdam.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="nomi-logo.png">
+    <script>
+      /* read the saved theme before first paint — otherwise a light-mode
+         reload flashes the black page for a frame */
+      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
+    </script>
+    <link rel="stylesheet" href="nomi-studio.css">
+    <link rel="stylesheet" href="about.css">
+    <title>About — Mitchell Scholte</title>
+</head>
+<body class="about-page">
+  <header class="header">
+    <div class="flex-wrapper">
+      <div class="logo-wrap">
+        <a class="logo-link" href="index.html" aria-label="Back to home">
+          <img class="logo-img" src="nomi-logo.png" alt="">
+        </a>
+        <div class="logo-text">
+          <span class="btn-2">MITCHELL</span>
+          <span class="btn-2">SCHOLTE</span>
+        </div>
+      </div>
+      <ul class="header-menu">
+        <li class="header-menu__item header-text-1"><a href="index.html">Home</a></li>
+        <li class="header-menu__item header-text-1"><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- 1 ─────────────────────────────────────────── Hero
+         Same particle field as the homepage hero, but sampling the portrait
+         instead of the logo — see initParticles() in hero-particles.js. -->
+    <section class="ab ab--hero" id="ab-hero">
+      <canvas class="ab__particles" aria-hidden="true"></canvas>
+      <div class="ab__inner">
+        <p class="ab__eyebrow">About</p>
+        <h1 class="ab__display"><span>Mitchell</span><span>Scholte</span></h1>
+        <p class="ab__lead">
+          Designer who codes. I started in Technical Computer Science, moved to
+          Communication &amp; Multimedia Design, and never really picked a side.
+        </p>
+        <p class="ab__hint">Scroll<span class="ab__hint-line"></span></p>
+      </div>
+    </section>
+
+    <!-- 2 ─────────────────────────────────────────── Where I'm from -->
+    <section class="ab ab--globe" id="ab-from">
+      <canvas class="ab__globe" data-globe="home" aria-hidden="true"></canvas>
+      <div class="ab__inner ab__inner--overlay">
+        <p class="ab__eyebrow">01 — Where I'm from</p>
+        <h2 class="ab__heading">Hoofddorp</h2>
+        <p class="ab__body">
+          Fifteen minutes from Amsterdam, ten from Schiphol. Close enough to the
+          city to be in it whenever I want, far enough out to have had room to
+          make things.
+          <em class="ab__todo">Vul aan: wat wil je hierover vertellen?</em>
+        </p>
+        <dl class="ab__facts">
+          <div><dt>Based</dt><dd>Hoofddorp, NL</dd></div>
+          <div><dt>Studio</dt><dd>MISC STUDIO</dd></div>
+          <div><dt>Now</dt><dd>Front-end intern, Build in Amsterdam</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 3 ─────────────────────────────────────────── Roadmap
+         Same component as the homepage: markup built by about.js from
+         about-data.js, then handed to initTimeline() in timeline.js. -->
+    <section class="tlpath" id="timeline">
+      <div class="tlpath__head">
+        <span class="tlpath__eyebrow">Timeline</span>
+        <h2 class="tlpath__title">The road so far</h2>
+      </div>
+      <div class="tlpath__viewport">
+        <div class="tlpath__track">
+          <svg class="tlpath__svg" aria-hidden="true">
+            <path class="tlpath__line"></path>
+            <path class="tlpath__trail"></path>
+          </svg>
+          <div class="tlpath__arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" fill="var(--color-black)"></circle>
+              <path d="M9 7l6 5-6 5"></path>
+            </svg>
+          </div>
+          <ol class="tlpath__events" data-road></ol>
+        </div>
+      </div>
+      <span class="tlpath__hint">Scroll</span>
+    </section>
+
+    <!-- 4 ─────────────────────────────────────────── IT → CMD switch -->
+    <section class="ab ab--switch" id="ab-switch">
+      <div class="ab__inner">
+        <p class="ab__eyebrow">02 — The switch</p>
+
+        <div class="abs">
+          <span class="abs__side abs__side--it is-on" data-side="it">IT</span>
+          <button class="abs__toggle" type="button" role="switch" aria-checked="false"
+                  aria-label="Switch between Technical Computer Science and Communication &amp; Multimedia Design">
+            <span class="abs__track"><span class="abs__knob"></span></span>
+          </button>
+          <span class="abs__side abs__side--cmd" data-side="cmd">CMD</span>
+        </div>
+
+        <div class="abs__panels">
+          <div class="abs__panel is-on" data-side="it" data-panel="it"></div>
+          <div class="abs__panel" data-side="cmd" data-panel="cmd"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 ─────────────────────────────────────────── Projects
+         Same component as the homepage: cards built by about.js, then
+         handed to initShowcase() in showcase.js. -->
+    <section class="showcase" id="showcase">
+      <div class="showcase__bg" aria-hidden="true">
+        <span class="showcase__bgtext">Recent work</span>
+      </div>
+      <div class="container showcase__container">
+        <div class="showcase__head">
+          <span class="showcase__label">Projects</span>
+          <h2 class="showcase__title">Recent work</h2>
+        </div>
+        <div class="showcase__deck" data-work></div>
+        <div class="showcase__counter"><b id="work-index">01</b> / <span id="work-total">01</span></div>
+      </div>
+    </section>
+
+    <!-- 6 ─────────────────────────────────────────── Internship goals
+         Removed entirely unless the URL carries ?intro — see about.js. -->
+    <section class="ab ab--goals" id="ab-goals" data-intro-only hidden>
+      <div class="ab__inner">
+        <p class="ab__eyebrow">03 — This internship</p>
+        <h2 class="ab__heading">Three things I'm here for</h2>
+        <ol class="ab__goals" data-goals></ol>
+      </div>
+    </section>
+
+    <!-- 7 ─────────────────────────────────────────── Hobbies
+         Reuses the homepage focus-point tiles, illustrations and all. -->
+    <section class="focus" id="ab-hobby">
+      <span class="focus__eyebrow">Off the clock</span>
+      <h2 class="focus__title">What I do when I'm <span class="focus__title-accent">not working</span></h2>
+      <div class="focusPoint_container" data-hobby></div>
+
+      <!-- The camera lives here, hidden until the photography tile is
+           clicked. about-camera.js fills the canvas host. -->
+      <div class="camstage" data-camera-stage aria-hidden="true">
+        <div class="camstage__canvas" data-camera-canvas></div>
+        <div class="camstage__flash" data-camera-flash aria-hidden="true"></div>
+        <p class="camstage__status" data-camera-status></p>
+        <button class="camstage__close" type="button" data-camera-close aria-label="Close">Sluiten</button>
+      </div>
+    </section>
+
+    <!-- 9 ─────────────────────────────────────────── Countries -->
+    <section class="ab ab--globe ab--visited" id="ab-world">
+      <canvas class="ab__globe" data-globe="visited" aria-hidden="true"></canvas>
+      <div class="ab__inner ab__inner--overlay">
+        <p class="ab__eyebrow">05 — Been there</p>
+        <h2 class="ab__heading"><span data-visited-count>0</span> countries</h2>
+        <p class="ab__body">Lit up on the globe. Plenty of dark left.</p>
+        <ul class="ab__countries" data-countries></ul>
+      </div>
+    </section>
+
+    <!-- 8 ─────────────────────────────────────────── Watches
+         One pinned stage per watch: scroll zooms into the date window and
+         the date rolls over a day. Built by about.js from about-data.js. -->
+    <section class="ab ab--watchintro" id="ab-watch">
+      <div class="ab__inner">
+        <p class="ab__eyebrow">04 — And a small obsession</p>
+        <h2 class="ab__heading">Two watches</h2>
+        <p class="ab__body">Keep scrolling — they run.</p>
+      </div>
+    </section>
+    <div data-watch></div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <div class="footer__logo-row">
+            <img class="footer__logo-img" src="nomi-logo.png" alt="">
+            <div class="footer__logo"><span>MITCHELL</span><span>SCHOLTE</span></div>
+          </div>
+          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
+          <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
+        </div>
+
+        <nav class="footer__nav">
+          <div class="footer__col">
+            <h4 class="footer__heading">Services</h4>
+            <a class="footer__link" href="detail-pages/services/ux-design.html">UX Design</a>
+            <a class="footer__link" href="detail-pages/services/web-development.html">Web Development</a>
+            <a class="footer__link" href="detail-pages/services/photography.html">Photography</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Company</h4>
+            <a class="footer__link" href="index.html#services">Services</a>
+            <a class="footer__link" href="index.html#showcase">Work</a>
+            <a class="footer__link" href="blog.html">Blog</a>
+            <a class="footer__link" href="index.html#contact">Contact</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Elsewhere</h4>
+            <a class="footer__link" href="#">LinkedIn</a>
+            <a class="footer__link" href="#">Instagram</a>
+            <a class="footer__link" href="#">X (Twitter)</a>
+            <a class="footer__link" href="#">Dribbble</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
+        <span class="footer__made">Made in the Netherlands 🇳🇱</span>
+      </div>
+      <!-- CC-BY 4.0 requires the title, the author, the source and the licence
+           to stay with the work wherever it is shown. -->
+      <p class="footer__credit">
+        <a href="https://skfb.ly/ptoZX" target="_blank" rel="noopener">&ldquo;SONY CAMERA 4K&rdquo;</a>
+        by Arham Abdullah is licensed under
+        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution</a>.
+      </p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <script src="page-transition.js"></script>
+  <script src="showcase.js"></script>
+  <script src="timeline.js"></script>
+  <script type="importmap">
+  { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+  }}
+  </script>
+  <script src="hero-particles.js"></script>
+  <script src="about-globe-data.js"></script>
+  <script src="about-globe.js"></script>
+  <script src="about-data.js"></script>
+  <script src="about.js"></script>
+  <script src="theme-toggle.js"></script>
+  <!-- module, and loaded last: it needs the hobby tiles about.js builds -->
+  <script type="module" src="about-camera.js"></script>
+</body>
+</html>
