@@ -298,162 +298,6 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* 8 · Watches. One pinned stage; the menu picks which watch. Scroll     */
-/* drives a zoom towards the date, and everything smears with speed      */
-/* except a small window around the date that a radial mask keeps sharp. */
-/* The new digits are drawn over the old ones, so one photo is enough.   */
-/* ------------------------------------------------------------------ */
-.wz {
-  position: relative;
-  height: 100vh;
-  overflow: hidden;
-  background: var(--color-black);
-}
-.wz__frame {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  /* the watch sits right, leaving the left for the caption */
-  justify-content: flex-end;
-  padding-right: 7%;
-}
-/* sized to the photo's own aspect ratio, so anything placed inside in %
-   is measured against the PHOTO rather than the viewport — and the zoom
-   pivots here too, so the focus point cannot drift */
-.wz__plate {
-  position: relative;
-  height: 76%;
-  max-width: 60%;
-  will-change: transform;
-}
-.wz__photo {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-/* the blurred copy sits underneath; the sharp copy on top is masked back
-   to a small disc over the date, so only that stays crisp */
-.wz__photo--sharp {
-  -webkit-mask-image: radial-gradient(circle at var(--fx, 50%) var(--fy, 50%),
-    #000 0, #000 var(--fr, 11%), transparent calc(var(--fr, 11%) * 2.4));
-  mask-image: radial-gradient(circle at var(--fx, 50%) var(--fy, 50%),
-    #000 0, #000 var(--fr, 11%), transparent calc(var(--fr, 11%) * 2.4));
-}
-.wz__plate.is-empty::after {
-  content: 'Foto volgt';
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px dashed var(--color-border);
-  border-radius: 0.2rem;
-  font-family: var(--sub-font);
-  font-size: 0.22rem;
-  font-weight: 600;
-  color: var(--color-dim);
-}
-.wz__plate.is-empty { aspect-ratio: 3 / 4; }
-
-/* the patch that buries the printed date, sized in % of the photo */
-.wz__date {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  overflow: hidden;
-  container-type: size;
-}
-.wz__roll {
-  height: 200%;
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  will-change: transform;
-}
-.wz__roll span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: inherit;
-}
-/* the power-reserve overlay: erases the real hand, draws a sweeping one.
-   Centred on the pivot, sized in % of the photo like the date patch. */
-.wz__hand {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  aspect-ratio: 1;
-  overflow: visible;
-}
-
-.wz__roll i {
-  font-family: var(--sub-font);
-  font-style: normal;
-  font-weight: 500;
-  /* sized against the patch, not the page, so it tracks the zoom */
-  font-size: 78cqh;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.wz__cap {
-  position: absolute;
-  left: 0.9rem;
-  bottom: 1.6rem;
-  z-index: 2;
-  max-width: 4.4rem;
-}
-.wz__name {
-  font-family: var(--main-font);
-  font-size: 0.52rem;
-  font-weight: 700;
-  color: var(--color-white);
-  margin-bottom: 0.06rem;
-}
-.wz__note {
-  font-family: var(--sub-font);
-  font-size: 0.16rem;
-  line-height: 0.25rem;
-  color: var(--color-muted);
-}
-
-/* --- the picker ------------------------------------------------------- */
-.wz-menu {
-  position: absolute;
-  left: 50%;
-  bottom: 0.45rem;
-  transform: translateX(-50%);
-  z-index: 3;
-  display: flex;
-  gap: 0.06rem;
-  padding: 0.06rem;
-  border-radius: 0.36rem;
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  backdrop-filter: blur(14px) saturate(1.4);
-  border: 1px solid var(--glass-border);
-}
-.wz-menu__item {
-  border: 0;
-  cursor: pointer;
-  padding: 0.11rem 0.26rem;
-  border-radius: 0.3rem;
-  background: transparent;
-  font-family: var(--sub-font);
-  font-size: 0.15rem;
-  font-weight: 600;
-  color: var(--color-muted);
-  transition: background 0.25s ease, color 0.25s ease;
-}
-.wz-menu__item:hover { color: var(--color-white); }
-.wz-menu__item.is-on {
-  background: var(--color-white);
-  color: var(--color-black);
-}
-.wz-menu__item:focus-visible { outline: 1px solid var(--color-white); outline-offset: 0.03rem; }
-
-/* ------------------------------------------------------------------ */
 /* 7 · Hobby illustrations. Same viewBox, stroke weights and greys as   */
 /* the homepage focus points, so the two sets read as one family.       */
 /* ------------------------------------------------------------------ */
@@ -540,13 +384,6 @@
   .abs__heading { font-size: 1.1rem; line-height: 1.2rem; }
   .abs__body { font-size: 0.46rem; line-height: 0.72rem; }
 
-  .wz__frame { justify-content: center; padding-right: 0; }
-  .wz__plate { height: 58%; max-width: 88%; }
-  .wz__cap { left: 0.6rem; right: 0.6rem; bottom: 2.4rem; max-width: none; }
-  .wz__name { font-size: 0.9rem; }
-  .wz__note { font-size: 0.42rem; line-height: 0.64rem; }
-  .wz-menu { bottom: 0.7rem; gap: 0.12rem; padding: 0.12rem; border-radius: 0.9rem; }
-  .wz-menu__item { font-size: 0.4rem; padding: 0.26rem 0.6rem; border-radius: 0.7rem; }
   .ab__country { font-size: 0.38rem; }
   .ab__facts dt { font-size: 0.32rem; }
   .ab__facts dd { font-size: 0.44rem; }
@@ -678,4 +515,129 @@
   /* stacked on a phone, so the neighbours move up and down instead */
   #ab-hobby.is-camera-open .focus-sport { transform: translateY(-8%) scale(0.94); }
   #ab-hobby.is-camera-open .focus-web   { transform: translateY(8%)  scale(0.94); }
+}
+
+/* ------------------------------------------------------------------ */
+/* 10 · AirPods — a pinned, scroll-scrubbed stage. The canvas fills it  */
+/* and the copy sits over the top-left, out of the model's way.         */
+/* ------------------------------------------------------------------ */
+.apods {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--color-black);
+}
+.apods__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.apods__copy {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  max-width: 3.4rem;
+  pointer-events: none;
+}
+.apods__status {
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  text-align: center;
+  font-family: var(--sub-font);
+  font-size: 0.16rem;
+  color: var(--color-dim);
+}
+@media (max-width: 700px) {
+  .apods__copy { left: 0.6rem; right: 0.6rem; top: 1.9rem; transform: none; max-width: none; }
+  .apods__status { font-size: 0.42rem; }
+}
+
+/* ------------------------------------------------------------------ */
+/* 8 · A watch that actually runs.                                      */
+/*                                                                      */
+/* The dial artwork has no hands — just the pinion hole — so the hands   */
+/* are drawn on top as SVG and turned by the clock. The clean dial is    */
+/* laid over the photograph's own dial, which hides the hands and date   */
+/* baked into that shot.                                                 */
+/*                                                                      */
+/* --rlx-* are the calibration: where the photo's dial sits and how big  */
+/* it is, as a share of the image. Change the photo, re-measure these.   */
+/* ------------------------------------------------------------------ */
+/* text left, watch right — .ab__inner is width:100% by default, which would
+   otherwise squeeze the watch into whatever is left over */
+.ab--watch { gap: 0.7rem; }
+.ab--watch .ab__inner { max-width: 5.2rem; margin: 0; }
+
+/* The photo runs from bracelet to bracelet, so sizing it to fit the section
+   keeps the watch head small. Instead it is oversized and the bracelet is
+   allowed to run off the bottom — .ab already clips — which buys a much
+   bigger dial for the same section height. */
+.rlx {
+  --rlx-cx: 50%;          /* dial centre, across the watch image */
+  --rlx-cy: 40.1%;        /* dial centre, down the watch image */
+  --rlx-size: 32.4%;      /* dial diameter, as a share of image WIDTH.
+                             The artwork is cropped tight to the disc
+                             (rolex-dial-tight.webp) — the original had 15%
+                             transparent margin, which made the disc land a
+                             third too small inside this box. */
+
+  /* Out of the flow and bleeding off the right edge. In the flow, a photo
+     this wide would shove the copy off the page; here the two can overlap
+     because the copy sits well to the left. .ab clips the rest. */
+  position: absolute;
+  right: -7%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(13rem, 74vw);
+  height: 78vh;
+  pointer-events: none;
+}
+/* The photo is far taller than the frame. Sliding it up by --rlx-cy puts the
+   DIAL centre on the frame's centre, rather than the middle of the bracelet. */
+.rlx__shot {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  transform: translateY(calc(-1 * var(--rlx-cy)));
+}
+.rlx__body { width: 100%; height: auto; display: block; }
+
+.rlx__face {
+  position: absolute;
+  left: var(--rlx-cx);
+  top: var(--rlx-cy);
+  width: var(--rlx-size);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  overflow: hidden;
+}
+.rlx__dial { width: 100%; height: 100%; display: block; }
+
+.rlx__hands {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+/* the hands turn about the pinion, which the viewBox puts at 0,0 */
+.rlx__hands > g { transform-origin: 0 0; }
+
+/* A Submariner's hands are broad and lumed with a dark outline — thin pale
+   sticks read as a quartz dress watch and give the whole thing away. */
+.rlx__h, .rlx__m { fill: #f2f0e6; stroke: #14161a; stroke-width: 1.6; stroke-linejoin: round; }
+.rlx__s { fill: #ececec; }
+.rlx__pin { fill: #f2f0e6; stroke: #14161a; stroke-width: 1.4; }
+
+@media (max-width: 700px) {
+  .ab--watch { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+  .ab--watch .ab__inner { max-width: none; }
+  .rlx { position: relative; right: auto; top: auto; transform: none;
+         width: 116vw; height: 58vh; align-self: center; }
 }

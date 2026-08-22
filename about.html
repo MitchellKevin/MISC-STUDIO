@@ -176,17 +176,62 @@
       </div>
     </section>
 
-    <!-- 8 ─────────────────────────────────────────── Watches
-         One pinned stage per watch: scroll zooms into the date window and
-         the date rolls over a day. Built by about.js from about-data.js. -->
-    <section class="ab ab--watchintro" id="ab-watch">
+    <!-- 8 ─────────────────────────────────────────── A watch that runs
+         The dial image is clean — no hands — so the hands are drawn over it
+         and driven by the clock. Deliberately a generic watch: which ones
+         someone actually owns is not something to publish. -->
+    <section class="ab ab--watch" id="ab-watch">
       <div class="ab__inner">
         <p class="ab__eyebrow">04 — And a small obsession</p>
-        <h2 class="ab__heading">Two watches</h2>
-        <p class="ab__body">Keep scrolling — they run.</p>
+        <h2 class="ab__heading">Watches</h2>
+        <p class="ab__body">
+          TODO: waarom horloges? Deze loopt op jouw eigen tijd.
+        </p>
+      </div>
+      <div class="rlx" data-watch>
+        <!-- the photo overflows its box on purpose; .rlx is only the frame it
+             is centred against -->
+        <div class="rlx__shot">
+        <img class="rlx__body" src="rolex-watch.webp" alt="Wristwatch" width="800" height="1180">
+        <div class="rlx__face" data-rlx-face>
+          <img class="rlx__dial" src="rolex-dial-tight.webp" alt="" width="750" height="750">
+          <svg class="rlx__hands" viewBox="-100 -100 200 200" aria-hidden="true">
+            <!-- Mercedes hour hand: a stem, a ring near the tip, a point -->
+            <g data-rlx-hour>
+              <rect class="rlx__h" x="-4.2" y="-40" width="8.4" height="48" rx="4.2"/>
+              <circle class="rlx__h" cx="0" cy="-40" r="7.6"/>
+              <path class="rlx__h" d="M-3.6 -46 L0 -57 L3.6 -46 Z"/>
+            </g>
+            <!-- minute hand: longer, with the same lumed body -->
+            <g data-rlx-min>
+              <rect class="rlx__m" x="-3.6" y="-70" width="7.2" height="80" rx="3.6"/>
+              <path class="rlx__m" d="M-3.6 -70 L0 -80 L3.6 -70 Z"/>
+            </g>
+            <g data-rlx-sec>
+              <rect class="rlx__s" x="-0.7" y="-78" width="1.4" height="96" rx="0.7"/>
+              <circle class="rlx__s" cx="0" cy="-56" r="5"/>
+            </g>
+            <circle class="rlx__pin" cx="0" cy="0" r="3.4"/>
+          </svg>
+        </div>
+        </div>
       </div>
     </section>
-    <div data-watch></div>
+
+
+    <!-- 10 ─────────────────────────────────────────── AirPods
+         Scroll-driven, and deliberately the last pinned section: the model
+         loads async, so its ScrollTrigger is created late — which is only
+         safe when nothing is pinned below it. -->
+    <section class="apods" data-airpods>
+      <canvas class="apods__canvas" data-airpods-canvas aria-hidden="true"></canvas>
+      <div class="apods__copy">
+        <p class="ab__eyebrow">06 — One more thing</p>
+        <h2 class="ab__heading">Open it.</h2>
+        <p class="ab__body">Scroll.</p>
+      </div>
+      <p class="apods__status" data-airpods-status>AirPods laden…</p>
+    </section>
 
   </main>
 
@@ -256,8 +301,10 @@
   <script src="about-globe.js"></script>
   <script src="about-data.js"></script>
   <script src="about.js"></script>
+  <script src="about-watch.js"></script>
   <script src="theme-toggle.js"></script>
   <!-- module, and loaded last: it needs the hobby tiles about.js builds -->
   <script type="module" src="about-camera.js"></script>
+  <script type="module" src="about-airpods.js"></script>
 </body>
 </html>
