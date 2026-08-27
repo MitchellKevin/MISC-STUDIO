@@ -165,6 +165,23 @@
       </div>
     </section>
 
+    <!-- 8b ────────────────────────────────────────── Cars
+         Text left, car right, picker along the bottom. Switching drives the
+         current car off and the next one in — see about-cars.js. -->
+    <section class="ab ab--cars" id="ab-cars" data-cars>
+      <div class="ab__inner cars__copy">
+        <p class="ab__eyebrow">05 — In the garage</p>
+        <h2 class="ab__heading" data-cars-name>&nbsp;</h2>
+        <p class="cars__year" data-cars-year></p>
+        <p class="ab__body" data-cars-note></p>
+      </div>
+      <div class="cars__stage">
+        <canvas class="cars__canvas" data-cars-canvas aria-hidden="true"></canvas>
+        <p class="cars__status" data-cars-status></p>
+      </div>
+      <nav class="cars__menu" data-cars-menu aria-label="Pick a car"></nav>
+    </section>
+
     <!-- 9 ─────────────────────────────────────────── Countries -->
     <section class="ab ab--globe ab--visited" id="ab-world">
       <canvas class="ab__globe" data-globe="visited" aria-hidden="true"></canvas>
@@ -275,12 +292,24 @@
         <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
         <span class="footer__made">Made in the Netherlands 🇳🇱</span>
       </div>
-      <!-- CC-BY 4.0 requires the title, the author, the source and the licence
-           to stay with the work wherever it is shown. -->
+      <!-- CC-BY 4.0 (and BY-NC 4.0, for the M5) requires the title, the author,
+           the source and the licence to stay with the work wherever it is shown. -->
       <p class="footer__credit">
         <a href="https://skfb.ly/ptoZX" target="_blank" rel="noopener">&ldquo;SONY CAMERA 4K&rdquo;</a>
         by Arham Abdullah is licensed under
-        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution</a>.
+        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution</a>.<br>
+        <a href="https://skfb.ly/pGzr8" target="_blank" rel="noopener">&ldquo;AirPods 4&rdquo;</a>
+        by Falah3D is licensed under
+        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution</a>.<br>
+        <a href="https://skfb.ly/pLCpL" target="_blank" rel="noopener">&ldquo;2013 Ferrari laferrari&rdquo;</a>
+        by XENVOR creations is licensed under
+        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution</a>.<br>
+        <a href="https://skfb.ly/pMsSH" target="_blank" rel="noopener">&ldquo;2010 Mercedes SLS AMG&rdquo;</a>
+        by Dave Love SketchFab is licensed under
+        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution</a>.<br>
+        <a href="https://skfb.ly/pvJZO" target="_blank" rel="noopener">&ldquo;2018 BMW M5&rdquo;</a>
+        by Outlaw Games&trade; is licensed under
+        <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial</a>.
       </p>
     </div>
   </footer>
@@ -306,5 +335,6 @@
   <!-- module, and loaded last: it needs the hobby tiles about.js builds -->
   <script type="module" src="about-camera.js"></script>
   <script type="module" src="about-airpods.js"></script>
+  <script type="module" src="about-cars.js"></script>
 </body>
 </html>

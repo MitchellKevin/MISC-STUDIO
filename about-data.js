@@ -67,6 +67,25 @@ window.ABOUT = {
     { art: 'web',   title: 'Web',         body: 'TODO: wat trekt je aan het bouwen zelf?' }
   ],
 
+  // ---- Cars ------------------------------------------------------------
+  // Optimised copies live in models/cars/ — 46MB of source became 6.5MB.
+  // Only the selected one is fetched.
+  cars: [
+    { name: 'Mercedes SLS AMG', year: '2010',
+      file: 'models/cars/2010_mercedes_sls_amg.glb',
+      note: 'TODO: waarom deze? Wat vind je eraan?' },
+    // This one is modelled facing the other way — spin corrects it so the
+    // animation can treat every car the same. Check a new car by looking at
+    // which end faces you when it parks; a LaFerrari is easy to misread,
+    // its tail is pointier than its nose.
+    { name: 'Ferrari LaFerrari', year: '2013',
+      file: 'models/cars/2013_ferrari_laferrari.glb', spin: 180,
+      note: 'TODO.' },
+    { name: 'BMW M5', year: '2018',
+      file: 'models/cars/2018_bmw_m5.glb',
+      note: 'TODO.' }
+  ],
+
   // ---- Photos on the camera's rear screen -------------------------------
   // TODO: vervang door je eigen fotografie. Dit zijn nu bestaande beelden
   // uit project-images/ zodat je kunt zien of het effect werkt.

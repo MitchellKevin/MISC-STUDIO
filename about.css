@@ -641,3 +641,83 @@
   .rlx { position: relative; right: auto; top: auto; transform: none;
          width: 116vw; height: 58vh; align-self: center; }
 }
+
+/* ------------------------------------------------------------------ */
+/* 8b · Cars. Copy on the left, car on the right, picker along the      */
+/* bottom. Switching drives one car out and the next in — the models    */
+/* all face -Z, so "forward" is one direction for every car.            */
+/* ------------------------------------------------------------------ */
+.ab--cars { position: relative; }
+.cars__copy { max-width: 4.6rem; margin: 0; z-index: 2; }
+.cars__year {
+  font-family: var(--mono-font);
+  font-size: 0.15rem;
+  color: var(--color-accent);
+  margin-bottom: 0.16rem;
+}
+
+/* the stage bleeds off the right edge; .ab clips it */
+.cars__stage {
+  position: absolute;
+  right: -4%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(11rem, 68vw);
+  height: 70vh;
+  pointer-events: none;
+}
+.cars__canvas { width: 100%; height: 100%; display: block; }
+.cars__status {
+  position: absolute;
+  inset: auto 0 8% 0;
+  text-align: center;
+  font-family: var(--sub-font);
+  font-size: 0.15rem;
+  color: var(--color-dim);
+}
+
+.cars__menu {
+  position: absolute;
+  left: 50%;
+  bottom: 0.5rem;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  gap: 0.06rem;
+  padding: 0.06rem;
+  border-radius: 0.36rem;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid var(--glass-border);
+}
+.cars__pick {
+  border: 0;
+  cursor: pointer;
+  padding: 0.11rem 0.26rem;
+  border-radius: 0.3rem;
+  background: transparent;
+  font-family: var(--sub-font);
+  font-size: 0.15rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.cars__pick:hover { color: var(--color-white); }
+.cars__pick.is-on { background: var(--color-white); color: var(--color-black); }
+.cars__pick:focus-visible { outline: 1px solid var(--color-white); outline-offset: 0.03rem; }
+
+@media (max-width: 700px) {
+  .ab--cars { flex-direction: column; align-items: flex-start; padding-bottom: 3rem; }
+  .cars__copy { max-width: none; }
+  .cars__stage { position: relative; right: auto; top: auto; transform: none;
+                 width: 112vw; height: 42vh; margin-left: -6vw; }
+  .cars__menu { bottom: 0.9rem; gap: 0.12rem; padding: 0.12rem; border-radius: 0.9rem; }
+  .cars__pick { font-size: 0.4rem; padding: 0.26rem 0.5rem; border-radius: 0.7rem; }
+  .cars__status { font-size: 0.42rem; }
+}
+
+/* a car takes a moment to fetch; a dead-looking button is better than one
+   that silently ignores you */
+.cars__pick[disabled] { cursor: progress; opacity: 0.55; }
+.cars__pick.is-busy:not(.is-on) { color: var(--color-dim); }
