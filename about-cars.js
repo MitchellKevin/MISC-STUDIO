@@ -168,7 +168,12 @@ function init(root) {
     const car = D[i];
     if (nameEl) nameEl.textContent = car.name || '';
     if (yearEl) yearEl.textContent = car.year || '';
-    if (noteEl) noteEl.textContent = car.note || '';
+    // window.aboutCopy gives an unfinished note the same treatment it gets
+    // everywhere else on the page; plain text if about.js has not run
+    if (noteEl) {
+      if (window.aboutCopy) window.aboutCopy(noteEl, car.note);
+      else noteEl.textContent = car.note || '';
+    }
     [].slice.call(menu.children).forEach((b, j) => {
       b.classList.toggle('is-on', j === i);
       b.setAttribute('aria-pressed', j === i ? 'true' : 'false');

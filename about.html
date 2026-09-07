@@ -36,48 +36,87 @@
     </div>
   </header>
 
-  <main>
+  <!-- Section index. Built by about.js from the [data-chapter] sections
+       below, so adding a section is enough to get it into the rail. -->
+  <nav class="abnav" aria-label="Sections">
+    <ol class="abnav__list" data-abnav></ol>
+  </nav>
 
-    <!-- 1 ─────────────────────────────────────────── Hero
-         Same particle field as the homepage hero, but sampling the portrait
-         instead of the logo — see initParticles() in hero-particles.js. -->
-    <section class="ab ab--hero" id="ab-hero">
-      <canvas class="ab__particles" aria-hidden="true"></canvas>
-      <div class="ab__inner">
-        <p class="ab__eyebrow">About</p>
-        <h1 class="ab__display"><span>Mitchell</span><span>Scholte</span></h1>
-        <p class="ab__lead">
-          Designer who codes. I started in Technical Computer Science, moved to
-          Communication &amp; Multimedia Design, and never really picked a side.
-        </p>
-        <p class="ab__hint">Scroll<span class="ab__hint-line"></span></p>
+  <main class="about-main">
+
+    <!-- ══ Intro ═══════════════════════════════════════════════════════ -->
+
+    <!-- Hero. Copy on the left, a Polaroid on the right. -->
+    <section class="ab ab--hero" id="ab-hero" data-chapter data-label="Start">
+      <div class="ab__inner ab__inner--hero">
+        <div class="ab__col ab__col--wide">
+          <p class="ab__eyebrow">About</p>
+          <h1 class="ab__display"><span>Mitchell</span><span>Scholte</span></h1>
+          <p class="ab__lead">
+            Designer who codes. I started in Technical Computer Science, moved to
+            Communication &amp; Multimedia Design, and never really picked a side.
+          </p>
+          <p class="ab__hint">Scroll to explore<span class="ab__hint-line"></span></p>
+        </div>
+
+        <!-- FOTO — portrait.jpg komt uit img/MS.jpg: vierkant uitgesneden
+             op hoofd en camera, zwart-wit, en van 2,1 MB terug naar 116 kB.
+             Zwart-wit zit in het bestand zelf, niet in een CSS-filter: dat
+             scheelt bytes en kost niets tijdens het 3D-kantelen.
+
+               sips --cropOffset 780 0 --cropToHeightWidth 2190 2190 \
+                    img/MS.jpg --out crop.jpg
+               sips -Z 900 crop.jpg --out klein.jpg
+               sips --matchTo "/System/Library/ColorSync/Profiles/Generic \
+                    Gray Gamma 2.2 Profile.icc" klein.jpg --out zw.jpg
+               sips -s format jpeg -s formatOptions 66 zw.jpg \
+                    --out img/about/portrait.jpg
+
+             Het origineel blijft onaangeraakt staan, dus een andere
+             uitsnede draai je hiermee zo opnieuw: de eerste twee getallen
+             zijn de offset vanaf linksboven. Een andere foto? Zet hem in
+             img/about/ en wijs de src hieronder erop aan; vierkant is het
+             makkelijkst, al het andere wordt vanuit het midden bijgesneden.
+             Frame en 3D zijn CSS. -->
+        <div class="polaroid-stage" data-polaroid-stage>
+          <figure class="polaroid" data-polaroid>
+            <div class="polaroid__shot">
+              <img class="polaroid__img" src="img/about/portrait.jpg"
+                   alt="Mitchell Scholte" width="900" height="900">
+              <!-- the sheen is the thing that sells the 3D: a real print
+                   catches the light as it turns -->
+              <span class="polaroid__sheen" aria-hidden="true"></span>
+            </div>
+            <figcaption class="polaroid__caption">Hi, it's me</figcaption>
+          </figure>
+        </div>
       </div>
     </section>
 
-    <!-- 2 ─────────────────────────────────────────── Where I'm from -->
-    <section class="ab ab--globe" id="ab-from">
+    <!-- ══ Chapter 01 — where this started ═════════════════════════════ -->
+
+    <!-- Where I'm from. The globe swings round to Hoofddorp on first view. -->
+    <section class="ab ab--globe" id="ab-from" data-chapter data-label="Hoofddorp">
       <canvas class="ab__globe" data-globe="home" aria-hidden="true"></canvas>
-      <div class="ab__inner ab__inner--overlay">
-        <p class="ab__eyebrow">01 — Where I'm from</p>
-        <h2 class="ab__heading">Hoofddorp</h2>
-        <p class="ab__body">
-          Fifteen minutes from Amsterdam, ten from Schiphol. Close enough to the
-          city to be in it whenever I want, far enough out to have had room to
-          make things.
-          <em class="ab__todo">Vul aan: wat wil je hierover vertellen?</em>
-        </p>
-        <dl class="ab__facts">
-          <div><dt>Based</dt><dd>Hoofddorp, NL</dd></div>
-          <div><dt>Studio</dt><dd>MISC STUDIO</dd></div>
-          <div><dt>Now</dt><dd>Front-end intern, Build in Amsterdam</dd></div>
-        </dl>
+      <div class="ab__inner">
+        <div class="ab__col">
+          <header class="ab__head">
+            <p class="ab__eyebrow"><span class="ab__num" data-num></span>Where I'm from</p>
+            <h2 class="ab__heading">Hoofddorp</h2>
+          </header>
+          <p class="ab__body" data-copy="home"></p>
+          <dl class="ab__facts">
+            <div><dt>Based</dt><dd>Hoofddorp, NL</dd></div>
+            <div><dt>Studio</dt><dd>MISC STUDIO</dd></div>
+            <div><dt>Now</dt><dd>Front-end intern, Build in Amsterdam</dd></div>
+          </dl>
+        </div>
       </div>
     </section>
 
-    <!-- 3 ─────────────────────────────────────────── Roadmap
-         Same component as the homepage: markup built by about.js from
-         about-data.js, then handed to initTimeline() in timeline.js. -->
-    <section class="tlpath" id="timeline">
+    <!-- Roadmap. Same component as the homepage: markup built by about.js
+         from about-data.js, then handed to initTimeline() in timeline.js. -->
+    <section class="tlpath" id="timeline" data-chapter data-label="Timeline">
       <div class="tlpath__head">
         <span class="tlpath__eyebrow">Timeline</span>
         <h2 class="tlpath__title">The road so far</h2>
@@ -100,10 +139,14 @@
       <span class="tlpath__hint">Scroll</span>
     </section>
 
-    <!-- 4 ─────────────────────────────────────────── IT → CMD switch -->
-    <section class="ab ab--switch" id="ab-switch">
+    <!-- ══ Chapter 02 — the work ═══════════════════════════════════════ -->
+
+    <!-- The IT → CMD switch. -->
+    <section class="ab ab--switch" id="ab-switch" data-chapter data-label="The switch">
       <div class="ab__inner">
-        <p class="ab__eyebrow">02 — The switch</p>
+        <div class="ab__col">
+
+        </div>
 
         <div class="abs">
           <span class="abs__side abs__side--it is-on" data-side="it">IT</span>
@@ -121,10 +164,9 @@
       </div>
     </section>
 
-    <!-- 5 ─────────────────────────────────────────── Projects
-         Same component as the homepage: cards built by about.js, then
-         handed to initShowcase() in showcase.js. -->
-    <section class="showcase" id="showcase">
+    <!-- Projects. Same component as the homepage: cards built by about.js,
+         then handed to initShowcase() in showcase.js. -->
+    <section class="showcase" id="showcase" data-chapter data-label="Work">
       <div class="showcase__bg" aria-hidden="true">
         <span class="showcase__bgtext">Recent work</span>
       </div>
@@ -138,25 +180,36 @@
       </div>
     </section>
 
-    <!-- 6 ─────────────────────────────────────────── Internship goals
-         Removed entirely unless the URL carries ?intro — see about.js. -->
-    <section class="ab ab--goals" id="ab-goals" data-intro-only hidden>
+    <!-- Internship goals. Removed entirely unless the URL carries ?intro —
+         see about.js. The chapter numbers renumber around it either way. -->
+    <section class="ab ab--goals" id="ab-goals" data-chapter data-label="Internship" data-intro-only hidden>
       <div class="ab__inner">
-        <p class="ab__eyebrow">03 — This internship</p>
-        <h2 class="ab__heading">Three things I'm here for</h2>
-        <ol class="ab__goals" data-goals></ol>
+        <div class="ab__col ab__col--wide">
+          <header class="ab__head">
+            <p class="ab__eyebrow"><span class="ab__num" data-num></span>This internship</p>
+            <h2 class="ab__heading">Three <span class="ab__heading-accent">learning goals</span> I'm here for</h2>
+          </header>
+          <ol class="ab__goals" data-goals></ol>
+        </div>
       </div>
     </section>
 
-    <!-- 7 ─────────────────────────────────────────── Hobbies
-         Reuses the homepage focus-point tiles, illustrations and all. -->
-    <section class="focus" id="ab-hobby">
-      <span class="focus__eyebrow">Off the clock</span>
-      <h2 class="focus__title">What I do when I'm <span class="focus__title-accent">not working</span></h2>
-      <div class="focusPoint_container" data-hobby></div>
+    <!-- ══ Chapter 03 — off the clock ══════════════════════════════════ -->
 
-      <!-- The camera lives here, hidden until the photography tile is
-           clicked. about-camera.js fills the canvas host. -->
+    <!-- Hobbies. Reuses the homepage focus-point tiles, illustrations and
+         all. The camera lives here too, hidden until the photography tile
+         is clicked — about-camera.js fills the canvas host. -->
+    <section class="ab ab--hobby" id="ab-hobby" data-chapter data-label="Off the clock">
+      <div class="ab__inner">
+        <div class="ab__col ab__col--wide">
+          <header class="ab__head">
+            <p class="ab__eyebrow"><span class="ab__num" data-num></span>Off the clock</p>
+            <h2 class="ab__heading">What I do when I'm <span class="ab__heading-accent">not working</span></h2>
+          </header>
+        </div>
+        <div class="focusPoint_container" data-hobby></div>
+      </div>
+
       <div class="camstage" data-camera-stage aria-hidden="true">
         <div class="camstage__canvas" data-camera-canvas></div>
         <div class="camstage__flash" data-camera-flash aria-hidden="true"></div>
@@ -165,15 +218,32 @@
       </div>
     </section>
 
-    <!-- 8b ────────────────────────────────────────── Cars
-         Text left, car right, picker along the bottom. Switching drives the
-         current car off and the next one in — see about-cars.js. -->
-    <section class="ab ab--cars" id="ab-cars" data-cars>
-      <div class="ab__inner cars__copy">
-        <p class="ab__eyebrow">05 — In the garage</p>
-        <h2 class="ab__heading" data-cars-name>&nbsp;</h2>
-        <p class="cars__year" data-cars-year></p>
-        <p class="ab__body" data-cars-note></p>
+    <!-- ══ OFF ═════════════════════════════════════════════════════════
+         The garage, the watch and the countries are switched off, not
+         thrown away: everything below is intact, just commented out.
+
+         To bring one back, delete the comment markers around that block.
+         Nothing else needs touching — about.js counts the chapter numbers
+         and builds the section rail off the sections that are actually in
+         the page, so the numbering closes up and reopens by itself. The
+         CSS and the scripts for all three are still loaded and simply do
+         nothing while their markup is absent.
+         ════════════════════════════════════════════════════════════════ -->
+
+    <!-- ─── OFF · Cars ─────────────────────────────────────────────────
+         Text left, car right, picker along the bottom. Switching drives
+         the current car off and the next one in — about-cars.js.
+
+    <section class="ab ab--cars" id="ab-cars" data-cars data-chapter data-label="Garage">
+      <div class="ab__inner">
+        <div class="ab__col">
+          <header class="ab__head">
+            <p class="ab__eyebrow"><span class="ab__num" data-num></span>In the garage</p>
+            <h2 class="ab__heading" data-cars-name>&nbsp;</h2>
+          </header>
+          <p class="cars__year" data-cars-year></p>
+          <p class="ab__body" data-cars-note></p>
+        </div>
       </div>
       <div class="cars__stage">
         <canvas class="cars__canvas" data-cars-canvas aria-hidden="true"></canvas>
@@ -181,72 +251,104 @@
       </div>
       <nav class="cars__menu" data-cars-menu aria-label="Pick a car"></nav>
     </section>
+         ──────────────────────────────────────────────────────────────── -->
 
-    <!-- 9 ─────────────────────────────────────────── Countries -->
-    <section class="ab ab--globe ab--visited" id="ab-world">
-      <canvas class="ab__globe" data-globe="visited" aria-hidden="true"></canvas>
-      <div class="ab__inner ab__inner--overlay">
-        <p class="ab__eyebrow">05 — Been there</p>
-        <h2 class="ab__heading"><span data-visited-count>0</span> countries</h2>
-        <p class="ab__body">Lit up on the globe. Plenty of dark left.</p>
-        <ul class="ab__countries" data-countries></ul>
-      </div>
-    </section>
+    <!-- ─── OFF · Watches ──────────────────────────────────────────────
+         The dial image is clean — no hands — so the hands are drawn over
+         it and driven by the clock. Deliberately a generic watch: which
+         ones someone actually owns is not something to publish.
 
-    <!-- 8 ─────────────────────────────────────────── A watch that runs
-         The dial image is clean — no hands — so the hands are drawn over it
-         and driven by the clock. Deliberately a generic watch: which ones
-         someone actually owns is not something to publish. -->
-    <section class="ab ab--watch" id="ab-watch">
+         HTML comments cannot nest, so the three notes inside this section
+         split it into four commented runs. There is no live markup
+         between them; re-enabling means dropping every marker below.
+
+    <section class="ab ab--watch" id="ab-watch" data-chapter data-label="Watches">
       <div class="ab__inner">
-        <p class="ab__eyebrow">04 — And a small obsession</p>
-        <h2 class="ab__heading">Watches</h2>
-        <p class="ab__body">
-          TODO: waarom horloges? Deze loopt op jouw eigen tijd.
-        </p>
+        <div class="ab__col">
+          <header class="ab__head">
+            <p class="ab__eyebrow"><span class="ab__num" data-num></span>A small obsession</p>
+            <h2 class="ab__heading">Watches</h2>
+          </header>
+          <p class="ab__body" data-copy="watch"></p>
+        </div>
       </div>
       <div class="rlx" data-watch>
+    -->
         <!-- the photo overflows its box on purpose; .rlx is only the frame it
              is centred against -->
+    <!--
         <div class="rlx__shot">
-        <img class="rlx__body" src="rolex-watch.webp" alt="Wristwatch" width="800" height="1180">
-        <div class="rlx__face" data-rlx-face>
-          <img class="rlx__dial" src="rolex-dial-tight.webp" alt="" width="750" height="750">
-          <svg class="rlx__hands" viewBox="-100 -100 200 200" aria-hidden="true">
-            <!-- Mercedes hour hand: a stem, a ring near the tip, a point -->
-            <g data-rlx-hour>
-              <rect class="rlx__h" x="-4.2" y="-40" width="8.4" height="48" rx="4.2"/>
-              <circle class="rlx__h" cx="0" cy="-40" r="7.6"/>
-              <path class="rlx__h" d="M-3.6 -46 L0 -57 L3.6 -46 Z"/>
-            </g>
-            <!-- minute hand: longer, with the same lumed body -->
-            <g data-rlx-min>
-              <rect class="rlx__m" x="-3.6" y="-70" width="7.2" height="80" rx="3.6"/>
-              <path class="rlx__m" d="M-3.6 -70 L0 -80 L3.6 -70 Z"/>
-            </g>
-            <g data-rlx-sec>
-              <rect class="rlx__s" x="-0.7" y="-78" width="1.4" height="96" rx="0.7"/>
-              <circle class="rlx__s" cx="0" cy="-56" r="5"/>
-            </g>
-            <circle class="rlx__pin" cx="0" cy="0" r="3.4"/>
-          </svg>
-        </div>
+          <img class="rlx__body" src="rolex-watch.webp" alt="Wristwatch" width="800" height="1180">
+          <div class="rlx__face" data-rlx-face>
+            <img class="rlx__dial" src="rolex-dial-tight.webp" alt="" width="750" height="750">
+            <svg class="rlx__hands" viewBox="-100 -100 200 200" aria-hidden="true">
+    -->
+              <!-- Mercedes hour hand: a stem, a ring near the tip, a point -->
+    <!--
+              <g data-rlx-hour>
+                <rect class="rlx__h" x="-4.2" y="-40" width="8.4" height="48" rx="4.2"/>
+                <circle class="rlx__h" cx="0" cy="-40" r="7.6"/>
+                <path class="rlx__h" d="M-3.6 -46 L0 -57 L3.6 -46 Z"/>
+              </g>
+    -->
+              <!-- minute hand: longer, with the same lumed body -->
+    <!--
+              <g data-rlx-min>
+                <rect class="rlx__m" x="-3.6" y="-70" width="7.2" height="80" rx="3.6"/>
+                <path class="rlx__m" d="M-3.6 -70 L0 -80 L3.6 -70 Z"/>
+              </g>
+              <g data-rlx-sec>
+                <rect class="rlx__s" x="-0.7" y="-78" width="1.4" height="96" rx="0.7"/>
+                <circle class="rlx__s" cx="0" cy="-56" r="5"/>
+              </g>
+              <circle class="rlx__pin" cx="0" cy="0" r="3.4"/>
+            </svg>
+          </div>
         </div>
       </div>
     </section>
+         ──────────────────────────────────────────────────────────────── -->
 
+    <!-- ─── OFF · Countries ────────────────────────────────────────────
+         The second globe, lit up with everywhere in ABOUT.visited.
 
-    <!-- 10 ─────────────────────────────────────────── AirPods
-         Scroll-driven, and deliberately the last pinned section: the model
-         loads async, so its ScrollTrigger is created late — which is only
-         safe when nothing is pinned below it. -->
-    <section class="apods" data-airpods>
-      <canvas class="apods__canvas" data-airpods-canvas aria-hidden="true"></canvas>
-      <div class="apods__copy">
-        <p class="ab__eyebrow">06 — One more thing</p>
-        <h2 class="ab__heading">Open it.</h2>
-        <p class="ab__body">Scroll.</p>
+    <section class="ab ab--globe ab--visited" id="ab-world" data-chapter data-label="Been there">
+      <canvas class="ab__globe" data-globe="visited" aria-hidden="true"></canvas>
+      <div class="ab__inner">
+        <div class="ab__col">
+          <header class="ab__head">
+            <p class="ab__eyebrow"><span class="ab__num" data-num></span>Been there</p>
+            <h2 class="ab__heading"><span data-visited-count>0</span> countries</h2>
+          </header>
+          <p class="ab__body">Lit up on the globe. Plenty of dark left.</p>
+          <ul class="ab__countries" data-countries></ul>
+        </div>
       </div>
+    </section>
+         ──────────────────────────────────────────────────────────────── -->
+
+    <!-- ══ Outro ═══════════════════════════════════════════════════════ -->
+
+    <!-- AirPods. Scroll-driven, and deliberately the last pinned section:
+         the model loads async, so its ScrollTrigger is created late — which
+         is only safe when nothing is pinned below it. -->
+    <section class="apods" id="ab-airpods" data-airpods data-chapter data-label="One more thing">
+      <!-- The heading sits behind the model, the way the giant word sits
+           behind the card in the showcase. The renderer is alpha:true and
+           never clears to a colour, so the type reads straight through the
+           canvas and the AirPods pass in front of it. -->
+      <div class="apods__bg">
+        <!-- <p class="ab__eyebrow">Secret weapon</p> -->
+        <!-- The canvas paints the same word as an equalizer and clips the
+             bars to the letterforms. The <h2> stays the real heading — it
+             just goes transparent while the canvas is doing the drawing,
+             so edit the word here and both follow. -->
+        <div class="apods__word">
+          <h2 class="ab__heading apods__bgtext" data-eq>Music</h2>
+          <canvas class="apods__eq" data-eq-canvas aria-hidden="true" hidden></canvas>
+        </div>
+      </div>
+      <canvas class="apods__canvas" data-airpods-canvas aria-hidden="true"></canvas>
       <p class="apods__status" data-airpods-status>AirPods laden…</p>
     </section>
 
@@ -331,6 +433,8 @@
   <script src="about-data.js"></script>
   <script src="about.js"></script>
   <script src="about-watch.js"></script>
+  <script src="about-polaroid.js"></script>
+  <script src="about-eq.js"></script>
   <script src="theme-toggle.js"></script>
   <!-- module, and loaded last: it needs the hobby tiles about.js builds -->
   <script type="module" src="about-camera.js"></script>

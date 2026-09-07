@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900" role="img" aria-label="Placeholder portrait">
+  <!-- Stand-in for the hero Polaroid. Replace the <img> src in about.html
+       with your own photo — anything roughly square, it is centre-cropped. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b2b2b"/>
+      <stop offset="1" stop-color="#161616"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="900" fill="url(#bg)"/>
+  <!-- head and shoulders, drawn not photographed, so it reads as a slot to
+       fill rather than as somebody else's picture -->
+  <g fill="none" stroke="#4d4d4d" stroke-width="14" stroke-linecap="round">
+    <circle cx="450" cy="378" r="118"/>
+    <path d="M236 726c0-118 96-186 214-186s214 68 214 186"/>
+  </g>
+  <g fill="#6f6f6f" font-family="Poppins, Helvetica, Arial, sans-serif"
+     font-size="34" font-weight="600" letter-spacing="9" text-anchor="middle">
+    <text x="450" y="838">JOUW FOTO HIER</text>
+  </g>
+</svg>

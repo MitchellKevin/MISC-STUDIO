@@ -3,6 +3,11 @@
 // timeline and the project deck to the same components the homepage
 // uses (timeline.js / showcase.js).
 //
+// The page's structure lives in the markup; this file only fills it:
+//   · chapter numbers, counted off the sections that survive
+//   · the section index rail down the right-hand side
+//   · every section's copy, straight out of about-data.js
+//
 // Order matters at the bottom of this file: ScrollTrigger has to build
 // pinned triggers top-to-bottom, and on this page the timeline sits
 // ABOVE the showcase — the opposite of the homepage. So initTimeline()
@@ -18,6 +23,29 @@
     return n;
   };
 
+  // ---- copy that is still a placeholder ----------------------------
+  // Anything in about-data.js that still starts with TODO or "Vul aan"
+  // is rendered as a note rather than as body copy, so an unfinished
+  // line looks the same wherever it lands and cannot ship unnoticed.
+  const PLACEHOLDER = /^\s*(TODO|Vul aan)\b/i;
+  // `value` is either a finished line, a placeholder, or { body, todo } —
+  // a finished line that still has a question hanging off it.
+  function copy(node, value) {
+    if (!node) return node;
+    node.textContent = '';
+    const v = typeof value === 'string' || value == null ? { body: value } : value;
+    const body = (v.body || '').trim();
+    const todo = (v.todo || '').trim();
+    if (body) {
+      if (PLACEHOLDER.test(body)) node.appendChild(el('em', 'ab__todo', body));
+      else node.appendChild(document.createTextNode(body));
+    }
+    if (todo) node.appendChild(el('em', 'ab__todo', todo));
+    return node;
+  }
+  // about-cars.js swaps its note on every car change, so it needs this too
+  window.aboutCopy = copy;
+
   // ---- internship section is opt-in --------------------------------
   const intro = /(^|[?&])intro(=|&|$)/.test(location.search);
   document.querySelectorAll('[data-intro-only]').forEach(s => {
@@ -25,7 +53,48 @@
     else s.remove();
   });
 
-  // ---- 3 · roadmap — homepage timeline markup ----------------------
+  // ---- chapter numbers ---------------------------------------------
+  // Counted after the line above, so dropping the internship section
+  // renumbers the rest rather than leaving a hole.
+  document.querySelectorAll('[data-num]').forEach((n, i) => {
+    n.textContent = String(i + 1).padStart(2, '0');
+  });
+
+  // ---- section index -----------------------------------------------
+  const nav = q('[data-abnav]');
+  const sections = [...document.querySelectorAll('[data-chapter]')];
+  if (nav && sections.length) {
+    sections.forEach((sec, i) => {
+      if (!sec.id) sec.id = 'ab-section-' + i;
+      const a = el('a', 'abnav__link');
+      a.href = '#' + sec.id;
+      a.appendChild(el('span', 'abnav__label', sec.dataset.label || sec.id));
+      a.appendChild(el('span', 'abnav__tick'));
+      const li = el('li');
+      li.appendChild(a);
+      nav.appendChild(li);
+      sec._navLink = a;
+    });
+    // the section covering the middle of the screen is the one you are on;
+    // a plain "is it visible" test lights two up at once on the tall ones
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            sections.forEach(s => s._navLink.classList.toggle('is-on', s === e.target));
+          }
+        });
+      }, { rootMargin: '-50% 0px -50% 0px' });
+      sections.forEach(s => io.observe(s));
+    }
+  }
+
+  // ---- section copy -------------------------------------------------
+  document.querySelectorAll('[data-copy]').forEach(node => {
+    copy(node, (D.copy || {})[node.dataset.copy]);
+  });
+
+  // ---- roadmap — homepage timeline markup --------------------------
   const road = q('[data-road]');
   if (road && D.road) {
     D.road.forEach((r, i) => {
@@ -44,7 +113,7 @@
     });
   }
 
-  // ---- 5 · projects — homepage showcase markup ---------------------
+  // ---- projects — homepage showcase markup -------------------------
   const work = q('[data-work]');
   if (work && D.projects) {
     D.projects.forEach(p => {
@@ -65,16 +134,14 @@
     if (total) total.textContent = String(D.projects.length).padStart(2, '0');
   }
 
-  // ---- 4 · the IT → CMD switch -------------------------------------
+  // ---- the IT → CMD switch -----------------------------------------
   const panels = D.switchPanels || {};
   ['it', 'cmd'].forEach(side => {
     const host = q('[data-panel="' + side + '"]');
     const c = panels[side];
     if (!host || !c) return;
     host.appendChild(el('h2', 'abs__heading', c.heading));
-    const p = el('p', 'abs__body', c.body);
-    if (c.todo) p.appendChild(el('em', 'ab__todo', c.todo));
-    host.appendChild(p);
+    host.appendChild(copy(el('p', 'abs__body'), c));
   });
 
   const toggle = q('.abs__toggle');
@@ -89,7 +156,7 @@
     set(false);
   }
 
-  // ---- 6 · goals ---------------------------------------------------
+  // ---- internship goals --------------------------------------------
   const goals = q('[data-goals]');
   if (goals && D.goals) {
     D.goals.forEach((g, i) => {
@@ -97,13 +164,13 @@
       li.appendChild(el('span', 'ab__goal-num', String(i + 1).padStart(2, '0')));
       const b = el('div');
       b.appendChild(el('h3', 'ab__goal-title', g.title));
-      b.appendChild(el('p', 'ab__goal-body', g.body));
+      b.appendChild(copy(el('p', 'ab__goal-body'), g.body));
       li.appendChild(b);
       goals.appendChild(li);
     });
   }
 
-  // ---- 7 · hobbies — homepage focus tiles --------------------------
+  // ---- hobbies — homepage focus tiles ------------------------------
   // Same viewBox and stroke weights as the focus illustrations, so these
   // sit next to them without looking like a different set.
   const ART = {
@@ -157,7 +224,7 @@
       art.innerHTML = ART[h.art] || '';
       tile.appendChild(art);
       tile.appendChild(el('h3', null, h.title));
-      tile.appendChild(el('p', null, h.body));
+      tile.appendChild(copy(el('p', null), h.body));
       hobby.appendChild(tile);
     });
     // the homepage observer only watches #focusPoints, so this page needs
@@ -175,7 +242,7 @@
     }
   }
 
-  // ---- 2 + 9 · the globes ------------------------------------------
+  // ---- the two globes ----------------------------------------------
   const HOOFDDORP = { lon: 4.69, lat: 52.30 };
   if (window.DotGlobe && window.GLOBE_DATA) {
     window.ABOUT_COUNTRY_NAMES = window.GLOBE_DATA.countries;   // for typo hunting
