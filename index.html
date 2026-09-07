@@ -13,7 +13,48 @@
       (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
     </script>
     <link rel="stylesheet" href="nomi-studio.css">
-    <title>MISC STUDIO</title>
+
+    <!-- ── Findability ────────────────────────────────────────────────
+         The title and description are what Google actually prints in the
+         results, so they carry the words someone would search for: the
+         name, the studio, the job, the country. Everything else here is
+         plumbing. -->
+    <title>MISC STUDIO — Mitchell Scholte, Creative Developer</title>
+    <meta name="description" content="MISC STUDIO is the studio of Mitchell Scholte, a creative developer and designer near Amsterdam. UX design, web development and photography.">
+    <!-- the site answers on miscstudio.nl and on github.io; this names the
+         one that should be indexed -->
+    <link rel="canonical" href="https://miscstudio.nl/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miscstudio.nl/">
+    <meta property="og:site_name" content="MISC STUDIO">
+    <meta property="og:title" content="MISC STUDIO — Mitchell Scholte, Creative Developer">
+    <meta property="og:description" content="Designer who codes, near Amsterdam. UX design, web development and photography.">
+    <meta property="og:image" content="https://miscstudio.nl/nomi-logo.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Tells Google that this site and that person are the same thing, so
+         a search for the name can surface the studio and the other way
+         round. sameAs is the list to keep current — it is how the two get
+         tied to the profiles that already rank. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://miscstudio.nl/",
+      "name": "MISC STUDIO",
+      "author": {
+        "@type": "Person",
+        "name": "Mitchell Scholte",
+        "url": "https://miscstudio.nl/about.html",
+        "jobTitle": "Creative Developer",
+        "address": { "@type": "PostalAddress", "addressLocality": "Hoofddorp", "addressCountry": "NL" },
+        "sameAs": [
+          "https://github.com/MitchellKevin"
+        ]
+      }
+    }
+    </script>
 </head>
 <body>
   <!-- Loading screen: geometric shapes morph into "MISC" (GSAP MorphSVG) -->
@@ -86,7 +127,19 @@
     <canvas class="hero__particles" aria-hidden="true"></canvas>
     <div class="container">
       <div class="title-block">
-        <div class="title-h1">
+        <!-- The page's <h1>, and the only place the sentence exists in one
+             piece. The animated version below is split into "Go/od/des/ign"
+             for the slide-in masks — fine to look at, useless to read: a
+             crawler or a screen reader gets four fragments, not a sentence.
+             So it is marked aria-hidden and the same words are stated once
+             here. Same text as the page shows, said properly.
+
+             It sits outside .title-h1 rather than wrapping it, because the
+             animated block is made of <div>s and an <h1> may not contain
+             them — and this way the hero's CSS and the GSAP timeline are
+             not touched at all. -->
+        <h1 class="sr-only">Good design earns trust</h1>
+        <div class="title-h1" aria-hidden="true">
           <!-- the chunks are paired into words so mobile can stack one word per
                line; the ids and their overflow masks are untouched, so the
                slide-in timeline in nomi-studio.js still targets the same spans -->

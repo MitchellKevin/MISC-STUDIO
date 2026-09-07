@@ -1,0 +1,6 @@
+# Everything is public and crawlable. The sitemap is the important line:
+# it is what you hand to Google Search Console.
+User-agent: *
+Allow: /
+
+Sitemap: https://miscstudio.nl/sitemap.xml

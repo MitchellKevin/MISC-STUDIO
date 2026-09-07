@@ -16,6 +16,37 @@
     <link rel="stylesheet" href="nomi-studio.css">
     <link rel="stylesheet" href="about.css">
     <title>About — Mitchell Scholte</title>
+    <link rel="canonical" href="https://miscstudio.nl/about.html">
+
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="https://miscstudio.nl/about.html">
+    <meta property="og:site_name" content="MISC STUDIO">
+    <meta property="og:title" content="About — Mitchell Scholte">
+    <meta property="og:description" content="Designer who codes. Technical Computer Science, then Communication &amp; Multimedia Design, and never really picked a side.">
+    <meta property="og:image" content="https://miscstudio.nl/img/about/portrait.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- The page is about a person, and says so. This is the page most
+         likely to answer a search for the name, so the name, the job and
+         the place are stated as data as well as as copy. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      "mainEntity": {
+        "@type": "Person",
+        "name": "Mitchell Scholte",
+        "url": "https://miscstudio.nl/about.html",
+        "image": "https://miscstudio.nl/img/about/portrait.jpg",
+        "jobTitle": "Creative Developer",
+        "worksFor": { "@type": "Organization", "name": "MISC STUDIO", "url": "https://miscstudio.nl/" },
+        "address": { "@type": "PostalAddress", "addressLocality": "Hoofddorp", "addressCountry": "NL" },
+        "sameAs": [
+          "https://github.com/MitchellKevin"
+        ]
+      }
+    }
+    </script>
 </head>
 <body class="about-page">
   <header class="header">
@@ -51,7 +82,11 @@
       <div class="ab__inner ab__inner--hero">
         <div class="ab__col ab__col--wide">
           <p class="ab__eyebrow">About</p>
-          <h1 class="ab__display"><span>Mitchell</span><span>Scholte</span></h1>
+          <!-- the space between the spans is load-bearing: without it the
+               heading reads as the single word "MitchellScholte", which is
+               not what anyone types into a search box. The spans are
+               display:block, so it costs nothing visually. -->
+          <h1 class="ab__display"><span>Mitchell</span> <span>Scholte</span></h1>
           <p class="ab__lead">
             Designer who codes. I started in Technical Computer Science, moved to
             Communication &amp; Multimedia Design, and never really picked a side.
