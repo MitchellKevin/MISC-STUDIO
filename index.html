@@ -873,11 +873,9 @@
   </section>
 
 
-  <!-- Blog highlights. The three newest posts live here; the full archive with
-       its filter is on blog.html. PLACEHOLDER CONTENT — titles, excerpts and
-       dates are stand-ins, and blog/<slug>.html does not exist yet apart from
-       the template. Replace before publishing. -->
-  <!-- <section class="blog" id="blog">
+  <!-- Blog highlights: the newest posts, with the full archive and its
+       filter on blog.html. -->
+  <section class="blog" id="blog">
     <div class="container">
       <div class="blog__head">
         <div>
@@ -887,76 +885,45 @@
         <a class="blog__cta" href="blog.html">All posts <span aria-hidden="true">→</span></a>
       </div>
       <div class="blog__grid">
-          <a class="bpost" href="blog/pinning-without-jank.html">
-            <span class="bpost__meta"><span class="bpost__tag">Development</span><time datetime="2026-02-04">2026-02-04</time><span aria-hidden="true">·</span>6 min</span>
-            <span class="bpost__title">Pinning with ScrollTrigger, without the jank</span>
-            <span class="bpost__excerpt">Five pinned sections on one page that still scroll smoothly. What worked, and what I threw away.</span>
+          <a class="bpost" href="blog/nextjs-course.html">
+            <span class="bpost__meta"><span class="bpost__tag">Development</span><time datetime="2026-09-10">2026-09-10</time><span aria-hidden="true">·</span>16 min</span>
+            <span class="bpost__title">Fifteen chapters of Next.js, and what actually stuck</span>
+            <span class="bpost__excerpt">All fifteen chapters of the official course in my own words: routing, styling, data, rendering, streaming, mutations, errors, accessibility, auth and metadata.</span>
             <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
             <span class="bpost__media">
               <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-              <rect width="400" height="260" fill="#0b0b0b"/>
-              <g fill="#141414" stroke="#5f5f5f" stroke-width="2">
-                <rect x="42" y="30" width="228" height="62" rx="8"/>
-                <rect x="42" y="106" width="228" height="62" rx="8" fill="#1f1f1f" stroke="#d8d8d8"/>
-                <rect x="42" y="182" width="228" height="62" rx="8"/>
-              </g>
-              <g stroke="#8f8f8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
-                <path d="M330 38 V206" stroke-dasharray="5 11"/>
-                <path d="M320 194 l10 16 10-16"/>
-              </g>
-              </svg>
-              <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
-            </span>
-          </a>
-          <a class="bpost" href="blog/monochrome-contrast.html">
-            <span class="bpost__meta"><span class="bpost__tag">Design</span><time datetime="2026-01-19">2026-01-19</time><span aria-hidden="true">·</span>4 min</span>
-            <span class="bpost__title">Contrast in a palette without colour</span>
-            <span class="bpost__excerpt">When everything is black, white or grey, hierarchy has to come from somewhere else. Here is how I get it.</span>
-            <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
-            <span class="bpost__media">
-              <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-              <rect width="400" height="260" fill="#0b0b0b"/>
-              <g>
-                <rect x="42" y="60" width="42" height="140" fill="#1c1c1c"/>
-                <rect x="94" y="60" width="42" height="140" fill="#333333"/>
-                <rect x="146" y="60" width="42" height="140" fill="#585858"/>
-                <rect x="198" y="60" width="42" height="140" fill="#8a8a8a"/>
-                <rect x="250" y="60" width="42" height="140" fill="#c2c2c2"/>
-                <rect x="302" y="60" width="56" height="140" fill="#ffffff"/>
-              </g>
-              <path d="M42 200 H358" stroke="#5f5f5f" stroke-width="2"/>
-              </svg>
-              <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
-            </span>
-          </a>
-          <a class="bpost" href="blog/pcb-bringup.html">
-            <span class="bpost__meta"><span class="bpost__tag">Hardware</span><time datetime="2025-12-08">2025-12-08</time><span aria-hidden="true">·</span>8 min</span>
-            <span class="bpost__title">Bringing up your own PCB without a debugger</span>
-            <span class="bpost__excerpt">Putting power on a board you designed yourself for the first time, and what to do when nothing happens.</span>
-            <span class="bpost__more">Read more <span class="bpost__arrow" aria-hidden="true">→</span></span>
-            <span class="bpost__media">
-              <svg class="bpost__cover" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-              <rect width="400" height="260" fill="#0b0b0b"/>
-              <g fill="none" stroke="#6f6f6f" stroke-width="2" stroke-linecap="round">
-                <path d="M40 76 H108 L136 104 H176"/>
-                <path d="M40 130 H176"/>
-                <path d="M40 184 H108 L136 156 H176"/>
-                <path d="M264 76 H332"/>
-                <path d="M264 130 H304 L332 158 H360"/>
-                <path d="M264 184 H332"/>
-              </g>
-              <rect x="176" y="88" width="88" height="84" rx="6" fill="#1c1c1c" stroke="#d8d8d8" stroke-width="2"/>
-              <g fill="#8f8f8f">
-                <circle cx="40" cy="76" r="6"/><circle cx="40" cy="130" r="6"/><circle cx="40" cy="184" r="6"/>
-                <circle cx="360" cy="76" r="6"/><circle cx="360" cy="158" r="6"/><circle cx="360" cy="184" r="6"/>
-              </g>
-              </svg>
+            <rect width="400" height="260" fill="#0b0b0b"/>
+            <!-- the address bar, and underneath it the folders that produced it -->
+            <rect x="42" y="30" width="316" height="42" rx="21" fill="#1f1f1f" stroke="#d8d8d8" stroke-width="2"/>
+            <g fill="#8f8f8f">
+              <rect x="66" y="45" width="54" height="12" rx="6"/>
+              <rect x="140" y="45" width="72" height="12" rx="6"/>
+              <rect x="232" y="45" width="60" height="12" rx="6"/>
+            </g>
+            <g fill="#5f5f5f">
+              <rect x="128" y="45" width="4" height="12" rx="2"/>
+              <rect x="220" y="45" width="4" height="12" rx="2"/>
+            </g>
+            <g fill="#141414" stroke="#5f5f5f" stroke-width="2">
+              <rect x="52" y="122" width="92" height="30" rx="7"/>
+              <rect x="94" y="168" width="92" height="30" rx="7"/>
+              <rect x="136" y="214" width="92" height="30" rx="7"/>
+            </g>
+            <g stroke="#5f5f5f" stroke-width="2" fill="none">
+              <path d="M66 152 V183 H94"/>
+              <path d="M108 198 V229 H136"/>
+            </g>
+            <g stroke="#8f8f8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <path d="M182 214 V98" stroke-dasharray="5 11"/>
+              <path d="M172 108 l10 -16 10 16"/>
+            </g>
+            </svg>
               <span class="bpost__glass" aria-hidden="true">Read article <span class="bpost__glass-arrow">→</span></span>
             </span>
           </a>
       </div>
     </div>
-  </section> -->
+  </section>
   
   <!-- Rates. One card per service rather than three invented tiers, so this
        section and the services carousel can never tell a different story. The

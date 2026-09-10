@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="All fifteen chapters of the official Next.js course, written up in my own words: routing, styling, data, rendering, streaming, mutations, errors, accessibility, auth and metadata.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../nomi-logo.png">
+    <script>
+      /* read the saved theme before first paint — otherwise a light-mode
+         reload flashes the black page for a frame */
+      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
+    </script>
+    <link rel="stylesheet" href="../nomi-studio.css">
+    <title>Fifteen chapters of Next.js, and what actually stuck — Mitchell Scholte</title>
+    <link rel="canonical" href="https://miscstudio.nl/blog/nextjs-course.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://miscstudio.nl/blog/nextjs-course.html">
+    <meta property="og:site_name" content="MISC STUDIO">
+    <meta property="og:title" content="Fifteen chapters of Next.js, and what actually stuck">
+    <meta property="og:description" content="The folder is the router, the server does the fetching, and the URL holds the state. Every chapter of the course, in my own words.">
+    <meta property="article:published_time" content="2026-09-10">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <header class="header">
+    <div class="flex-wrapper">
+      <div class="logo-wrap">
+        <a class="logo-link" href="../index.html" aria-label="Back to home">
+          <img class="logo-img" src="../nomi-logo.png" alt="">
+        </a>
+        <div class="logo-text">
+          <span class="btn-2">MITCHELL</span>
+          <span class="btn-2">SCHOLTE</span>
+        </div>
+      </div>
+      <ul class="header-menu">
+        <li class="header-menu__item header-text-1"><a href="../blog.html">Blog</a></li>
+        <li class="header-menu__item header-text-1"><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <article class="post">
+      <div class="container post__inner">
+        <a class="post__back" href="../blog.html"><span aria-hidden="true">←</span> All posts</a>
+
+        <!-- keep these three in sync with the card in blog.html -->
+        <p class="post__meta">
+          <span class="bpost__tag">Development</span>
+          <time datetime="2026-09-10">2026-09-10</time>
+          <span aria-hidden="true">·</span>
+          16 min
+        </p>
+        <h1 class="post__title">Fifteen chapters of Next.js, and what actually stuck</h1>
+
+        <div class="post__body">
+          <p>React hands you components and a way to render them, and then leaves the rest of the building to you: routing, fetching data, deciding what runs where, making any of it fast. Next.js is a set of answers to exactly those questions. It fills the gaps React leaves open so you can spend your time on the app instead of on the plumbing.</p>
+
+          <p>I worked through the official course and turned every chapter into a short write-up afterwards — partly so I could find things back later, partly because writing something down is the fastest way to discover you did not actually understand it. This is all fifteen of them, in order. For each one: what it does, why it exists, and how I use it.</p>
+
+          <h2>1. Getting started</h2>
+
+          <p>Every project starts with one command that puts a complete structure on disk: config files, an <code>/app</code> folder, and optional TypeScript support. No build system to wire up, no router to configure, no TypeScript config to write.</p>
+
+          <pre><code># new project
+npx create-next-app@latest my-app
+
+# run it
+cd my-app
+npm run dev
+# → http://localhost:3000</code></pre>
+
+          <p>The folder layout is worth learning early, because you see it in every Next.js project:</p>
+
+          <pre><code>my-app/
+├── app/
+│   ├── lib/          ← functions: data fetching, helpers
+│   ├── ui/           ← components: buttons, cards, tables
+│   └── page.tsx      ← the homepage (route: /)
+├── public/           ← images and static files
+└── next.config.ts</code></pre>
+
+          <p>This is also where TypeScript shows up: a layer on top of JavaScript that enforces types. In practice it stops you passing a string where a number is expected, and it tells you in the editor rather than in production.</p>
+
+          <p><strong>The idea:</strong> Next.js gives you a finished foundation, so you can start on features instead of on infrastructure.</p>
+
+          <h2>2. CSS styling</h2>
+
+          <p>A bare HTML page is not very inviting. There are several ways to style one, and the course walks through them rather than picking for you:</p>
+
+          <ul>
+            <li><strong>Global CSS</strong> — one stylesheet imported once, usually in the root layout, that applies everywhere. Good for base styles: fonts, resets.</li>
+            <li><strong>Tailwind</strong> — instead of writing separate CSS files, you add small reusable classes straight onto the element. It feels strange for about a day, and then you notice you have stopped inventing class names.</li>
+            <li><strong>CSS Modules</strong> — for when you would rather write ordinary CSS per component, without class names colliding across the app. Next.js generates unique names for you.</li>
+          </ul>
+
+          <p>Alongside those is <code>clsx</code>, a small library for applying class names conditionally — an invoice status that should be green when paid and grey when pending, written readably instead of as a stack of ternaries.</p>
+
+          <pre><code>// Tailwind: styling straight in the className
+export default function Card() {
+  return (
+    &lt;div className="flex items-center gap-2 rounded-lg bg-white p-4 shadow"&gt;
+      &lt;p className="text-sm text-gray-600"&gt;Example text&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+          <pre><code>// clsx: className depending on a status
+import clsx from 'clsx';
+
+function Status({ status }: { status: 'paid' | 'open' }) {
+  return (
+    &lt;span
+      className={clsx('rounded-full px-2 py-1 text-sm', {
+        'bg-green-500 text-white': status === 'paid',
+        'bg-gray-100 text-gray-500': status === 'open',
+      })}
+    &gt;
+      {status}
+    &lt;/span&gt;
+  );
+}</code></pre>
+
+          <p><strong>The idea:</strong> pick the approach that suits you, and let <code>clsx</code> handle the parts that depend on state.</p>
+
+          <h2>3. Optimising fonts and images</h2>
+
+          <p>Two things that traditionally go wrong on websites.</p>
+
+          <p><strong>Fonts.</strong> When a custom typeface arrives after the page has already rendered, the text jumps size. That is Cumulative Layout Shift, and it is bad for the reader and for how Google rates the page. <code>next/font</code> fixes it by downloading the font at build time and serving it locally — no extra network request during the visit, and nothing to shift.</p>
+
+          <p><strong>Images.</strong> With a plain <code>&lt;img&gt;</code> you are responsible for responsiveness, multiple sizes for multiple screens, layout shift and lazy loading. The <code>&lt;Image&gt;</code> component from <code>next/image</code> does all of it: it converts the format (to WebP, for instance), sizes the image to the visitor's screen, and reserves the space so the page does not jump while it loads.</p>
+
+          <pre><code>// app/ui/fonts.ts — load a Google Font
+import { Inter } from 'next/font/google';
+export const inter = Inter({ subsets: ['latin'] });
+
+// app/layout.tsx — apply it to the whole app
+import { inter } from '@/app/ui/fonts';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    &lt;html lang="en"&gt;
+      &lt;body className={inter.className}&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+
+          <pre><code>import Image from 'next/image';
+
+&lt;Image
+  src="/hero.png"
+  width={1000}
+  height={760}
+  alt="Example image of the dashboard"
+/&gt;</code></pre>
+
+          <p><strong>The idea:</strong> Next.js takes the performance work you would normally have to research yourself and automates it — you just have to use the right component.</p>
+
+          <h2>4. Layouts and pages: file-based routing</h2>
+
+          <p>This is the one that reframes everything else. There is no router to configure and no route file to keep in sync: your folder structure <em>is</em> your URLs. A folder called <code>dashboard</code> with a <code>page.tsx</code> in it is reachable at <code>/dashboard</code>, and that is the whole mechanism.</p>
+
+          <p>Two filenames are special. <code>page.tsx</code> is what makes a route actually reachable and holds that page's content. <code>layout.tsx</code> is UI shared between pages — a sidebar that should appear on every dashboard screen.</p>
+
+          <pre><code>app/
+└── dashboard/
+    ├── layout.tsx     ← shared nav for every dashboard page
+    ├── page.tsx       ← route: /dashboard
+    └── customers/
+        └── page.tsx   ← route: /dashboard/customers</code></pre>
+
+          <pre><code>// app/dashboard/layout.tsx
+import SideNav from '@/app/ui/sidenav';
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    &lt;div className="flex h-screen flex-col md:flex-row"&gt;
+      &lt;SideNav /&gt;
+      &lt;div className="grow p-6"&gt;{children}&lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+          <p>The part I did not expect is <strong>partial rendering</strong>. Navigating between two pages inside the same layout only refreshes the page content — the layout itself is not re-rendered, so whatever state it was holding survives. An open menu stays open across a navigation without you writing anything to make that happen.</p>
+
+          <p>Every app also needs a root layout at <code>/app/layout.tsx</code>, which holds the outer <code>&lt;html&gt;</code> and <code>&lt;body&gt;</code> tags and therefore applies to everything.</p>
+
+          <p><strong>The idea:</strong> folders are routes, <code>page.tsx</code> is the content, <code>layout.tsx</code> is shared UI that does not have to re-render on navigation.</p>
+
+          <h2>5. Navigating between pages</h2>
+
+          <p>You could navigate with a plain <code>&lt;a&gt;</code> tag, but that reloads the whole page — slow, and unnecessary. The <code>&lt;Link&gt;</code> component from <code>next/link</code> looks almost identical in use but navigates client-side: only the part that changed is updated. Next.js goes further and prefetches links as they come into view, so the next page is largely ready before the click.</p>
+
+          <p>Alongside it is <code>usePathname()</code>, which tells you which route the visitor is on. The common use is marking the active item in a nav by comparing the current path with the link.</p>
+
+          <pre><code>'use client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import clsx from 'clsx';
+
+const links = [
+  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Customers', href: '/dashboard/customers' },
+];
+
+export default function NavLinks() {
+  const pathname = usePathname();
+
+  return (
+    &lt;&gt;
+      {links.map((link) =&gt; (
+        &lt;Link
+          key={link.href}
+          href={link.href}
+          className={clsx('block p-2', { 'bg-blue-100': pathname === link.href })}
+        &gt;
+          {link.name}
+        &lt;/Link&gt;
+      ))}
+    &lt;/&gt;
+  );
+}</code></pre>
+
+          <p><strong>The idea:</strong> use <code>&lt;Link&gt;</code> instead of <code>&lt;a&gt;</code> for fast client-side navigation, and <code>usePathname()</code> to know where the visitor is.</p>
+
+          <h2>6. Setting up a database</h2>
+
+          <p>Up to this chapter everything runs on placeholder data — loose JavaScript objects. Now it gets real: a PostgreSQL database. The course uses a Vercel marketplace integration, but the principle holds for any Postgres provider.</p>
+
+          <p>The steps are the ones any database project has: push the project to a Git repository (needed for deployment), create a database instance and store the connection string in environment variables — never hardcoded — and then <strong>seed</strong> it, using the placeholder data you already had to fill the database with initial rows.</p>
+
+          <pre><code># .env — connection details, never in your code
+POSTGRES_URL="postgresql://user:password@host:5432/database"</code></pre>
+
+          <pre><code>// app/lib/seed.ts (simplified)
+import { sql } from '@vercel/postgres';
+import { customers } from './placeholder-data';
+
+async function seedCustomers() {
+  for (const customer of customers) {
+    await sql`
+      INSERT INTO customers (name, email)
+      VALUES (${customer.name}, ${customer.email})
+    `;
+  }
+}</code></pre>
+
+          <p><strong>The idea:</strong> this chapter is the bridge between "fake data in code" and a real source the rest of the app can lean on.</p>
+
+          <h2>7. Fetching data</h2>
+
+          <p>With a database in place, you start filling the dashboard. There are two routes to the same result.</p>
+
+          <p>An <strong>API layer</strong> is a middle layer you build yourself — useful if other clients, a mobile app for instance, need the same data, or if a third party like an ORM handles it for you.</p>
+
+          <p><strong>Querying directly</strong> is possible when you work with Server Components, because they run on the server and therefore already have safe access to backend resources. No API layer purely as a courier, and no sensitive logic leaking into the browser.</p>
+
+          <p>The trap here is the <strong>network waterfall</strong>: requests that run one after another because you wrote them one after another, not because the second needs the first.</p>
+
+          <pre><code>// ✗ Waterfall — the second request waits for no good reason
+const customers = await getCustomers();
+const invoices  = await getInvoices();
+
+// ✓ Parallel — both start at once
+const [customers, invoices] = await Promise.all([
+  getCustomers(),
+  getInvoices(),
+]);</code></pre>
+
+          <pre><code>// Server Component: fetch directly, no API route in between
+export default async function DashboardPage() {
+  const invoices = await sql`SELECT * FROM invoices LIMIT 5`;
+  return &lt;InvoiceList invoices={invoices.rows} /&gt;;
+}</code></pre>
+
+          <p>Two lines that look nearly identical, and the difference is the sum of both requests versus the slower of the two.</p>
+
+          <p><strong>The idea:</strong> Server Components let you fetch safely and directly on the server, and fetching in parallel instead of in sequence keeps pages fast.</p>
+
+          <h2>8. Static versus dynamic rendering</h2>
+
+          <p>Once you are fetching data, a question follows: <em>when</em> does Next.js generate the HTML?</p>
+
+          <ul>
+            <li><strong>Static rendering</strong> — built during the build (or cached periodically). Very fast for the visitor and good for SEO, but the data can go stale, because the page is not regenerated per visit.</li>
+            <li><strong>Dynamic rendering</strong> — rendered on the server on every request, with the freshest data. Necessary for anything that differs per user, like a personal dashboard, or that changes constantly.</li>
+          </ul>
+
+          <pre><code>// Force a route to be dynamic — always fresh, never cached
+export const dynamic = 'force-dynamic';
+
+export default async function DashboardPage() {
+  const data = await getLatestData();
+  return &lt;Dashboard data={data} /&gt;;
+}</code></pre>
+
+          <p>The chapter also shows what happens when one of your requests is slow: without further work it blocks the entire page, because Next.js waits for <em>all</em> the data before showing anything.</p>
+
+          <p><strong>The idea:</strong> static for speed on content that rarely changes, dynamic for current and user-specific content — and an open problem: what do you do about slow requests?</p>
+
+          <h2>9. Streaming: don't wait for the slowest data</h2>
+
+          <p>Streaming is the answer to the question chapter 8 ends on. Instead of waiting until all the data is in, Next.js sends the page in pieces as they become ready. Fast parts appear immediately, slow parts follow when their data arrives, and nobody stares at a blank white page in the meantime.</p>
+
+          <p>Two building blocks. <code>loading.tsx</code> is a special file that automatically shows a loading state for a whole route while the page is prepared in the background. React's <code>&lt;Suspense&gt;</code> gives finer control: you wrap one specific slow component, give it a <code>fallback</code>, and the rest of the page is visible immediately while just that part shows a skeleton.</p>
+
+          <pre><code>// app/dashboard/loading.tsx — automatic loading state for the route
+export default function Loading() {
+  return &lt;p&gt;Loading…&lt;/p&gt;;
+}</code></pre>
+
+          <pre><code>// Finer-grained: only this one slow part shows a skeleton
+import { Suspense } from 'react';
+
+export default function DashboardPage() {
+  return (
+    &lt;div&gt;
+      &lt;FastWidget /&gt;
+      &lt;Suspense fallback={&lt;CardSkeleton /&gt;}&gt;
+        &lt;SlowRevenueCard /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+          <p>This chapter also introduces <strong>route groups</strong>: folders wrapped in parentheses that organise your routing without appearing in the URL — handy for grouping related <code>loading.tsx</code> files.</p>
+
+          <p><strong>The idea:</strong> show what is ready and let the rest stream in. The total load time is identical; it just stops feeling like waiting, which turns out to be most of what people mean by fast.</p>
+
+          <h2>10. Search and pagination</h2>
+
+          <p>For a list of invoices you want search and paging. The clever move in this chapter is to store the search term and page number in the <strong>URL</strong> — <code>?query=lee&amp;page=2</code> — rather than in local React state.</p>
+
+          <p>Why that is better: the page becomes shareable and bookmarkable with the exact search in it; with server-side rendering the server can fetch the right data straight from the URL, without extra client logic; and it is easier to test and to track in analytics, because the state is visible.</p>
+
+          <p>Three hooks do the work together. <code>useSearchParams()</code> reads the current parameters, <code>usePathname()</code> gives the current path so you know what to rebuild, and <code>useRouter()</code> navigates to the new URL as the user types.</p>
+
+          <pre><code>'use client';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+
+export default function SearchBar() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  function search(term: string) {
+    const params = new URLSearchParams(searchParams);
+    term ? params.set('query', term) : params.delete('query');
+    replace(`${pathname}?${params.toString()}`);
+  }
+
+  return &lt;input onChange={(e) =&gt; search(e.target.value)} placeholder="Search…" /&gt;;
+}</code></pre>
+
+          <pre><code>// The Server Component reads the same parameters to filter
+export default async function InvoicesPage({
+  searchParams,
+}: {
+  searchParams: Promise&lt;{ query?: string }&gt;;
+}) {
+  const { query = '' } = await searchParams;
+  const invoices = await searchInvoices(query);
+  return &lt;InvoiceList invoices={invoices} /&gt;;
+}</code></pre>
+
+          <p><strong>The idea:</strong> use the URL as the source of truth for filters and paging — it makes the app shareable and lets the server do the heavy lifting instead of the client.</p>
+
+          <h2>11. Mutating data with Server Actions</h2>
+
+          <p>So far you have mostly been <em>reading</em>. This chapter covers changing things: creating, updating and deleting invoices. The technology is React Server Actions — functions marked <code>'use server'</code> that run safely on the server but can be called straight from a form in your component, without you building an API endpoint.</p>
+
+          <p>In practice: you attach a Server Action to the <code>action</code> attribute of a <code>&lt;form&gt;</code>. The fields arrive as a <code>FormData</code> object, which you read and — preferably with type validation, via something like Zod — check before writing anything. After a change, Next.js still holds the old cached page, so <code>revalidatePath()</code> is how you say which route is now stale. For pages like "edit invoice X" you use <strong>dynamic route segments</strong>: a folder named <code>[id]</code>, so one component serves every invoice with the ID as a parameter.</p>
+
+          <pre><code>// app/lib/actions.ts
+'use server';
+import { revalidatePath } from 'next/cache';
+
+export async function createInvoice(formData: FormData) {
+  const customerId = formData.get('customerId');
+  const amount = Number(formData.get('amount'));
+
+  await sql`
+    INSERT INTO invoices (customer_id, amount, status)
+    VALUES (${customerId}, ${amount}, 'open')
+  `;
+
+  revalidatePath('/dashboard/invoices');
+}</code></pre>
+
+          <pre><code>// app/dashboard/invoices/new/page.tsx
+import { createInvoice } from '@/app/lib/actions';
+
+export default function NewInvoicePage() {
+  return (
+    &lt;form action={createInvoice}&gt;
+      &lt;input name="customerId" /&gt;
+      &lt;input name="amount" type="number" /&gt;
+      &lt;button type="submit"&gt;Create&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+
+          <p><strong>The idea:</strong> Server Actions connect forms directly to server logic without separate API routes, and <code>revalidatePath</code> makes sure people see the current data afterwards. Skip it and users keep seeing data they just changed, which is a confusing bug to chase.</p>
+
+          <h2>12. Handling errors properly</h2>
+
+          <p>Things go wrong eventually: a database is unreachable, or someone opens an invoice that does not exist. Next.js has two mechanisms.</p>
+
+          <p><code>error.tsx</code> goes in a route folder, and Next.js catches unexpected errors inside that segment and shows this fallback UI instead — without the whole application crashing.</p>
+
+          <p><code>notFound()</code> and <code>not-found.tsx</code> are for the different case where the resource simply is not there. Rather than an ugly error you call <code>notFound()</code>, and Next.js shows a proper "not found" page, the equivalent of a classic 404.</p>
+
+          <pre><code>// app/dashboard/invoices/error.tsx
+'use client';
+
+export default function Error({ reset }: { reset: () =&gt; void }) {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Something went wrong&lt;/h2&gt;
+      &lt;button onClick={() =&gt; reset()}&gt;Try again&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+          <pre><code>// Invoice not found → show the 404-style page
+import { notFound } from 'next/navigation';
+
+export default async function InvoicePage({ id }: { id: string }) {
+  const invoice = await getInvoice(id);
+  if (!invoice) notFound();
+
+  return &lt;InvoiceDetails invoice={invoice} /&gt;;
+}</code></pre>
+
+          <p><strong>The idea:</strong> catching errors at route level keeps the rest of the app working and always gives the visitor something they can understand instead of a broken page.</p>
+
+          <h2>13. Improving accessibility</h2>
+
+          <p>A good application works for everyone, including people using a screen reader or navigating without a mouse. Two sides to it.</p>
+
+          <p><strong>Automated checking</strong> with <code>eslint-plugin-jsx-a11y</code> warns you while you type about the common mistakes — an image without <code>alt</code> text, a form field without a label.</p>
+
+          <p><strong>Server-side form validation</strong>, because client-side validation can be bypassed and is therefore a convenience, not a guarantee. To show the resulting messages back to the user — and to the screen reader — you use React's <code>useActionState</code> hook, which tracks the state and errors of a Server Action.</p>
+
+          <pre><code>'use client';
+import { useActionState } from 'react';
+import { createInvoice } from '@/app/lib/actions';
+
+export default function InvoiceForm() {
+  const [state, formAction] = useActionState(createInvoice, { errors: {} });
+
+  return (
+    &lt;form action={formAction}&gt;
+      &lt;input name="amount" aria-describedby="amount-error" /&gt;
+      &lt;div id="amount-error" aria-live="polite"&gt;
+        {state.errors?.amount?.map((err: string) =&gt; &lt;p key={err}&gt;{err}&lt;/p&gt;)}
+      &lt;/div&gt;
+      &lt;button type="submit"&gt;Save&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+
+          <p><strong>The idea:</strong> accessibility is both correct HTML and ARIA — supported by linting — and reliable server-side validation with messages that actually reach the person who needs them.</p>
+
+          <h2>14. Adding authentication</h2>
+
+          <p>A dashboard should not be open to everyone. This chapter adds login with NextAuth.js (Auth.js), which handles the heavy parts — sessions, tokens, providers.</p>
+
+          <p>Two terms that are easy to blur together: <strong>authentication</strong> confirms <em>who</em> someone is; <strong>authorisation</strong> then decides <em>what</em> they may see or do.</p>
+
+          <p>To protect routes you use a proxy function that runs before every request, checks whether the visitor is signed in, and sends them to the login page if not.</p>
+
+          <pre><code>// auth.config.ts (simplified)
+export const authConfig = {
+  pages: { signIn: '/login' },
+  callbacks: {
+    authorized({ auth, request }: any) {
+      const signedIn = !!auth?.user;
+      const onDashboard = request.nextUrl.pathname.startsWith('/dashboard');
+      if (onDashboard) return signedIn;
+      return true;
+    },
+  },
+};</code></pre>
+
+          <pre><code>// middleware.ts — runs before every request
+import NextAuth from 'next-auth';
+import { authConfig } from './auth.config';
+
+export default NextAuth(authConfig).auth;
+
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+};</code></pre>
+
+          <p><strong>The idea:</strong> NextAuth handles the complicated side of logging in, while a proxy layer decides which routes are reachable without a valid session.</p>
+
+          <h2>15. Adding metadata</h2>
+
+          <p>The final chapter is about what search engines and social platforms see when they look at your page — which decides both whether you are findable and what your link looks like when it is shared.</p>
+
+          <p>Next.js has a built-in Metadata API. In the root layout you define a <code>metadata</code> object with a title and description that apply everywhere by default. To give a page its own title without repeating the company name every time, you use a <strong>title template</strong>: set it once in the root layout, and each page only supplies its own part.</p>
+
+          <p>The chapter also covers adding an Open Graph image — the preview that appears when your link is shared on WhatsApp or LinkedIn — and a favicon.</p>
+
+          <pre><code>// app/layout.tsx — default title + template for every page
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: { template: '%s | Acme Dashboard', default: 'Acme Dashboard' },
+  description: 'The official Next.js dashboard, built with the App Router.',
+};
+
+// app/dashboard/invoices/page.tsx — page-specific title
+export const metadata = { title: 'Invoices' };
+// Browser tab: "Invoices | Acme Dashboard"</code></pre>
+
+          <p>This one landed differently than it would have a month ago. I had just spent an afternoon writing titles, descriptions, canonical tags and structured data into this site by hand, one page at a time. Seeing the same job reduced to an exported object was a small, slightly annoying revelation.</p>
+
+          <p><strong>The idea:</strong> metadata is usually a few lines of configuration, but it largely determines how professional and how findable your application looks.</p>
+
+          <h2>The bigger picture</h2>
+
+          <p>Laid out end to end, the fifteen chapters have a shape:</p>
+
+          <ul>
+            <li><strong>Foundation</strong> (1–5) — set up the project, style it, route and navigate.</li>
+            <li><strong>Data</strong> (6–11) — connect a database, fetch, render deliberately, stream, filter, mutate.</li>
+            <li><strong>Finishing</strong> (12–15) — error handling, accessibility, authentication, metadata.</li>
+          </ul>
+
+          <p>That is not only a teaching order. It is roughly the order a real project grows in, which is probably why the course does not feel like a tour of features. You go from an empty page to something complete, secured and findable, in the sequence you would actually have hit those problems.</p>
+
+          <p>The theme running underneath all of it is that the work moves back to the server — fetching, mutating, validating, rendering — and the browser is left with less to do. React spent years pushing everything to the client. This is part of the swing back, and after fifteen chapters it reads less like a trend and more like the plumbing finally being put where it belongs.</p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <div class="footer__logo-row">
+            <img class="footer__logo-img" src="../nomi-logo.png" alt="">
+            <div class="footer__logo"><span>MITCHELL</span><span>SCHOLTE</span></div>
+          </div>
+          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
+          <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
+        </div>
+
+        <nav class="footer__nav">
+          <div class="footer__col">
+            <h4 class="footer__heading">Services</h4>
+            <a class="footer__link" href="../detail-pages/services/ux-design.html">UX Design</a>
+            <a class="footer__link" href="../detail-pages/services/web-development.html">Web Development</a>
+            <a class="footer__link" href="../detail-pages/services/photography.html">Photography</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Company</h4>
+            <a class="footer__link" href="../index.html#services">Services</a>
+            <a class="footer__link" href="../index.html#showcase">Work</a>
+            <a class="footer__link" href="../blog.html">Blog</a>
+            <a class="footer__link" href="../index.html#contact">Contact</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Elsewhere</h4>
+            <a class="footer__link" href="#">LinkedIn</a>
+            <a class="footer__link" href="#">Instagram</a>
+            <a class="footer__link" href="#">X (Twitter)</a>
+            <a class="footer__link" href="#">Dribbble</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
+        <span class="footer__made">Made in the Netherlands 🇳🇱</span>
+      </div>
+    </div>
+  </footer>
+    <script src="../theme-toggle.js"></script>
+</body>
+</html>

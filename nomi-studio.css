@@ -1250,6 +1250,14 @@ body {
   border-radius: 0.12rem;
   padding: 0.24rem;
   margin: 0.3rem 0;
+  /* The <pre> has to carry the mono font and size itself, not just leave it
+     to the <code> inside. An unstyled <pre> inherits the body's 1rem, and
+     that strut sets the height of every line box — so the code would render
+     at 0.145rem inside lines spaced for text seven times bigger, and an
+     ASCII folder tree would fall apart vertically. */
+  font-family: var(--mono-font);
+  font-size: 0.145rem;
+  line-height: 1.55;
 }
 .post__body code {
   font-family: var(--mono-font);
