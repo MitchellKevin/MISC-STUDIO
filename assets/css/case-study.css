@@ -1,0 +1,349 @@
+/* ------------------------------------------------------------------ */
+/* MISC STUDIO — project case study.                                    */
+/* Sits on top of ../services/services.css (header, footer, buttons,    */
+/* CTA, tokens). Only the case-study sections live here.                */
+/* ------------------------------------------------------------------ */
+
+/* ---------- Hero ---------- */
+/* Tall so there is scroll to drive the card open; case-study.js sets the
+   real min-height from its scroll range (longer when there is a gallery). */
+.cs-hero {
+  position: relative;
+  min-height: calc(1000px + 100vh);
+}
+/* --p is the card's progress from resting card (0) to full screen (1),
+   tweened by case-study.js. --w0 / --h0 / --y0 are the resting card: about
+   the shape of a screenshot, under the title. */
+.cs-hero__sticky {
+  --p: 0;
+  --w0: min(69vh, 84vw);
+  --h0: 46vh;
+  --y0: 46vh;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+.cs-hero__caption {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--y0);
+  padding: 1.04rem 0.4rem 0.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.cs-hero__label {
+  font-size: 0.14rem;
+  font-weight: 600;
+  letter-spacing: 0.02rem;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.2rem;
+}
+.cs-hero__title {
+  max-width: 12rem;
+  font-size: min(1.1rem, 11vh);
+  line-height: 0.95;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+/* the card: grows from the resting size to the whole screen with --p */
+.cs-hero__frame {
+  position: absolute;
+  top: calc(var(--y0) * (1 - var(--p)));
+  left: calc((100% - var(--w0)) / 2 * (1 - var(--p)));
+  width: calc(var(--w0) + (100% - var(--w0)) * var(--p));
+  height: calc(var(--h0) + (100% - var(--h0)) * var(--p));
+  border-radius: calc(0.24rem * (1 - var(--p)));
+  overflow: hidden;
+  background: var(--surface);
+}
+/* the whole shot is always visible (contain); a blurred copy fills
+   whatever space is left around it, so nothing gets cropped on any screen */
+.cs-hero__backdrop,
+.cs-hero__img {
+  position: absolute;
+  max-width: none;
+}
+.cs-hero__backdrop {
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  object-fit: cover;
+  filter: blur(40px) saturate(1.2);
+  opacity: 0.8;
+}
+.cs-hero__img {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ---------- Gallery — shots that drift past the hero ---------- */
+/* the top padding is at least the 200px the first shot starts raised by
+   (PARALLAX in case-study.js), so it stays clear of the card on load */
+.cs-gallery {
+  position: relative;
+  z-index: 1;
+  max-width: 10.24rem;
+  margin: 0 auto;
+  padding: max(2rem, 220px) 0.4rem 0;
+}
+.cs-shot__frame {
+  overflow: hidden;
+  border-radius: 0.12rem;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 0.24rem 0.6rem var(--shadow-color);
+  will-change: transform, opacity;
+}
+.cs-shot img {
+  width: 100%;
+}
+/* small left, wide centre, small right, medium offset */
+.cs-shot:nth-child(4n + 1) { width: 33.333%; }
+.cs-shot:nth-child(4n + 2) { width: 66.666%; margin: 0 auto; }
+.cs-shot:nth-child(4n + 3) { width: 33.333%; margin-left: auto; }
+.cs-shot:nth-child(4n + 4) { width: 41.666%; margin-left: 0.96rem; }
+
+/* ---------- Overview ---------- */
+.cs-overview {
+  position: relative;
+  z-index: 1;
+  padding: 1.2rem 0 0.8rem;
+}
+.cs-overview__inner {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1rem;
+  align-items: end;
+}
+.cs-overview__title {
+  font-size: 0.44rem;
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--ink);
+}
+.cs-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem 0.4rem;
+  margin-bottom: 0.44rem;
+}
+.cs-meta > div {
+  border-top: 1px solid var(--line);
+  padding-top: 0.14rem;
+}
+.cs-meta dt {
+  font-size: 0.12rem;
+  font-weight: 600;
+  letter-spacing: 0.015rem;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 0.06rem;
+}
+.cs-meta dd {
+  font-size: 0.17rem;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+/* ---------- Story ---------- */
+.cs-story {
+  padding: 0.2rem 0 0.8rem;
+}
+.cs-chapters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  margin-top: 0.1rem;
+}
+.cs-chapter {
+  border-top: 1px solid var(--line);
+  padding-top: 0.3rem;
+}
+.cs-chapter__num {
+  display: block;
+  font-size: 0.14rem;
+  font-weight: 600;
+  color: var(--blue);
+}
+.cs-chapter__heading {
+  font-size: 0.3rem;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0.1rem 0 0.16rem;
+}
+.cs-chapter__body {
+  font-size: 0.17rem;
+  line-height: 0.28rem;
+  color: var(--muted);
+}
+
+/* ---------- Next project ---------- */
+.cs-next {
+  padding: 0 0 1.2rem;
+}
+/* white text over a dark fade in both themes: it sits on a photo */
+.cs-next__card {
+  position: relative;
+  display: block;
+  aspect-ratio: 21 / 9;
+  border-radius: 0.3rem;
+  overflow: hidden;
+  background: var(--surface);
+  color: #fff;
+}
+.cs-next__card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.75));
+}
+.cs-next__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.cs-next__card:hover .cs-next__img {
+  transform: scale(1.04);
+}
+.cs-next__text {
+  position: absolute;
+  z-index: 1;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.44rem;
+}
+.cs-next__label {
+  display: block;
+  font-size: 0.14rem;
+  font-weight: 600;
+  letter-spacing: 0.02rem;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 0.1rem;
+}
+.cs-next__title {
+  display: block;
+  font-size: 0.7rem;
+  line-height: 1;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .cs-hero__sticky {
+    --w0: calc(100vw - 1.2rem);
+    --h0: calc((100vw - 1.2rem) / 1.4);
+    --y0: 46vh;
+  }
+  .cs-hero__caption {
+    padding: 2.2rem 0.6rem 0.4rem;
+  }
+  .cs-hero__label {
+    font-size: 0.4rem;
+    margin-bottom: 0.3rem;
+  }
+  .cs-hero__title {
+    font-size: 1.5rem;
+  }
+  .cs-hero__frame {
+    border-radius: calc(0.4rem * (1 - var(--p)));
+  }
+
+  /* rem follows the viewport width, so the desktop cap would squeeze the
+     gallery to a strip on a phone */
+  .cs-gallery {
+    max-width: none;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+  }
+  .cs-shot__frame {
+    border-radius: 0.24rem;
+  }
+  .cs-shot:nth-child(4n + 1),
+  .cs-shot:nth-child(4n + 3) { width: 45%; }
+  .cs-shot:nth-child(4n + 2) { width: 85%; }
+  .cs-shot:nth-child(4n + 4) { width: 60%; margin-left: 1.2rem; }
+
+  .cs-overview {
+    padding: 2rem 0 1.2rem;
+  }
+  .cs-overview__inner {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .cs-overview__title {
+    font-size: 0.8rem;
+  }
+  .cs-meta {
+    gap: 0.6rem 0.5rem;
+    margin-bottom: 0.9rem;
+  }
+  .cs-meta > div {
+    padding-top: 0.3rem;
+  }
+  .cs-meta dt {
+    font-size: 0.36rem;
+    margin-bottom: 0.12rem;
+  }
+  .cs-meta dd {
+    font-size: 0.5rem;
+  }
+
+  .cs-story {
+    padding: 0.4rem 0 1.2rem;
+  }
+  .cs-chapters {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+  .cs-chapter {
+    padding-top: 0.6rem;
+  }
+  .cs-chapter__num {
+    font-size: 0.4rem;
+  }
+  .cs-chapter__heading {
+    font-size: 0.8rem;
+    margin: 0.2rem 0 0.3rem;
+  }
+  .cs-chapter__body {
+    font-size: 0.5rem;
+    line-height: 0.8rem;
+  }
+
+  .cs-next {
+    padding-bottom: 2rem;
+  }
+  .cs-next__card {
+    aspect-ratio: 4 / 3;
+    border-radius: 0.4rem;
+  }
+  .cs-next__text {
+    left: 0.6rem;
+    right: 0.6rem;
+    bottom: 0.6rem;
+  }
+  .cs-next__label {
+    font-size: 0.38rem;
+    margin-bottom: 0.2rem;
+  }
+  .cs-next__title {
+    font-size: 1.1rem;
+  }
+}

@@ -6,20 +6,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../../nomi-logo.png">
+    <link rel="icon" type="image/png" href="../../assets/img/brand/logo.png">
     <script>
       /* read the saved theme before first paint — otherwise a light-mode
          reload flashes the black page for a frame */
       (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
     </script>
-    <link rel="stylesheet" href="services.css">
+    <link rel="stylesheet" href="../../assets/css/services.css">
     <title>UX Design — MISC STUDIO</title>
 </head>
 <body>
   <svg class="goo-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><filter id="goo"><feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix><feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend></filter></defs></svg>
   <header class="site-header">
     <a class="site-header__logo" href="../../index.html">
-      <img src="../../nomi-logo.png" alt="">
+      <img src="../../assets/img/brand/logo.png" alt="">
       <span class="site-header__name"><span>MISC</span><span>STUDIO</span></span>
     </a>
     <nav class="site-header__nav">
@@ -129,9 +129,6 @@
         <div class="more-grid"><a class="more-card" href="web-development.html">
             <span><span class="more-card__label">Service 02</span><span class="more-card__title">Web Development</span></span>
             <span class="more-card__arrow">→</span>
-          </a><a class="more-card" href="photography.html">
-            <span><span class="more-card__label">Service 03</span><span class="more-card__title">Photography</span></span>
-            <span class="more-card__arrow">→</span>
           </a></div>
       </div>
     </section>
@@ -142,7 +139,7 @@
       <div class="footer__top">
         <div class="footer__brand">
           <div class="footer__logo-row">
-            <img class="footer__logo-img" src="../../nomi-logo.png" alt="">
+            <img class="footer__logo-img" src="../../assets/img/brand/logo.png" alt="">
             <div class="footer__logo"><span>MISC</span><span>STUDIO</span></div>
           </div>
           <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
@@ -152,7 +149,6 @@
             <h4 class="footer__heading">Services</h4>
             <a class="footer__link" href="ux-design.html">UX Design</a>
             <a class="footer__link" href="web-development.html">Web Development</a>
-            <a class="footer__link" href="photography.html">Photography</a>
           </div>
           <div class="footer__col">
             <h4 class="footer__heading">Company</h4>
@@ -176,8 +172,8 @@
   </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
-    <script src="../../page-transition.js"></script>
-    <script src="services.js"></script>
-    <script src="../../theme-toggle.js"></script>
+    <script src="../../assets/js/shared/page-transition.js"></script>
+    <script src="../../assets/js/services/services.js"></script>
+    <script src="../../assets/js/shared/theme-toggle.js"></script>
 </body>
 </html>

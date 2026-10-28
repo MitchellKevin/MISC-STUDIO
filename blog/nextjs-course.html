@@ -7,13 +7,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../nomi-logo.png">
+    <link rel="icon" type="image/png" href="../assets/img/brand/logo.png">
     <script>
       /* read the saved theme before first paint — otherwise a light-mode
          reload flashes the black page for a frame */
       (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
     </script>
-    <link rel="stylesheet" href="../nomi-studio.css">
+    <link rel="stylesheet" href="../assets/css/nomi-studio.css">
     <title>Fifteen chapters of Next.js, and what actually stuck — Mitchell Scholte</title>
     <link rel="canonical" href="https://miscstudio.nl/blog/nextjs-course.html">
 
@@ -30,7 +30,7 @@
     <div class="flex-wrapper">
       <div class="logo-wrap">
         <a class="logo-link" href="../index.html" aria-label="Back to home">
-          <img class="logo-img" src="../nomi-logo.png" alt="">
+          <img class="logo-img" src="../assets/img/brand/logo.png" alt="">
         </a>
         <div class="logo-text">
           <span class="btn-2">MITCHELL</span>
@@ -548,7 +548,7 @@ export const metadata = { title: 'Invoices' };
       <div class="footer__top">
         <div class="footer__brand">
           <div class="footer__logo-row">
-            <img class="footer__logo-img" src="../nomi-logo.png" alt="">
+            <img class="footer__logo-img" src="../assets/img/brand/logo.png" alt="">
             <div class="footer__logo"><span>MITCHELL</span><span>SCHOLTE</span></div>
           </div>
           <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
@@ -560,7 +560,6 @@ export const metadata = { title: 'Invoices' };
             <h4 class="footer__heading">Services</h4>
             <a class="footer__link" href="../detail-pages/services/ux-design.html">UX Design</a>
             <a class="footer__link" href="../detail-pages/services/web-development.html">Web Development</a>
-            <a class="footer__link" href="../detail-pages/services/photography.html">Photography</a>
           </div>
           <div class="footer__col">
             <h4 class="footer__heading">Company</h4>
@@ -585,6 +584,6 @@ export const metadata = { title: 'Invoices' };
       </div>
     </div>
   </footer>
-    <script src="../theme-toggle.js"></script>
+    <script src="../assets/js/shared/theme-toggle.js"></script>
 </body>
 </html>

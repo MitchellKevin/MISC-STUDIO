@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../../assets/img/brand/logo.png">
+    <script>
+      /* read the saved theme before first paint — otherwise a light-mode
+         reload flashes the black page for a frame */
+      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
+    </script>
+    <!-- header, footer, buttons and CTA come from the service pages -->
+    <link rel="stylesheet" href="../../assets/css/services.css">
+    <link rel="stylesheet" href="../../assets/css/case-study.css">
+    <!-- case-study.js replaces this with the project's name -->
+    <title>Case study — MISC STUDIO</title>
+</head>
+<body>
+  <svg class="goo-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><filter id="goo"><feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix><feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend></filter></defs></svg>
+  <header class="site-header">
+    <a class="site-header__logo" href="../../index.html">
+      <img src="../../assets/img/brand/logo.png" alt="">
+      <span class="site-header__name"><span>MISC</span><span>STUDIO</span></span>
+    </a>
+    <nav class="site-header__nav">
+      <a href="../../index.html#showcase">All work</a>
+      <a class="cs-jump" href="#details">Project details <span aria-hidden="true">→</span></a>
+    </nav>
+  </header>
+
+  <!-- Everything inside [data-cs] is filled from case-studies.js by
+       case-study.js, picked by the ?project=<slug> in the URL. -->
+  <main class="cs">
+    <!-- The hero: the title over a card holding the whole project shot. As
+         you scroll the card grows to fill the screen (case-study.js drives
+         --p from 0 to 1; the CSS turns that into the card's size), and a
+         project's gallery, if it has one, drifts past it. -->
+    <section class="cs-hero">
+      <div class="cs-hero__sticky">
+        <div class="cs-hero__caption">
+          <span class="cs-hero__label" data-cs="label"></span>
+          <h1 class="cs-hero__title" data-cs="title"></h1>
+        </div>
+        <div class="cs-hero__frame">
+          <img class="cs-hero__backdrop" data-cs="image" alt="" aria-hidden="true">
+          <img class="cs-hero__img" data-cs="image" alt="">
+        </div>
+      </div>
+      <div class="cs-gallery" data-cs-gallery hidden></div>
+    </section>
+
+    <section class="cs-overview" id="details">
+      <div class="container cs-overview__inner">
+        <div>
+          <span class="section-label">The project</span>
+          <h2 class="cs-overview__title" data-cs="intro"></h2>
+        </div>
+        <div class="cs-overview__side">
+          <dl class="cs-meta" data-cs-facts></dl>
+          <a class="btn blob-btn" data-cs="live" target="_blank" rel="noopener">Visit the live site ↗<span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="cs-story">
+      <div class="container">
+        <span class="section-label">How it came together</span>
+        <div class="cs-chapters" data-cs-story></div>
+      </div>
+    </section>
+
+    <section class="detail-cta">
+      <div class="container">
+        <div class="detail-cta__inner">
+          <h2 class="detail-cta__title">Got a project like this?</h2>
+          <a class="btn blob-btn btn--light" href="../../index.html#contact">Get in touch<span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="cs-next">
+      <div class="container">
+        <a class="cs-next__card" data-cs="next">
+          <img class="cs-next__img" data-cs="next-image" alt="">
+          <span class="cs-next__text">
+            <span class="cs-next__label">Next project</span>
+            <span class="cs-next__title"><span data-cs="next-title"></span> <span aria-hidden="true">→</span></span>
+          </span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <div class="footer__logo-row">
+            <img class="footer__logo-img" src="../../assets/img/brand/logo.png" alt="">
+            <div class="footer__logo"><span>MISC</span><span>STUDIO</span></div>
+          </div>
+          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
+        </div>
+        <nav class="footer__nav">
+          <div class="footer__col">
+            <h4 class="footer__heading">Services</h4>
+            <a class="footer__link" href="../services/ux-design.html">UX Design</a>
+            <a class="footer__link" href="../services/web-development.html">Web Development</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Company</h4>
+            <a class="footer__link" href="../../index.html">Home</a>
+            <a class="footer__link" href="../../index.html#showcase">Work</a>
+            <a class="footer__link" href="../../index.html#contact">Contact</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Elsewhere</h4>
+            <a class="footer__link" href="#">LinkedIn</a>
+            <a class="footer__link" href="#">Instagram</a>
+            <a class="footer__link" href="#">X (Twitter)</a>
+          </div>
+        </nav>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 Mitchell Scholte. All rights reserved.</span>
+        <span>Made in the Netherlands 🇳🇱</span>
+      </div>
+    </div>
+  </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+    <script src="../../assets/js/shared/page-transition.js"></script>
+    <script src="../../assets/js/work/case-studies.js"></script>
+    <script src="../../assets/js/work/case-study.js"></script>
+    <script src="../../assets/js/shared/theme-toggle.js"></script>
+</body>
+</html>

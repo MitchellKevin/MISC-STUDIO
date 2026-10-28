@@ -1,6 +1,6 @@
 # Lift a product shot off a smooth studio backdrop.
 #
-#   python3 tools/cutout.py oris-aquis.jpg img/about/oris-aquis.png
+#   python3 tools/cutout.py photo.jpg assets/img/about/photo.png
 #
 # Polished steel defeats the obvious approaches: it is neither consistently
 # brighter nor more detailed than a grey backdrop, so neither a brightness

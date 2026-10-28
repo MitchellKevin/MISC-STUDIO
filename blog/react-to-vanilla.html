@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Component libraries assume React, framer-motion and Tailwind. This site has none of them. How I port their components to plain JavaScript and GSAP, and what I leave out on purpose.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../assets/img/brand/logo.png">
+    <script>
+      /* read the saved theme before first paint — otherwise a light-mode
+         reload flashes the black page for a frame */
+      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
+    </script>
+    <link rel="stylesheet" href="../assets/css/nomi-studio.css">
+    <title>Porting React components to a site without React — Mitchell Scholte</title>
+    <link rel="canonical" href="https://miscstudio.nl/blog/react-to-vanilla.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://miscstudio.nl/blog/react-to-vanilla.html">
+    <meta property="og:site_name" content="MISC STUDIO">
+    <meta property="og:title" content="Porting React components to a site without React">
+    <meta property="og:description" content="Read what a component does, not how it is written. Then rebuild that with the tools the page already has.">
+    <meta property="article:published_time" content="2026-10-28">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <header class="header">
+    <div class="flex-wrapper">
+      <div class="logo-wrap">
+        <a class="logo-link" href="../index.html" aria-label="Back to home">
+          <img class="logo-img" src="../assets/img/brand/logo.png" alt="">
+        </a>
+        <div class="logo-text">
+          <span class="btn-2">MITCHELL</span>
+          <span class="btn-2">SCHOLTE</span>
+        </div>
+      </div>
+      <ul class="header-menu">
+        <li class="header-menu__item header-text-1"><a href="../blog.html">Blog</a></li>
+        <li class="header-menu__item header-text-1"><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <article class="post">
+      <div class="container post__inner">
+        <a class="post__back" href="../blog.html"><span aria-hidden="true">←</span> All posts</a>
+
+        <!-- keep these three in sync with the card in blog.html -->
+        <p class="post__meta">
+          <span class="bpost__tag">Development</span>
+          <time datetime="2026-10-28">2026-10-28</time>
+          <span aria-hidden="true">·</span>
+          7 min
+        </p>
+        <h1 class="post__title">Porting React components to a site without React</h1>
+
+        <div class="post__body">
+          <p>This site is plain HTML, CSS and JavaScript. No build step, no framework, and GSAP from a CDN for the animation. That works well right up until I find a component I like on a site such as 21st.dev or shadcn, because those almost always come as React, styled with Tailwind and animated with framer-motion.</p>
+
+          <p>At that point there are two options. Add a toolchain to the whole site for one component, or port the component. I port. The liquid glass carousel under "Recent work" on the homepage and the scrolling hero on every case study page both started as React components. This is how I go about it.</p>
+
+          <h2>1. Read what it does, not how it is written</h2>
+
+          <p>The first step is not code. I write down what the component actually does on screen, one behaviour per line. For the case study hero, the original "SmoothScrollHero" came down to four things:</p>
+
+          <ul>
+            <li>an image starts as a window in the middle of the screen and opens up as you scroll</li>
+            <li>the image zooms out slightly while it opens</li>
+            <li>a few smaller images drift past at different speeds</li>
+            <li>the content below rises in as it comes into view</li>
+          </ul>
+
+          <p>That list is the spec. The hooks, the props and the JSX are just one way of producing it, and most of them have nothing to do with how it looks.</p>
+
+          <h2>2. Map the hooks onto ScrollTrigger</h2>
+
+          <p>Framer-motion's scroll animations follow one pattern: read the scroll position with <code>useScroll</code>, map it onto a value with <code>useTransform</code>, and put that value on an element. GSAP's ScrollTrigger does the same thing as a tween with <code>scrub</code> switched on: the scroll position drives the tween's progress directly.</p>
+
+          <pre><code>// framer-motion
+const { scrollY } = useScroll();
+const opacity = useTransform(scrollY, [1500, 2000], [1, 0]);
+return &lt;motion.div style={{ opacity }} /&gt;;
+
+// GSAP: the same thing, on an element that is already in the HTML
+gsap.fromTo('.hero', { autoAlpha: 1 }, {
+  autoAlpha: 0,
+  ease: 'none',
+  scrollTrigger: { start: 1500, end: 2000, scrub: true },
+});</code></pre>
+
+          <p>The rest of the translations are short:</p>
+
+          <ul>
+            <li><strong><code>whileInView</code></strong> becomes a ScrollTrigger with a start such as <code>'top 88%'</code>, without scrub, so it plays once when the element comes in.</li>
+            <li><strong><code>useMotionTemplate</code></strong>, which builds a string like a <code>clip-path</code> out of moving numbers, is not needed. GSAP interpolates the numbers inside a string by itself, as long as both ends have the same shape.</li>
+            <li><strong><code>useRef</code></strong> becomes <code>querySelector</code>, and <strong><code>useState</code></strong> usually becomes a class on an element that the CSS responds to.</li>
+          </ul>
+
+          <p><strong>The idea:</strong> most scroll animation in React is "this value follows the scroll position", and that is exactly what a scrubbed tween is.</p>
+
+          <h2>3. One number, and let CSS do the rest</h2>
+
+          <p>Animating five properties in step from JavaScript gets messy, and it puts layout maths in two places. What I do instead is animate a single custom property from 0 to 1 and let CSS work out everything else from it.</p>
+
+          <pre><code>/* the card grows from its resting size to the full screen as --p goes 0 → 1 */
+.cs-hero__frame {
+  top:    calc(var(--y0) * (1 - var(--p)));
+  width:  calc(var(--w0) + (100% - var(--w0)) * var(--p));
+  height: calc(var(--h0) + (100% - var(--h0)) * var(--p));
+  border-radius: calc(0.24rem * (1 - var(--p)));
+}</code></pre>
+
+          <pre><code>gsap.fromTo(sticky, { '--p': 0 }, {
+  '--p': 1,
+  ease: 'none',
+  scrollTrigger: { start: 0, end: range, scrub: 0.4 },
+});</code></pre>
+
+          <p>The resting size lives in the CSS, so a media query can give phones a different card without touching the script. If animation is switched off, <code>--p</code> stays at 0 and the card simply sits there. Nothing breaks.</p>
+
+          <h2>4. Put the data in the HTML, not in props</h2>
+
+          <p>A React component gets its content as props. On a static site the HTML is already the content, so I let the component read it from there. The carousel takes its projects from the plain project links in the page: image, title, link. Those links are also what you get if your browser cannot run WebGL, so the fallback and the real thing never disagree, and adding a project means adding one link.</p>
+
+          <h2>5. Leave things out on purpose</h2>
+
+          <p>A component built as a demo fills a screen on its own. On a real page it has to share the scroll with everything around it, and that changes what is worth keeping:</p>
+
+          <ul>
+            <li><strong>Smooth-scrolling libraries.</strong> The hero component imported Lenis. The rest of this site scrolls natively, and one page that suddenly feels different under the mouse wheel is worse than no smoothing at all, so it went.</li>
+            <li><strong>Scroll hijacking.</strong> The original carousel turned the vertical mouse wheel into sideways movement, which traps you in the section. In my version only sideways swipes move the row and the normal wheel keeps scrolling the page.</li>
+            <li><strong>Work nobody sees.</strong> The carousel is only built when the section comes into view, using an <code>IntersectionObserver</code>. Visitors who never scroll that far never download the textures.</li>
+          </ul>
+
+          <h2>6. Keep reduced motion in mind</h2>
+
+          <p>Every port checks <code>prefers-reduced-motion</code>. The page should still make sense with the motion removed: the hero becomes a single screen with the image already open, the gallery images sit still, and content fades in instead of sliding.</p>
+
+          <p><strong>The idea:</strong> a port is a chance to fit the component to the page it lives on, not just a translation. The parts I leave out matter as much as the parts I rebuild.</p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <div class="footer__logo-row">
+            <img class="footer__logo-img" src="../assets/img/brand/logo.png" alt="">
+            <div class="footer__logo"><span>MITCHELL</span><span>SCHOLTE</span></div>
+          </div>
+          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
+          <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
+        </div>
+
+        <nav class="footer__nav">
+          <div class="footer__col">
+            <h4 class="footer__heading">Services</h4>
+            <a class="footer__link" href="../detail-pages/services/ux-design.html">UX Design</a>
+            <a class="footer__link" href="../detail-pages/services/web-development.html">Web Development</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Company</h4>
+            <a class="footer__link" href="../index.html#services">Services</a>
+            <a class="footer__link" href="../index.html#showcase">Work</a>
+            <a class="footer__link" href="../blog.html">Blog</a>
+            <a class="footer__link" href="../index.html#contact">Contact</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Elsewhere</h4>
+            <a class="footer__link" href="#">LinkedIn</a>
+            <a class="footer__link" href="#">Instagram</a>
+            <a class="footer__link" href="#">X (Twitter)</a>
+            <a class="footer__link" href="#">Dribbble</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
+        <span class="footer__made">Made in the Netherlands 🇳🇱</span>
+      </div>
+    </div>
+  </footer>
+    <script src="../assets/js/shared/theme-toggle.js"></script>
+</body>
+</html>

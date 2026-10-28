@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How the dark and light switch on this site works: colour tokens, a one-line script that stops the flash on reload, and the View Transitions API for the wave that sweeps the new theme in.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../assets/img/brand/logo.png">
+    <script>
+      /* read the saved theme before first paint — otherwise a light-mode
+         reload flashes the black page for a frame */
+      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
+    </script>
+    <link rel="stylesheet" href="../assets/css/nomi-studio.css">
+    <title>A dark mode switch that does not flash — Mitchell Scholte</title>
+    <link rel="canonical" href="https://miscstudio.nl/blog/theme-switch.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://miscstudio.nl/blog/theme-switch.html">
+    <meta property="og:site_name" content="MISC STUDIO">
+    <meta property="og:title" content="A dark mode switch that does not flash">
+    <meta property="og:description" content="One attribute swaps the whole site. The hard parts are the first frame and everything CSS cannot reach.">
+    <meta property="article:published_time" content="2026-10-28">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <header class="header">
+    <div class="flex-wrapper">
+      <div class="logo-wrap">
+        <a class="logo-link" href="../index.html" aria-label="Back to home">
+          <img class="logo-img" src="../assets/img/brand/logo.png" alt="">
+        </a>
+        <div class="logo-text">
+          <span class="btn-2">MITCHELL</span>
+          <span class="btn-2">SCHOLTE</span>
+        </div>
+      </div>
+      <ul class="header-menu">
+        <li class="header-menu__item header-text-1"><a href="../blog.html">Blog</a></li>
+        <li class="header-menu__item header-text-1"><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <article class="post">
+      <div class="container post__inner">
+        <a class="post__back" href="../blog.html"><span aria-hidden="true">←</span> All posts</a>
+
+        <!-- keep these three in sync with the card in blog.html -->
+        <p class="post__meta">
+          <span class="bpost__tag">Design</span>
+          <time datetime="2026-10-28">2026-10-28</time>
+          <span aria-hidden="true">·</span>
+          6 min
+        </p>
+        <h1 class="post__title">A dark mode switch that does not flash</h1>
+
+        <div class="post__body">
+          <p>This site has a small round switch in the header that flips it between black and white. Flipping colours is the easy part. The parts that took thought are the first frame after a reload, the things CSS cannot reach, and making the change itself look deliberate instead of like a glitch.</p>
+
+          <h2>1. Tokens, not colours</h2>
+
+          <p>No colour in the stylesheet is written down directly. Every one is a custom property on <code>:root</code>, and light mode is the same list again under one attribute:</p>
+
+          <pre><code>:root {
+  --color-black: #000000;   /* the page background */
+  --color-white: #ffffff;   /* text and the brand colour */
+  --color-surface: #101010;
+  --color-muted: #a3a3a3;
+}
+
+:root[data-theme="light"] {
+  --color-black: #ffffff;
+  --color-white: #000000;
+  --color-surface: #f4f4f4;
+  --color-muted: #5a5a5a;
+}</code></pre>
+
+          <p>Switching themes is then one line of JavaScript: set or remove <code>data-theme</code> on <code>&lt;html&gt;</code>. Yes, in light mode <code>--color-black</code> is white. The names date from before there was a light mode. A name like <code>--color-bg</code> would have been better from the start, and that is the main thing I would do differently.</p>
+
+          <h2>2. The flash on reload</h2>
+
+          <p>The choice is saved in <code>localStorage</code>. The obvious place to read it back is in the script that builds the switch, at the bottom of the page. The problem is that by then the browser has already painted the page once, in the default dark theme. Anyone who picked light mode gets a black flash on every reload.</p>
+
+          <p>The fix is a tiny script inline in the <code>&lt;head&gt;</code>, before the stylesheet. It runs before anything is painted, so the first frame is already the right theme:</p>
+
+          <pre><code>&lt;script&gt;
+  (function () {
+    try {
+      if (localStorage.getItem('misc-theme') === 'light')
+        document.documentElement.setAttribute('data-theme', 'light');
+    } catch (e) {}
+  })();
+&lt;/script&gt;</code></pre>
+
+          <p>The <code>try</code> is there because <code>localStorage</code> can throw, for instance with cookies blocked. In that case the page just stays dark.</p>
+
+          <h2>3. The things CSS cannot reach</h2>
+
+          <p>Tokens cover everything drawn by CSS. Two things on this site paint themselves: the particle animation behind the homepage hero (a canvas), and the WebGL carousel of projects. Neither reads CSS variables while it draws, so each has to be told.</p>
+
+          <ul>
+            <li>The switch fires a <code>themechange</code> event on <code>window</code>, and the particle canvas listens for it and redraws in the new colours.</li>
+            <li>The carousel watches the <code>data-theme</code> attribute itself with a <code>MutationObserver</code>, reads the new token values and passes them to its shader.</li>
+          </ul>
+
+          <p><strong>The idea:</strong> if something draws its own pixels, the theme is its problem too. Give it a way to hear about the change.</p>
+
+          <h2>4. The wave</h2>
+
+          <p>An instant swap from black to white looks like something broke. Instead, the new theme sweeps down the screen behind a wave, the same wave shape as the page transitions on the rest of the site.</p>
+
+          <p>That uses the View Transitions API. <code>document.startViewTransition()</code> takes a snapshot of the page, runs your change, and then shows the old snapshot on top of the new page. By default it cross-fades the two. I switch that off and put a mask on the old snapshot instead: an SVG wave, transparent above the crest and solid below it. Sliding the mask down reveals the new theme underneath, following the curve.</p>
+
+          <pre><code>// theme-toggle.js
+root.classList.add('theme-sweep');
+const vt = document.startViewTransition(() =&gt; apply(next));
+vt.finished.then(() =&gt; root.classList.remove('theme-sweep'));</code></pre>
+
+          <pre><code>/* the old theme, on top, masked by the wave */
+html.theme-sweep::view-transition-old(root) {
+  z-index: 1;
+  mask-image: var(--theme-wave);
+  mask-size: 100% 200%;
+  animation: theme-wave-down 900ms cubic-bezier(0.66, 0, 0.34, 1) forwards;
+}
+
+@keyframes theme-wave-down {
+  from { mask-position: 0 100%; }
+  to   { mask-position: 0 0%; }
+}</code></pre>
+
+          <p>The page underneath really has switched already. The wave is not a curtain hiding the change; it is the old theme being peeled off.</p>
+
+          <h2>5. Fallbacks</h2>
+
+          <ul>
+            <li><strong>No View Transitions support:</strong> the theme simply switches at once. The feature is a bonus, never a requirement.</li>
+            <li><strong>Reduced motion:</strong> no wave. A full-screen sweep is exactly the kind of movement that setting asks to avoid, so the theme switches straight away.</li>
+            <li><strong>The button itself:</strong> its label always says what it will do (“Switch to light mode”), and <code>aria-pressed</code> tells screen readers which state it is in.</li>
+          </ul>
+
+          <p><strong>The idea:</strong> one attribute swaps the whole site. Most of the work goes into the first frame, the parts that draw themselves, and the moment of switching.</p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <div class="footer__logo-row">
+            <img class="footer__logo-img" src="../assets/img/brand/logo.png" alt="">
+            <div class="footer__logo"><span>MITCHELL</span><span>SCHOLTE</span></div>
+          </div>
+          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
+          <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
+        </div>
+
+        <nav class="footer__nav">
+          <div class="footer__col">
+            <h4 class="footer__heading">Services</h4>
+            <a class="footer__link" href="../detail-pages/services/ux-design.html">UX Design</a>
+            <a class="footer__link" href="../detail-pages/services/web-development.html">Web Development</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Company</h4>
+            <a class="footer__link" href="../index.html#services">Services</a>
+            <a class="footer__link" href="../index.html#showcase">Work</a>
+            <a class="footer__link" href="../blog.html">Blog</a>
+            <a class="footer__link" href="../index.html#contact">Contact</a>
+          </div>
+          <div class="footer__col">
+            <h4 class="footer__heading">Elsewhere</h4>
+            <a class="footer__link" href="#">LinkedIn</a>
+            <a class="footer__link" href="#">Instagram</a>
+            <a class="footer__link" href="#">X (Twitter)</a>
+            <a class="footer__link" href="#">Dribbble</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
+        <span class="footer__made">Made in the Netherlands 🇳🇱</span>
+      </div>
+    </div>
+  </footer>
+    <script src="../assets/js/shared/theme-toggle.js"></script>
+</body>
+</html>

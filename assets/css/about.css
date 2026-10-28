@@ -1,0 +1,816 @@
+/* ------------------------------------------------------------------ */
+/* About page. Loaded after nomi-studio.css, so every colour comes from */
+/* the same tokens and the black/white switch works untouched.          */
+/*                                                                      */
+/* The page scrolls normally — no snap container. The timeline and the  */
+/* project deck are scroll-scrubbed pins borrowed from the homepage, and */
+/* those need real scroll distance to play out.                          */
+/*                                                                      */
+/* LAYOUT                                                                */
+/* Every section is one full viewport tall and hangs its content off the */
+/* same column, so the page has one left edge from the hero all the way  */
+/* down — including the sections whose artwork bleeds off the right.     */
+/*                                                                      */
+/*   .ab            the section shell (full height, clipped, padded)     */
+/*   .ab__inner       the shared column — same width, same x, everywhere */
+/*   .ab__col           one text measure inside that column              */
+/*   .ab__head            eyebrow + heading, one rhythm for every section */
+/*                                                                      */
+/* Nothing positions itself against the viewport edge any more; if a     */
+/* block needs to sit further left or right it does it inside .ab__inner. */
+/* ------------------------------------------------------------------ */
+
+.about-page {
+  /* outer margin, and the column everything lines up against */
+  --ab-gutter: 0.6rem;
+  --ab-col: min(11.6rem, 100% - var(--ab-gutter) * 2);
+  /* one comfortable line length — capped so body copy never runs under
+     the globes, cars and watches that sit on the right */
+  --ab-measure: 5.4rem;
+  /* the gap between a section's own top padding and its first line */
+  --ab-pad-y: 1.6rem;
+}
+
+.ab {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: var(--ab-pad-y) var(--ab-gutter) 1.2rem;
+  overflow: hidden;
+  background: var(--color-black);
+}
+/* the one column. Centred, so the left edge is identical in every
+   section whatever that section puts inside it */
+.ab__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--ab-col);
+  margin-inline: auto;
+}
+.ab__col { max-width: var(--ab-measure); }
+.ab__col--wide { max-width: 8.2rem; }
+
+/* --- section head — the same three-part rhythm everywhere ------------ */
+.ab__head { margin-bottom: 0.3rem; }
+.ab__eyebrow {
+  font-family: var(--sub-font);
+  font-size: 0.14rem;
+  font-weight: 600;
+  letter-spacing: 0.045rem;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 0.12rem;
+}
+/* the same leading rule the timeline label uses, so both read as one
+   family of section labels. Inline rather than a flex child: a label long
+   enough to wrap should wrap like text, not leave the rule on its own. */
+.ab__eyebrow::before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 0.2rem;
+  height: 1px;
+  margin: 0 0.12rem 0.03rem 0;
+  background: var(--color-accent);
+}
+/* filled in by about.js so the chapters stay numbered in source order —
+   including when the ?intro section is dropped */
+.ab__num {
+  font-family: var(--mono-font);
+  font-size: 0.13rem;
+  letter-spacing: 0.02rem;
+  color: var(--color-dim);
+}
+.ab__num:empty { display: none; }
+.ab__num::after { content: " · "; white-space: pre; }
+
+.ab__heading {
+  font-family: var(--main-font);
+  font-size: 0.78rem;
+  line-height: 0.86rem;
+  font-weight: 700;
+  color: var(--color-heading);
+}
+.ab__heading-accent { color: var(--color-accent); }
+
+.ab__body,
+.ab__lead {
+  font-family: var(--sub-font);
+  font-size: 0.19rem;
+  line-height: 0.31rem;
+  color: var(--color-muted);
+}
+.ab__lead {
+  font-size: 0.24rem;
+  line-height: 0.37rem;
+  color: var(--color-body);
+}
+/* the notes I left behind — deliberately loud so they cannot ship by
+   accident. about.js gives every unfinished string in about-data.js this
+   treatment, so a placeholder looks the same wherever it turns up. */
+.ab__todo {
+  display: block;
+  margin-top: 0.12rem;
+  font-style: normal;
+  font-size: 0.15rem;
+  line-height: 0.24rem;
+  color: var(--color-dim);
+  border-left: 2px solid var(--color-accent);
+  padding-left: 0.14rem;
+}
+
+/* --- section index rail ---------------------------------------------- */
+/* A fixed list of every [data-chapter] section. It is the page's table of
+   contents: where you are, what is left, and a way to jump. */
+.abnav {
+  position: fixed;
+  right: var(--ab-gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  pointer-events: none;
+}
+.abnav__list { list-style: none; display: grid; gap: 0.02rem; }
+.abnav__link {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.12rem;
+  padding: 0.05rem 0;
+  text-decoration: none;
+  font-family: var(--sub-font);
+  font-size: 0.12rem;
+  font-weight: 600;
+  letter-spacing: 0.02rem;
+  text-transform: uppercase;
+  color: var(--color-dim);
+  transition: color 0.3s ease;
+}
+/* the label is held at zero width so the rail is only ever a column of
+   dashes until you reach for it */
+.abnav__label {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: max-width 0.45s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.3s ease;
+}
+.abnav__tick {
+  flex: none;
+  width: 0.16rem;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-border);
+  transition: width 0.35s cubic-bezier(0.76, 0, 0.24, 1), background 0.3s ease;
+}
+.abnav__link.is-on { color: var(--color-white); }
+.abnav__link.is-on .abnav__tick { width: 0.3rem; background: var(--color-white); }
+.abnav:hover .abnav__label,
+.abnav__link:focus-visible .abnav__label { max-width: 2.4rem; opacity: 1; }
+.abnav__link:hover { color: var(--color-white); }
+.abnav__link:hover .abnav__tick { background: var(--color-white); }
+.abnav__link:focus-visible { outline: 1px solid var(--color-white); outline-offset: 0.04rem; }
+
+/* --- 1 · hero -------------------------------------------------------- */
+.ab__display {
+  font-family: var(--main-font);
+  font-size: 1rem;
+  line-height: 0.94rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-white);
+  margin: 0.16rem 0 0.3rem;
+}
+.ab__display span { display: block; }
+/* copy left, Polaroid right. The copy column is minmax(0,1fr) so the
+   headline gives way to the photo rather than pushing it off the grid. */
+.ab__inner--hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+}
+.ab__hint {
+  display: flex;
+  margin-top: 0.8rem;
+  align-items: center;
+  gap: 0.16rem;
+  font-family: var(--sub-font);
+  font-size: 0.13rem;
+  font-weight: 500;
+  letter-spacing: 0.03rem;
+  text-transform: uppercase;
+  color: var(--color-dim);
+}
+.ab__hint-line { width: 0.7rem; height: 1px; background: var(--color-border); }
+
+/* --- the Polaroid ----------------------------------------------------- */
+/* A physical object rather than a piece of the interface, so it does not
+   follow the theme: photo paper stays warm white on a black page and on a
+   white one. Everything but the photograph is CSS — swap the <img> src in
+   about.html and the frame, tilt and 3D come along unchanged.
+                                                                        */
+/* The card turns towards the cursor. about-polaroid.js only writes the
+   --pol-* angles; the transform is composed here, so the resting tilt and
+   the responsive sizing stay in one place. Every --pol-* value has a
+   resting default, so the card looks right with the script disabled. */
+.polaroid-stage {
+  /* the perspective lives on the parent — putting it on the card itself
+     would rotate the vanishing point along with the card */
+  perspective: 9rem;
+  perspective-origin: 50% 45%;
+}
+.polaroid {
+  --pol-w: 3.8rem;
+  --pol-tilt: -3.5deg;   /* hangs crooked even at rest */
+  --pol-rx: 0deg;        /* pitch, from the pointer */
+  --pol-ry: 0deg;        /* yaw, from the pointer */
+  --pol-lift: 0rem;
+  --pol-px: 0rem;        /* photo parallax inside the frame */
+  --pol-py: 0rem;
+  --pol-sx: 0rem;        /* the shadow falls away from the light */
+  --pol-sy: 0.28rem;
+  position: relative;
+  width: var(--pol-w);
+  /* the deep bottom border is the whole tell — a square frame reads as a
+     print, this reads as a Polaroid */
+  padding: 0.13rem 0.13rem 0.52rem;
+  background: #f6f3ec;
+  box-shadow: var(--pol-sx) var(--pol-sy) 0.62rem -0.1rem rgba(0, 0, 0, 0.62),
+              0 0.02rem 0.05rem rgba(0, 0, 0, 0.45);
+  /* pitch and yaw in world space, then the resting tilt in the card's own
+     plane, so the two never fight each other */
+  transform: rotateX(var(--pol-rx)) rotateY(var(--pol-ry))
+             rotate(var(--pol-tilt)) translateY(var(--pol-lift));
+  /* no transition: the script eases the angles itself, and a CSS
+     transition on top of that lags a frame behind the cursor */
+}
+.polaroid__shot {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #12100e;
+}
+.polaroid__img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* whatever gets dropped in is centre-cropped, so a portrait or a
+     landscape shot both sit correctly in the square */
+  object-fit: cover;
+  /* slightly oversized so the parallax slide never exposes an edge */
+  transform: scale(1.06) translate(var(--pol-px), var(--pol-py));
+}
+/* the light the card catches as it turns */
+.polaroid__sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--pol-sheen-o, 0);
+  background: linear-gradient(105deg,
+    transparent calc(var(--pol-sheen-x, 50%) - 34%),
+    rgba(255, 255, 255, 0.16) calc(var(--pol-sheen-x, 50%) - 9%),
+    rgba(255, 255, 255, 0.3)  var(--pol-sheen-x, 50%),
+    rgba(255, 255, 255, 0.16) calc(var(--pol-sheen-x, 50%) + 9%),
+    transparent calc(var(--pol-sheen-x, 50%) + 34%));
+  mix-blend-mode: screen;
+}
+.polaroid__caption {
+  margin-top: 0.17rem;
+  text-align: center;
+  font-family: var(--sub-font);
+  font-size: 0.125rem;
+  font-weight: 600;
+  letter-spacing: 0.05rem;
+  text-transform: uppercase;
+  color: #57534c;
+}
+
+/* on a white page the paper needs an edge, and the drop shadow has to come
+   right down or the photo looks like it is floating in fog */
+:root[data-theme="light"] .polaroid {
+  box-shadow: var(--pol-sx) var(--pol-sy) 0.6rem -0.12rem rgba(0, 0, 0, 0.24),
+              0 0 0 1px rgba(0, 0, 0, 0.07);
+}
+
+/* --- globes ---------------------------------------------------------- */
+.ab__globe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* a small spec table rather than a wrapping row — three facts of very
+   different lengths line up as label / value instead of reflowing into an
+   uneven block */
+.ab__facts {
+  display: grid;
+  margin-top: 0.42rem;
+  border-top: 1px solid var(--color-border);
+}
+.ab__facts > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.3rem;
+  padding: 0.13rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.ab__facts dt {
+  font-family: var(--sub-font);
+  font-size: 0.115rem;
+  font-weight: 600;
+  letter-spacing: 0.03rem;
+  text-transform: uppercase;
+  color: var(--color-dim);
+}
+.ab__facts dd {
+  font-family: var(--sub-font);
+  font-size: 0.155rem;
+  font-weight: 500;
+  color: var(--color-body);
+}
+
+/* --- the two borrowed components ------------------------------------- */
+/* The timeline and the project deck bring their own absolute layout from
+   the homepage. On this page they are pulled onto the shared column so
+   their labels start where every other section's label starts. */
+.about-page .tlpath__head {
+  top: var(--ab-pad-y);
+  left: calc(50% - var(--ab-col) / 2);
+}
+.about-page .tlpath__hint { right: calc(50% - var(--ab-col) / 2); }
+
+/* ------------------------------------------------------------------ */
+/* 4 · The switch. This one is the statement: the toggle is the size of */
+/* a headline, and flipping it swaps the whole section.                 */
+/* ------------------------------------------------------------------ */
+.ab--switch .abs__panels,
+.ab--switch .abs { text-align: center; }
+
+.abs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0.3rem 0 0.5rem;
+}
+/* CMD gets its own colour — flipping the switch is supposed to feel like
+   crossing into a different world, not just swapping two words */
+.ab--switch { --cmd-yellow: #ffd60a; }
+
+.abs__side {
+  font-family: var(--main-font);
+  font-size: 1.15rem;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.02rem;
+  color: var(--color-faint);
+  transition: color 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+  user-select: none;
+}
+/* the inactive side sits back rather than disappearing, so the pair still
+   reads as one before/after */
+.abs__side.is-on { color: var(--color-white); }
+.abs__side--cmd.is-on { color: var(--cmd-yellow); }
+
+.abs__toggle {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--color-white);
+}
+.abs__track {
+  display: block;
+  width: 2.9rem;
+  height: 1.32rem;
+  border-radius: 0.66rem;
+  border: 2px solid var(--color-white);
+  padding: 0.14rem;
+  /* the CMD artwork is loaded but held at zero opacity by a pseudo-element,
+     so it can cross-fade — a background-image on the track itself would
+     pop in rather than transition */
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.abs__track::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('../img/about/bg-cmd.png') center / cover no-repeat;
+  opacity: 0;
+  transition: opacity 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.abs__toggle[aria-checked="true"] .abs__track { border-color: var(--cmd-yellow); }
+.abs__toggle[aria-checked="true"] .abs__track::before { opacity: 1; }
+.abs__knob {
+  display: block;
+  position: relative;      /* above the artwork, not under it */
+  z-index: 1;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--color-white);
+  transition: transform 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.abs__toggle[aria-checked="true"] .abs__knob { transform: translateX(1.58rem); }
+.abs__toggle:focus-visible { outline: 2px solid var(--color-white); outline-offset: 0.1rem; border-radius: 0.7rem; }
+
+.abs__panels { position: relative; width: 100%; min-height: 2.1rem; }
+.abs__panel {
+  position: absolute;
+  inset: 0;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.14rem);
+  transition: opacity 0.45s ease, transform 0.45s ease, visibility 0.45s;
+}
+.abs__panel.is-on { opacity: 1; visibility: visible; transform: none; }
+.abs__heading {
+  font-family: var(--main-font);
+  font-size: 0.66rem;
+  line-height: 0.74rem;
+  font-weight: 700;
+  color: var(--color-heading);
+  margin-bottom: 0.16rem;
+}
+.abs__body {
+  font-family: var(--sub-font);
+  font-size: 0.2rem;
+  line-height: 0.32rem;
+  color: var(--color-muted);
+  max-width: 6.4rem;
+  margin: 0 auto;
+}
+.abs__body .ab__todo { text-align: left; display: inline-block; }
+
+/* --- 6 · goals -------------------------------------------------------- */
+.ab__goals { list-style: none; margin-top: 0.1rem; display: grid; gap: 0.02rem; }
+.ab__goal {
+  display: grid;
+  grid-template-columns: 0.8rem 1fr;
+  gap: 0.3rem;
+  padding: 0.26rem 0;
+  border-top: 1px solid var(--color-border);
+}
+.ab__goal-num { font-family: var(--mono-font); font-size: 0.16rem; color: var(--color-accent); }
+.ab__goal-title {
+  font-family: var(--sub-font);
+  font-size: 0.24rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: 0.06rem;
+}
+.ab__goal-body {
+  font-family: var(--sub-font);
+  font-size: 0.16rem;
+  line-height: 0.25rem;
+  color: var(--color-muted);
+  max-width: 6.4rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* 7 · Hobby illustrations. Same viewBox, stroke weights and greys as   */
+/* the homepage focus points, so the two sets read as one family.       */
+/* ------------------------------------------------------------------ */
+.focus-sport { --tile-color: 160, 160, 160; }
+.focus-photo { --tile-color: 160, 160, 160; }
+.focus-web   { --tile-color: 160, 160, 160; }
+
+/* sport — a stopwatch, hand sweeping */
+.focus-sport .sw-hand {
+  transform-origin: 100px 72px;
+  animation: abSweep 4s linear infinite;
+}
+@keyframes abSweep { to { transform: rotate(360deg); } }
+
+/* photography — the aperture opens and closes */
+.focus-photo .iris {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: abIris 5s ease-in-out infinite;
+}
+.focus-photo .iris-core {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: abIrisCore 5s ease-in-out infinite;
+}
+@keyframes abIris {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50%      { transform: rotate(22deg) scale(0.9); }
+}
+@keyframes abIrisCore {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50%      { transform: scale(0.55); opacity: 1; }
+}
+
+/* web — the lines type themselves in, one after the other */
+.focus-web .wl {
+  transform-origin: left center;
+  transform-box: fill-box;
+  animation: abType 4.2s ease-in-out infinite;
+}
+.focus-web .wl2 { animation-delay: 0.35s; }
+.focus-web .wl3 { animation-delay: 0.7s; }
+@keyframes abType {
+  0%       { transform: scaleX(0); opacity: 0; }
+  14%, 72% { transform: scaleX(1); opacity: 1; }
+  88%, 100%{ transform: scaleX(0); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* about-polaroid.js returns early here, so the card simply rests */
+  .polaroid { transition: none; }
+  .focus-sport .sw-hand,
+  .focus-photo .iris,
+  .focus-photo .iris-core,
+  .focus-web .wl { animation: none; }
+  .focus-web .wl { transform: none; opacity: 1; }
+  .abs__knob, .abs__panel, .abs__side { transition: none; }
+}
+
+/* --- mobile ------------------------------------------------------------ */
+@media (max-width: 700px) {
+  /* one column, edge to edge — the measure caps are for the desktop
+     layouts where artwork shares the width */
+  .about-page {
+    --ab-gutter: 0.6rem;
+    --ab-col: calc(100% - var(--ab-gutter) * 2);
+    --ab-measure: none;
+    --ab-pad-y: 3.1rem;
+  }
+  .ab {
+    padding: var(--ab-pad-y) var(--ab-gutter) 1.4rem;
+    align-items: flex-start;
+    min-height: auto;
+  }
+  .ab__col,
+  .ab__col--wide { max-width: none; }
+
+  .ab__display { font-size: 1.95rem; line-height: 1.85rem; }
+  .ab__heading { font-size: 1.15rem; line-height: 1.25rem; }
+  .ab__eyebrow { font-size: 0.32rem; letter-spacing: 0.06rem; }
+  .ab__num { font-size: 0.3rem; }
+  .ab__eyebrow::before { width: 0.4rem; margin-right: 0.16rem; }
+  .ab__lead { font-size: 0.55rem; line-height: 0.85rem; }
+
+  /* the hero stacks: copy first, photo under it, still tilted */
+  .ab__inner--hero { grid-template-columns: 1fr; gap: 1.5rem; }
+  .polaroid { --pol-w: 9.4rem; --pol-tilt: -2.5deg; justify-self: center;
+              padding: 0.37rem 0.37rem 1.42rem; }
+  .polaroid__caption { margin-top: 0.44rem; font-size: 0.34rem; letter-spacing: 0.12rem; }
+  .ab__body { font-size: 0.46rem; line-height: 0.72rem; }
+  .ab__todo { font-size: 0.4rem; line-height: 0.62rem; }
+  .ab__hint { display: none; }
+
+  /* a dot rail is a desktop affordance; on a phone it is just something
+     else covering the content */
+  .abnav { display: none; }
+
+  .ab--globe { min-height: 100vh; }
+  .ab__globe { height: 60%; top: auto; bottom: 0; opacity: 0.5; }
+
+  /* the switch stacks: the two labels sit above and below the toggle so
+     it can stay big instead of shrinking to fit a phone's width */
+  .abs { flex-direction: column; gap: 0.3rem; margin: 0.6rem 0 0.9rem; }
+  .abs__side { font-size: 1.5rem; }
+  .abs__track { width: 4.6rem; height: 2.1rem; border-radius: 1.05rem; padding: 0.22rem; }
+  .abs__knob { width: 1.6rem; height: 1.6rem; }
+  .abs__toggle[aria-checked="true"] .abs__knob { transform: translateX(2.5rem); }
+  .abs__panels { min-height: 7.5rem; }
+  .abs__heading { font-size: 1.1rem; line-height: 1.2rem; }
+  .abs__body { font-size: 0.46rem; line-height: 0.72rem; }
+
+  /* the tiles stack, so the grid stops being a three-up */
+  .ab--hobby .focusPoint_container { grid-template-columns: 1fr; margin-top: 0.7rem; }
+  .ab__facts > div { padding: 0.3rem 0; }
+  .ab__facts dt { font-size: 0.32rem; }
+  .ab__facts dd { font-size: 0.44rem; text-align: right; }
+  .ab__goal { grid-template-columns: 1.2rem 1fr; }
+  .ab__goal-title { font-size: 0.6rem; }
+  .ab__goal-body { font-size: 0.44rem; line-height: 0.68rem; }
+}
+
+/* ------------------------------------------------------------------ */
+/* 7b · The photography tile opens into a 3D camera.                    */
+/*                                                                      */
+/* Clicking it pushes the other two hobbies out to the sides and drops  */
+/* the stage in between. The tiles are not hidden — they slide and fade */
+/* so it reads as making room rather than a page swap.                  */
+/* ------------------------------------------------------------------ */
+.focusPoint_tile.is-clickable { cursor: pointer; }
+.focusPoint_tile.is-clickable::after {
+  content: 'Klik';
+  position: absolute;
+  right: 0.24rem;
+  bottom: 0.24rem;
+  z-index: 3;
+  font-family: var(--sub-font);
+  font-size: 0.115rem;
+  font-weight: 600;
+  letter-spacing: 0.03rem;
+  text-transform: uppercase;
+  color: var(--color-dim);
+  transition: color 0.3s ease;
+}
+.focusPoint_tile.is-clickable:hover::after { color: var(--color-white); }
+
+#ab-hobby { position: relative; }
+/* the tile grid is the full column rather than a centred block of its own,
+   so it starts on the same left edge as the heading above it */
+.ab--hobby .focusPoint_container {
+  max-width: none;
+  margin: 0.4rem 0 0;
+  text-align: left;
+}
+/* the stage is far bigger than the tile row, so the section has to make
+   room for it or the camera gets clipped by the next section */
+#ab-hobby.is-camera-open { min-height: 8.4rem; }
+#ab-hobby .focusPoint_container,
+#ab-hobby .focusPoint_tile {
+  transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1),
+              opacity 0.5s ease;
+}
+/* sport goes left, web goes right, photography stays put and fades under
+   the stage that lands on top of it */
+#ab-hobby.is-camera-open .focus-sport  { transform: translateX(-26%) scale(0.9); opacity: 0.28; }
+#ab-hobby.is-camera-open .focus-web    { transform: translateX(26%)  scale(0.9); opacity: 0.28; }
+#ab-hobby.is-camera-open .focus-photo  { opacity: 0; pointer-events: none; }
+/* the camera is big enough to sit over the section heading, so that steps
+   back too — it has done its job by the time you have clicked */
+#ab-hobby .ab__head { transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.76, 0, 0.24, 1); }
+#ab-hobby.is-camera-open .ab__head { opacity: 0; transform: translateY(-0.3rem); }
+
+.camstage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.94);
+  width: min(11rem, 94vw);
+  aspect-ratio: 3 / 2;
+  z-index: 4;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.76, 0, 0.24, 1), visibility 0.5s;
+}
+#ab-hobby.is-camera-open .camstage {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+.camstage__canvas { position: absolute; inset: 0; }
+.camstage__canvas canvas { width: 100%; height: 100%; display: block; }
+
+/* the flash is a full-stage white wash, not a light in the scene — a real
+   light would take a frame to build and the point is that it is instant */
+.camstage__flash {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, rgba(255,255,255,0.5) 35%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.camstage__flash.is-firing { animation: camflash 420ms ease-out; }
+@keyframes camflash {
+  0%   { opacity: 0;    transform: scale(0.7); }
+  8%   { opacity: 1;    transform: scale(1); }
+  100% { opacity: 0;    transform: scale(1.15); }
+}
+
+.camstage__status {
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  text-align: center;
+  font-family: var(--sub-font);
+  font-size: 0.16rem;
+  color: var(--color-dim);
+}
+.camstage__close {
+  position: absolute;
+  left: 50%;
+  bottom: -0.5rem;
+  transform: translateX(-50%);
+  padding: 0.1rem 0.3rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.3rem;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--sub-font);
+  font-size: 0.14rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.camstage__close:hover { color: var(--color-white); border-color: var(--color-white); }
+
+@media (prefers-reduced-motion: reduce) {
+  #ab-hobby .focusPoint_tile, .camstage { transition: none; }
+  .camstage__flash.is-firing { animation: none; }
+}
+
+@media (max-width: 700px) {
+  .camstage { width: 94vw; aspect-ratio: 4 / 3; }
+  #ab-hobby.is-camera-open { min-height: 26rem; }
+  .camstage__close { font-size: 0.4rem; padding: 0.24rem 0.7rem; bottom: -1.2rem; border-radius: 0.7rem; }
+  .camstage__status { font-size: 0.42rem; }
+  .focusPoint_tile.is-clickable::after { font-size: 0.32rem; right: 0.5rem; bottom: 0.5rem; }
+  /* stacked on a phone, so the neighbours move up and down instead */
+  #ab-hobby.is-camera-open .focus-sport { transform: translateY(-8%) scale(0.94); }
+  #ab-hobby.is-camera-open .focus-web   { transform: translateY(8%)  scale(0.94); }
+}
+
+/* ------------------------------------------------------------------ */
+/* 10 · AirPods — a pinned, scroll-scrubbed stage. The canvas fills it  */
+/* and the copy sits over the top-left, out of the model's way.         */
+/* ------------------------------------------------------------------ */
+.apods {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--color-black);
+}
+/* the model sits over the type, so the canvas needs a layer of its own —
+   without the z-index it would paint under nothing in particular */
+.apods__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+}
+/* Same idea as .showcase__bg: one big word, centred in the section, with
+   the thing it belongs to passing in front of it. */
+.apods__bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+  pointer-events: none;
+}
+/* the canvas is laid over the heading, a touch proud of it so a glyph
+   that overhangs its line box is not sliced off */
+.apods__word { position: relative; }
+.apods__eq {
+  position: absolute;
+  inset: -9% -2%;
+  width: 104%;
+  height: 118%;
+  pointer-events: none;
+}
+/* the heading hands over its pixels to the canvas, but keeps its box —
+   that box is what the canvas measures itself against */
+.apods__bg.is-eq .apods__bgtext { color: transparent; }
+
+/* Bigger than the showcase's word, because it has to survive a bigger
+   object in front of it: "Recent work" is long enough that its ends clear
+   the card on their own, a short word has to be scaled to do the same. */
+.apods__bgtext {
+  font-size: 3.1rem;
+  line-height: 1;
+  letter-spacing: -0.04rem;
+  white-space: nowrap;
+  margin: 0;
+}
+.apods__status {
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  text-align: center;
+  font-family: var(--sub-font);
+  font-size: 0.16rem;
+  color: var(--color-dim);
+}
+@media (max-width: 700px) {
+  /* On a phone the model fills the screen and bleeds off both edges, so
+     nothing can sit behind it and still be read. Same element, different
+     job: a normal heading at the top of the section, in front. */
+  .apods__bg {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: var(--ab-pad-y) var(--ab-gutter) 0;
+    z-index: 2;
+  }
+  .apods__bgtext {
+    font-size: 1.15rem;
+    line-height: 1.25rem;
+    letter-spacing: 0;
+    white-space: normal;
+  }
+  .apods__status { font-size: 0.42rem; }
+}

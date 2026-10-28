@@ -7,7 +7,7 @@ const topojson = require("topojson-client");
 const { geoContains, geoBounds } = require("d3-geo");
 
 const N = 24000;                    // points over the whole sphere
-const OUT = "/Users/mitchellscholte/MISCSTUDIO/MISC-STUDIO/about-globe-data.js";
+const OUT = "/Users/mitchellscholte/MISCSTUDIO/MISC-STUDIO/assets/js/about/about-globe-data.js";
 
 const topo = JSON.parse(fs.readFileSync(__dirname + "/countries-110m.json", "utf8"));
 const fc = topojson.feature(topo, topo.objects.countries);
