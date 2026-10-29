@@ -30,7 +30,9 @@ const PORTRAIT_ASPECT = 3 / 4;
 // edge. Narrower stages are left alone.
 const LENS = {
   sizeX: 0.565, sizeY: 1, posX: 0.5, posY: 0.5, rotation: 65, fitAspect: 0.68, inset: 0, spin: 0, zoom: 0,
-  dispersion: 11, blur: 0, glow: 4.2, whiteGlow: 0.24, novaSize: 12, blueRing: 6,
+  // whiteGlow (the "nova") is added white light: it greyed the shots on a dark
+  // page and washed their colour out on a light one, so it stays off
+  dispersion: 11, blur: 0, glow: 4.2, whiteGlow: 0, novaSize: 12, blueRing: 6,
   ringRadius: 0.49, ringWidth: 0.014, shimmer: true, shimmerFreq: 12,
   shimmerSpeed: 3.5, shimmerDepth: 0.12, rimStart: 0.578, rimTangential: 0.6,
   rimInward: 0, rimFreq1: 2, rimFreq2: 1, rimLine: 1.4, rimLinePos: 0.488,
@@ -251,13 +253,17 @@ void main(){
 }
 `;
 
-// The white "nova" is added light: on a white page it reads as a soft sheen,
-// on black it lifts the whole lens to a grey film. So it only runs on a light
-// background.
-const whiteGlowFor = (background) => {
+const isLight = (background) => {
   const c = new THREE.Color(background);
-  return (c.r + c.g + c.b) / 3 > 0.5 ? LENS.whiteGlow : 0;
+  return (c.r + c.g + c.b) / 3 > 0.5;
 };
+
+// The blue ring (with its aura) and the white rim line are the same story:
+// a crisp edge on white, but on black they bloom into a glow and a bright
+// streak along the curves. Light background only.
+const edgeFxFor = (background) => (isLight(background)
+  ? { uBlueRing: LENS.blueRing, uRimLine: LENS.rimLine }
+  : { uBlueRing: 0, uRimLine: 0 });
 
 const LENS_FX_KEYS = [
   'uDispersion', 'uBlueRing', 'uRimLine', 'uVignette', 'uZoom', 'uRimTangential', 'uRimInward',
@@ -451,9 +457,9 @@ function createCarousel(mount, cursorElement, options) {
     uDispersion: { value: LENS.dispersion },
     uBlur: { value: LENS.blur },
     uGlow: { value: LENS.glow },
-    uWhiteGlow: { value: whiteGlowFor(options.background) },
+    uWhiteGlow: { value: LENS.whiteGlow },
     uNovaSize: { value: LENS.novaSize },
-    uBlueRing: { value: LENS.blueRing },
+    uBlueRing: { value: edgeFxFor(options.background).uBlueRing },
     uRingRadius: { value: LENS.ringRadius },
     uRingWidth: { value: LENS.ringWidth },
     uShimmer: { value: reduced || !LENS.shimmer ? 0 : 1 },
@@ -467,7 +473,7 @@ function createCarousel(mount, cursorElement, options) {
     uRimFreq1: { value: LENS.rimFreq1 },
     uRimFreq2: { value: LENS.rimFreq2 },
     uBlueColor: { value: new THREE.Color(options.ringColor) },
-    uRimLine: { value: LENS.rimLine },
+    uRimLine: { value: edgeFxFor(options.background).uRimLine },
     uRimLinePos: { value: LENS.rimLinePos },
     uRimLineWidth: { value: LENS.rimLineWidth },
     uVignette: { value: LENS.vignette },
@@ -1118,7 +1124,13 @@ function createCarousel(mount, cursorElement, options) {
     setColors(background, ring) {
       renderer.setClearColor(new THREE.Color(background), 1);
       lensUniforms.uBlueColor.value.set(ring);
-      lensUniforms.uWhiteGlow.value = whiteGlowFor(background);
+      // tick() rewrites the lens effects from lensFxFull every frame, so the
+      // edges have to change there too or the next frame would put them back
+      const edges = edgeFxFor(background);
+      for (const key in edges) {
+        lensFxFull[key] = edges[key];
+        lensUniforms[key].value = edges[key];
+      }
     },
   };
 }
@@ -1184,7 +1196,7 @@ if (deck) {
       // shots would otherwise run wider than the screen. Read on every resize,
       // so it follows the same 700px breakpoint as the CSS.
       panelHeight: 680,
-      panelFill: () => (mobile.matches ? 0.55 : 0.7),
+      panelFill: () => (mobile.matches ? 0.5 : 0.64),
       gap: 16,
       background: token('--color-black'),
       ringColor: token('--color-accent'),

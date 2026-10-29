@@ -3549,7 +3549,7 @@ html.curtain-in::after {
   position: absolute;
   z-index: 2;
   left: 50%;
-  top: 4%;
+  top: 1.5%; /* high in the stage, for a clear gap above the shots */
   transform: translateX(-50%);
   display: inline-flex;
   align-items: center;
@@ -3658,8 +3658,9 @@ html.curtain-in::after {
     left: 0.5rem;
     bottom: 0.5rem;
   }
+  /* no hover on a phone to turn it, so the arrow is just clutter there */
   .showcase__arrow {
-    font-size: 0.44rem;
+    display: none;
   }
   .showcase__counter {
     font-size: 0.44rem;
