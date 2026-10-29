@@ -350,12 +350,18 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.MorphSVGPlugin) {
     gsap.registerPlugin(MorphSVGPlugin);
     MorphSVGPlugin.convertToPath('#shp-m, #shp-i, #shp-s, #shp-c');
+    // the shape-to-letter mapping comes precompiled (loader-morph-data.js);
+    // without that file MorphSVG works it out itself, just slower
+    const morph = (k) => {
+      const pre = window.LOADER_MORPHS && window.LOADER_MORPHS[k];
+      return { morphSVG: pre ? { shape: '#ltr-' + k, precompile: pre } : '#ltr-' + k };
+    };
     // slow, deliberate morph
     gsap.timeline({ defaults: { ease: 'power2.inOut', duration: 1.05 }, onComplete: dismiss })
-      .to('#shp-m', { morphSVG: '#ltr-m' }, 0.2)
-      .to('#shp-i', { morphSVG: '#ltr-i' }, 0.65)
-      .to('#shp-s', { morphSVG: '#ltr-s' }, 1.1)
-      .to('#shp-c', { morphSVG: '#ltr-c' }, 1.55)
+      .to('#shp-m', morph('m'), 0.2)
+      .to('#shp-i', morph('i'), 0.65)
+      .to('#shp-s', morph('s'), 1.1)
+      .to('#shp-c', morph('c'), 1.55)
       .to({}, { duration: 1.0 }); // hold on the finished word before fading
   } else {
     // plugin failed to load — never leave the page stuck behind the loader

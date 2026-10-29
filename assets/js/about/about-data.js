@@ -43,13 +43,13 @@ window.ABOUT = {
   // ---- Projects — same deck as the homepage --------------------------
   projects: [
     // links go to the case study; the live URLs are in assets/js/work/case-studies.js
-    // { name: 'Scholtes Klusbedrijf', img: 'assets/img/projects/scholtes-klusbedrijf.png', link: 'detail-pages/work/case-study.html?project=scholtes-klusbedrijf' },
-    // { name: 'Day-to-Day',           img: 'assets/img/projects/d2d.png',                  link: 'detail-pages/work/case-study.html?project=day-to-day' },
-    { name: 'Visdeurbel Datavis.',  img: 'assets/img/projects/visdeurbel.png',           link: 'detail-pages/work/case-study.html?project=visdeurbel' },
-    { name: 'CMD Casino',           img: 'assets/img/projects/CMD-casino.png',           link: 'detail-pages/work/case-study.html?project=cmd-casino' },
-    // { name: 'HCD',                  img: 'assets/img/projects/HCD.png',                  link: 'detail-pages/work/case-study.html?project=hcd' },
-    { name: 'Hackathon',            img: 'assets/img/projects/hackathon.png',            link: 'detail-pages/work/case-study.html?project=hackathon' },
-    { name: 'Mitchopoly',           img: 'assets/img/projects/mitchopoly.png',           link: 'detail-pages/work/case-study.html?project=mitchopoly' }
+    // { name: 'Scholtes Klusbedrijf', img: 'assets/img/projects/scholtes-klusbedrijf.webp', link: 'detail-pages/work/case-study.html?project=scholtes-klusbedrijf' },
+    // { name: 'Day-to-Day',           img: 'assets/img/projects/d2d.webp',                  link: 'detail-pages/work/case-study.html?project=day-to-day' },
+    { name: 'Visdeurbel Datavis.',  img: 'assets/img/projects/visdeurbel.webp',           link: 'detail-pages/work/case-study.html?project=visdeurbel' },
+    { name: 'CMD Casino',           img: 'assets/img/projects/CMD-casino.webp',           link: 'detail-pages/work/case-study.html?project=cmd-casino' },
+    // { name: 'HCD',                  img: 'assets/img/projects/HCD.webp',                  link: 'detail-pages/work/case-study.html?project=hcd' },
+    { name: 'Hackathon',            img: 'assets/img/projects/hackathon.webp',            link: 'detail-pages/work/case-study.html?project=hackathon' },
+    { name: 'Mitchopoly',           img: 'assets/img/projects/mitchopoly.webp',           link: 'detail-pages/work/case-study.html?project=mitchopoly' }
   ],
 
   // ---- The switch — IT on the left, CMD on the right -----------------
@@ -85,8 +85,8 @@ window.ABOUT = {
   // TODO: vervang door je eigen fotografie. Dit zijn nu bestaande beelden
   // uit assets/img/projects/ zodat je kunt zien of het effect werkt.
   photos: [
-    'assets/img/projects/visdeurbel.png',
-    'assets/img/projects/d2d.png',
-    'assets/img/projects/HCD.png'
+    'assets/img/projects/visdeurbel.webp',
+    'assets/img/projects/d2d.webp',
+    'assets/img/projects/HCD.webp'
   ]
 };

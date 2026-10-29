@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"></noscript>
     <link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="assets/img/brand/favicon.png">
     <link rel="apple-touch-icon" href="assets/img/brand/apple-touch-icon.png">
@@ -109,7 +110,7 @@
   <header class="header">
     <div class="flex-wrapper">
       <div class="logo-wrap">
-        <img class="logo-img" src="assets/img/brand/logo.png" alt="">
+        <img class="logo-img" src="assets/img/brand/logo-192.webp" alt="">
         <div class="logo-text">
           <span class="btn-2">MISC</span>
           <span class="btn-2">STUDIO</span>
@@ -120,6 +121,7 @@
       </ul>
     </div>
   </header>
+  <main>
   <section class="hero">
     <!-- the logo, sampled into dots that scatter under the cursor. Purely
          decorative: hero-particles.js paints it, nothing here depends on it. -->
@@ -186,7 +188,11 @@
            is what the intro slides in (.btn-text span). The ring path starts
            at 9 o'clock and runs clockwise, and textLength stretches the
            phrase to exactly one lap so the loop has no seam. -->
-      <a class="book-btn" href="#contact" aria-label="Get in touch">
+      <!-- named by real (visually hidden) text rather than aria-label: the ring
+           visibly reads "Get in touch • Get in touch •", and a label that does
+           not contain the visible words fails label-content-name-mismatch -->
+      <a class="book-btn" href="#contact">
+        <span class="sr-only">Get in touch</span>
         <div class="book-btn__circle">
           <svg class="book-btn__ring" viewBox="0 0 100 100" aria-hidden="true">
             <defs><path id="book-ring" d="M13,50 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"/></defs>
@@ -359,10 +365,10 @@
     </div>
   </section>
 
-  <section class="services" id="services" aria-hidden="true">
+  <section class="services" id="services">
     <div class="container services__container">
       <!-- Left dial: a big faint ring with 01/02 markers that rotate on scroll -->
-      <div class="dial">
+      <div class="dial" aria-hidden="true">
         <div class="dial-ring"></div>
         <div class="dial-wheel">
           <div class="dial-num is-active" style="--i:0">
@@ -453,32 +459,32 @@
            in assets/js/work/case-studies.js, which also holds the live URL. -->
       <div class="showcase__deck" data-carousel>
         <a class="work-card" href="detail-pages/work/case-study.html?project=scholtes-klusbedrijf" aria-label="Scholtes Klusbedrijf, view case study">
-          <img src="assets/img/projects/scholtes-klusbedrijf.png" alt="Scholtes Klusbedrijf">
+          <img src="assets/img/projects/scholtes-klusbedrijf.webp" alt="Scholtes Klusbedrijf" loading="lazy" decoding="async">
           <span class="work-card__meta">Scholtes Klusbedrijf <span class="showcase__arrow">→</span></span>
         </a>
 
         <a class="work-card" href="detail-pages/work/case-study.html?project=day-to-day" aria-label="Day-to-Day, view case study">
-          <img src="assets/img/projects/d2d.png" alt="D2D">
+          <img src="assets/img/projects/d2d.webp" alt="D2D" loading="lazy" decoding="async">
           <span class="work-card__meta">Day-to-Day <span class="showcase__arrow">→</span></span>
         </a>
         <a class="work-card" href="detail-pages/work/case-study.html?project=visdeurbel" aria-label="Visdeurbel, view case study">
-          <img src="assets/img/projects/visdeurbel.png" alt="Visdeurbel">
+          <img src="assets/img/projects/visdeurbel.webp" alt="Visdeurbel" loading="lazy" decoding="async">
           <span class="work-card__meta">Visdeurbel Datavis. <span class="showcase__arrow">→</span></span>
         </a>
         <a class="work-card" href="detail-pages/work/case-study.html?project=cmd-casino" aria-label="CMD Casino, view case study">
-          <img src="assets/img/projects/CMD-casino.png" alt="CMD Casino">
+          <img src="assets/img/projects/CMD-casino.webp" alt="CMD Casino" loading="lazy" decoding="async">
           <span class="work-card__meta">CMD Casino <span class="showcase__arrow">→</span></span>
         </a>
         <a class="work-card" href="detail-pages/work/case-study.html?project=hcd" aria-label="HCD, view case study">
-          <img src="assets/img/projects/HCD.png" alt="HCD">
+          <img src="assets/img/projects/HCD.webp" alt="HCD" loading="lazy" decoding="async">
           <span class="work-card__meta">HCD <span class="showcase__arrow">→</span></span>
         </a>
         <a class="work-card" href="detail-pages/work/case-study.html?project=hackathon" aria-label="Hackathon, view case study">
-          <img src="assets/img/projects/hackathon.png" alt="Hackathon">
+          <img src="assets/img/projects/hackathon.webp" alt="Hackathon" loading="lazy" decoding="async">
           <span class="work-card__meta">Hackathon <span class="showcase__arrow">→</span></span>
         </a>
         <a class="work-card" href="detail-pages/work/case-study.html?project=mitchopoly" aria-label="Mitchopoly, view case study">
-          <img src="assets/img/projects/mitchopoly.png" alt="Mitchopoly">
+          <img src="assets/img/projects/mitchopoly.webp" alt="Mitchopoly" loading="lazy" decoding="async">
           <span class="work-card__meta">Mitchopoly <span class="showcase__arrow">→</span></span>
         </a>
       </div>
@@ -1042,12 +1048,14 @@
     </div>
   </section>
 
+  </main>
+
   <footer class="footer">
     <div class="footer__inner">
       <div class="footer__top">
         <div class="footer__brand">
           <div class="footer__logo-row">
-            <img class="footer__logo-img" src="assets/img/brand/logo.png" alt="">
+            <img class="footer__logo-img" src="assets/img/brand/logo-192.webp" alt="">
             <div class="footer__logo"><span>MISC</span><span>STUDIO</span></div>
           </div>
           <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
@@ -1056,19 +1064,19 @@
 
         <nav class="footer__nav">
           <div class="footer__col">
-            <h4 class="footer__heading">Services</h4>
+            <h2 class="footer__heading">Services</h2>
             <a class="footer__link" href="detail-pages/services/ux-design.html">UX Design</a>
             <a class="footer__link" href="detail-pages/services/web-development.html">Web Development</a>
           </div>
           <div class="footer__col">
-            <h4 class="footer__heading">Company</h4>
+            <h2 class="footer__heading">Company</h2>
             <a class="footer__link" href="#services">Services</a>
             <a class="footer__link" href="#showcase">Work</a>
             <!-- <a class="footer__link" href="detail-pages/career.html">Careers</a> -->
             <a class="footer__link" href="#contact">Contact</a>
           </div>
           <div class="footer__col">
-            <h4 class="footer__heading">Elsewhere</h4>
+            <h2 class="footer__heading">Elsewhere</h2>
             <a class="footer__link" href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
             <a class="footer__link" href="https://github.com/MitchellKevin">Github</a>
             <a class="footer__link" href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>
@@ -1100,6 +1108,7 @@
          them at the right point in ScrollTrigger's pin order -->
     <script src="assets/js/shared/showcase.js"></script>
     <script src="assets/js/shared/timeline.js"></script>
+    <script src="assets/js/home/loader-morph-data.js"></script>
     <script src="assets/js/home/nomi-studio.js"></script>
     <!-- arrow buttons for the blog row -->
     <script src="assets/js/home/blog-cards.js"></script>

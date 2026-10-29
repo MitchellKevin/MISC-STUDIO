@@ -7,7 +7,7 @@
 // .work-card in index.html at the same slug.
 //
 // Image paths are from the site root (same as index.html uses), so
-// 'assets/img/projects/d2d.png', not '../../assets/img/projects/d2d.png'.
+// 'assets/img/projects/d2d.webp', not '../../assets/img/projects/d2d.webp'.
 //
 //   image    the shot that grows to fill the screen as you scroll, and is
 //            shown again in full further down
@@ -25,7 +25,7 @@ window.CASE_STUDIES = [
     title: 'Scholtes Klusbedrijf',
     label: 'Client website',
     intro: 'A website for a local handyman business: what they do, the work they have done, and a quick way to ask for a quote.',
-    image: 'assets/img/projects/scholtes-klusbedrijf.png',
+    image: 'assets/img/projects/scholtes-klusbedrijf.webp',
     live: 'https://mitchellkevin.github.io/scholtes-klusbedrijf/',
     facts: [
       { label: 'Type', value: 'Business website' },
@@ -43,7 +43,7 @@ window.CASE_STUDIES = [
     title: 'Day-to-Day',
     label: 'Venture',
     intro: 'The website for Day-to-Day, the software company I founded in 2025.',
-    image: 'assets/img/projects/d2d.png',
+    image: 'assets/img/projects/d2d.webp',
     live: 'https://www.day-to-day.nl/',
     facts: [
       { label: 'Year', value: '2025' },
@@ -61,7 +61,7 @@ window.CASE_STUDIES = [
     title: 'Visdeurbel Datavis.',
     label: 'Data visualisation',
     intro: 'A data visualisation of the fish that ring the Utrecht fish doorbell: which species pass the lock, and when.',
-    image: 'assets/img/projects/visdeurbel.png',
+    image: 'assets/img/projects/visdeurbel.webp',
     live: 'https://vis-b05f.onrender.com/',
     gallery: [
       { src: 'assets/img/projects/visdeurbel/schetsen-1.jpeg', alt: 'Early sketches for the visualisation' },
@@ -85,7 +85,7 @@ window.CASE_STUDIES = [
     title: 'CMD Casino',
     label: 'Web app',
     intro: 'A casino-style web app built around an API of my own: a server, game logic, and a front end that talks to both.',
-    image: 'assets/img/projects/CMD-casino.png',
+    image: 'assets/img/projects/CMD-casino.webp',
     live: 'https://wdd-api-scholte.onrender.com/',
     facts: [
       { label: 'Context', value: 'Communication & Multimedia Design, AUAS' },
@@ -103,7 +103,7 @@ window.CASE_STUDIES = [
     title: 'HCD',
     label: 'Human Centered Design',
     intro: 'A project designed with and for one specific person, tested and adjusted with them at every step.',
-    image: 'assets/img/projects/HCD.png',
+    image: 'assets/img/projects/HCD.webp',
     live: 'https://mitchellkevin.github.io/HCD/',
     facts: [
       { label: 'Context', value: 'Communication & Multimedia Design, AUAS' },
@@ -121,7 +121,7 @@ window.CASE_STUDIES = [
     title: 'Hackathon',
     label: 'Hackathon',
     intro: 'A space-themed site designed and built in the few days of a hackathon.',
-    image: 'assets/img/projects/hackathon.png',
+    image: 'assets/img/projects/hackathon.webp',
     live: 'https://mitchellkevin.github.io/Space/',
     facts: [
       { label: 'Theme', value: 'Space' },
@@ -139,7 +139,7 @@ window.CASE_STUDIES = [
     title: 'Mitchopoly',
     label: 'Personal site',
     intro: 'A personal info site dressed up as a board game: get to know me by going round the board.',
-    image: 'assets/img/projects/mitchopoly.png',
+    image: 'assets/img/projects/mitchopoly.webp',
     live: 'https://mitchellkevin.github.io/PersonalInfoSite/',
     facts: [
       { label: 'Type', value: 'Personal site' },

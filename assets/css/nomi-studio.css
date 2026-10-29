@@ -16,6 +16,10 @@ html {
 
   /* blue accent on eyebrows, labels and markers */
   --color-accent: #0022ff;
+  /* the accent when it is the TEXT colour: #0022ff on black is only 2.7:1,
+     so dark mode lifts it to a lighter blue that clears 4.5:1 on the page
+     and on the #101010 cards. Fills, borders and buttons keep --color-accent. */
+  --color-accent-text: #5a6eff;
 
   /* surfaces that used to be plain white cards on an off-white page */
   --color-surface: #101010;
@@ -26,7 +30,7 @@ html {
   --color-heading: #ffffff;
   --color-body: #ffffff;
   --color-muted: #a3a3a3;
-  --color-dim: #767676;
+  --color-dim: #858585; /* 4.6:1 on the #101010 cards */
 
   /* the giant faded words sitting behind the showcase / process sections */
   --color-faint: #161616;
@@ -68,6 +72,7 @@ html {
   --color-white: #000000;
 
   --color-accent: #0022ff;
+  --color-accent-text: #0022ff; /* already 8.6:1 on white */
 
   --color-surface: #f4f4f4;
   --color-surface-2: #ebebeb;
@@ -76,7 +81,7 @@ html {
   --color-heading: #000000;
   --color-body: #111111;
   --color-muted: #5a5a5a;
-  --color-dim: #8a8a8a;
+  --color-dim: #6b6b6b; /* 5.3:1 on white */
 
   --color-faint: #f0f0f0;
 
@@ -505,7 +510,7 @@ body {
       transform: scale(1);
     }
     &:hover .btn-1 {
-      color: var(--color-accent);
+      color: var(--color-accent-text);
     }
     &:hover .btn-1 svg {
       transform: rotate(-45deg);
@@ -841,7 +846,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.03rem;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   margin-bottom: 0.16rem;
 }
 .blog__title {
@@ -1246,7 +1251,7 @@ body {
   transition: color 0.25s ease;
 }
 .post__back:hover {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .post__back span {
   transition: transform 0.25s ease;
@@ -1348,7 +1353,7 @@ body {
   margin: 0.5rem 0 0.16rem;
 }
 .post__body a {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   text-decoration: underline;
   text-underline-offset: 0.04rem;
 }
@@ -1361,7 +1366,7 @@ body {
   padding-left: 0.28rem;
 }
 .post__body li::marker {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .post__body li {
   font-family: var(--sub-font);
@@ -1516,7 +1521,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.03rem;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .tlpath__eyebrow::before {
   content: "";
@@ -1765,7 +1770,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.03rem;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   margin-bottom: 0.16rem;
 }
 .certs__title {
@@ -2038,7 +2043,7 @@ body {
 .plan__icon {
   width: 0.3rem;
   height: 0.3rem;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   flex: none;
 }
 .plan__icon svg {
@@ -2716,7 +2721,7 @@ body {
   .tcards-hint__arrow {
     font-size: 0.62rem;
     line-height: 1;
-    color: var(--color-accent);
+    color: var(--color-accent-text);
   }
   .tcard__photo {
     width: 5rem;
@@ -3138,7 +3143,7 @@ body {
   font-family: var(--sub-font);
   font-size: 0.15rem;
   font-weight: 500;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 /* a live dot: the solid core stays put while a copy of it pings outward */
 .footer__dot {
@@ -3426,7 +3431,7 @@ html.curtain-in::after {
   font-weight: 600;
   letter-spacing: 0.02rem;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .showcase__title {
   font-family: var(--main-font);
@@ -3575,7 +3580,7 @@ html.curtain-in::after {
 .showcase__stage.is-focused .showcase__now { transform: translate(-50%, -0.1rem); }
 .showcase__now:hover,
 .showcase__now:focus-visible {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   border-color: var(--color-accent);
 }
 /* trails the pointer over a shot; difference keeps it legible in both themes */
@@ -3732,7 +3737,7 @@ html.curtain-in::after {
   font-weight: 600;
   letter-spacing: 0.02rem;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   margin-bottom: 0.2rem;
 }
 .process__title {
@@ -3805,7 +3810,7 @@ html.curtain-in::after {
   font-weight: 600;
   letter-spacing: 0.02rem;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   margin-bottom: 0.14rem;
 }
 .techstack__title {
@@ -3969,7 +3974,7 @@ html.curtain-in::after {
   font-weight: 600;
   letter-spacing: 0.03rem;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   margin-bottom: 0.2rem;
 }
 .focus__title {
@@ -3982,7 +3987,7 @@ html.curtain-in::after {
   margin-bottom: 0.16rem;
 }
 .focus__title-accent {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .focusPoint_container {
@@ -4048,7 +4053,7 @@ html.curtain-in::after {
 }
 .focus-illustration {
   /* every stroke and fill in the illustrations is currentColor */
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   width: 88%;
   max-width: 2.1rem;
   height: auto;
@@ -4227,22 +4232,25 @@ html.curtain-in::after {
 }
 
 /* "STUDIO" under the animated MISC in the loader — smaller than the letters,
-   fades + rises in once the shapes have morphed into the word. */
+   brightens + rises into place once the shapes have morphed into the word.
+   It starts dimmed rather than invisible on purpose: the browser only
+   counts text it can see, and this is the largest text on the first frame —
+   at opacity 0 the page's "largest paint" waited for the whole intro. */
 #loader-studio {
   fill: var(--color-heading);
   font-family: var(--main-font);
   font-size: 62px;
   font-weight: 700;
   letter-spacing: 16px;
-  opacity: 0;
+  opacity: 0.25;
+  transform: translateY(14px);
   animation: loaderStudioIn 0.7s ease 1.7s forwards;
 }
 @keyframes loaderStudioIn {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0);    }
+  to { opacity: 1; transform: translateY(0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  #loader-studio { animation: none; opacity: 1; }
+  #loader-studio { animation: none; opacity: 1; transform: none; }
 }
 
 /* ------------------------------------------------------------------ */

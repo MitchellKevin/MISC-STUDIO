@@ -9,7 +9,8 @@
     <meta name="description" content="Short summary of this post — this is what Google and LinkedIn show.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"></noscript>
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/brand/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="../assets/img/brand/favicon.png">
     <link rel="apple-touch-icon" href="../assets/img/brand/apple-touch-icon.png">
@@ -29,7 +30,7 @@
     <div class="flex-wrapper">
       <div class="logo-wrap">
         <a class="logo-link" href="../index.html" aria-label="Back to home">
-          <img class="logo-img" src="../assets/img/brand/logo.png" alt="">
+          <img class="logo-img" src="../assets/img/brand/logo-192.webp" alt="">
         </a>
         <div class="logo-text">
           <span class="btn-2">MISC</span>
@@ -83,7 +84,7 @@ const p = (t) =&gt; t * width;</code></pre>
       <div class="footer__top">
         <div class="footer__brand">
           <div class="footer__logo-row">
-            <img class="footer__logo-img" src="../assets/img/brand/logo.png" alt="">
+            <img class="footer__logo-img" src="../assets/img/brand/logo-192.webp" alt="">
             <div class="footer__logo"><span>MISC</span><span>STUDIO</span></div>
           </div>
           <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
@@ -92,19 +93,19 @@ const p = (t) =&gt; t * width;</code></pre>
 
         <nav class="footer__nav">
           <div class="footer__col">
-            <h4 class="footer__heading">Services</h4>
+            <h2 class="footer__heading">Services</h2>
             <a class="footer__link" href="../detail-pages/services/ux-design.html">UX Design</a>
             <a class="footer__link" href="../detail-pages/services/web-development.html">Web Development</a>
           </div>
           <div class="footer__col">
-            <h4 class="footer__heading">Company</h4>
+            <h2 class="footer__heading">Company</h2>
             <a class="footer__link" href="../index.html#services">Services</a>
             <a class="footer__link" href="../index.html#showcase">Work</a>
             <a class="footer__link" href="../blog.html">Blog</a>
             <a class="footer__link" href="../index.html#contact">Contact</a>
           </div>
           <div class="footer__col">
-            <h4 class="footer__heading">Elsewhere</h4>
+            <h2 class="footer__heading">Elsewhere</h2>
             <a class="footer__link" href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
             <a class="footer__link" href="https://github.com/MitchellKevin">Github</a>
             <a class="footer__link" href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>

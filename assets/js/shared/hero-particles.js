@@ -21,7 +21,9 @@ window.initParticles = function (options) {
   const o = Object.assign({
     canvas: '.hero__particles',
     container: '.hero',
-    src: 'assets/img/brand/logo.png',
+    // 640px is plenty for a 4px sampling grid — the 1254px original is 40x
+    // the bytes for the same dots
+    src: 'assets/img/brand/logo-640.webp',
     gap: 4,           // sampling grid in CSS px — also the dot spacing
     dot: 1.7,         // dot size (threshold mode)
     align: 'center',  // 'center' | 'right'
@@ -247,13 +249,25 @@ if (document.querySelector('.hero__particles')) window.initParticles();
 // The MISC wordmark that closes every page, edge to edge, with the same dot
 // size and push as the hero logo. The canvas carries its own image path in
 // data-src, because the pages sit at different depths and a path written
-// here would only resolve from one of them.
+// here would only resolve from one of them. Sampling the word is a few
+// hundred ms of main-thread work on a phone, so it waits until the footer is
+// about a screen away instead of running during page load.
 const footerMark = document.querySelector('.footer__particles');
 if (footerMark) {
-  window.initParticles({
+  const initFooterMark = () => window.initParticles({
     canvas: '.footer__particles',
     container: '.footer__mark',
     src: footerMark.dataset.src,
     fill: (w) => w
   });
+  if ('IntersectionObserver' in window) {
+    const near = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+      near.disconnect();
+      initFooterMark();
+    }, { rootMargin: '100% 0px' });
+    near.observe(footerMark);
+  } else {
+    initFooterMark();
+  }
 }
