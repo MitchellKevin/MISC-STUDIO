@@ -171,10 +171,4 @@ function animate(hasGallery) {
   ].forEach((target) => {
     if (typeof target !== 'string' || document.querySelector(target)) reveal(target);
   });
-
-  // --- "Project details" in the header glides down to the overview ---
-  document.querySelector('.cs-jump').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('details').scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth' });
-  });
 }

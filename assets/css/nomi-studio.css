@@ -297,6 +297,56 @@ body {
   text-decoration: none;
   display: block;
 }
+/* the header's one link (About me, or Home on the about page): a line icon,
+   last in the row of icon controls — the ring and size it shares with the
+   sound and theme switches are under "Header icon controls" below */
+.header-menu__item .header-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+}
+.header-btn svg {
+  width: 0.17rem;
+  height: 0.17rem;
+}
+.header-menu__item .header-btn:focus-visible {
+  outline: 1px solid var(--color-white);
+  outline-offset: 0.03rem;
+}
+
+/* Compact header on scroll (header-scroll.js sets .is-scrolled). Desktop
+   only: it gets shorter, sits higher and pulls in from both sides into a
+   narrower bar; the logo shrinks with it. An ease-in-out, so it glides
+   rather than snaps. */
+@media (min-width: 701px) {
+  .header {
+    --compact-ease: 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    transition: top var(--compact-ease), left var(--compact-ease),
+                right var(--compact-ease), height var(--compact-ease),
+                padding var(--compact-ease);
+  }
+  .header .logo-img {
+    transition: width var(--compact-ease), height var(--compact-ease);
+  }
+  .header.is-scrolled {
+    top: 0.14rem;
+    left: 2.4rem;
+    right: 2.4rem;
+    height: 0.6rem;
+    padding: 0 0.24rem;
+  }
+  .header.is-scrolled .logo-img {
+    width: 0.42rem;
+    height: 0.42rem;
+  }
+}
+@media (min-width: 701px) and (prefers-reduced-motion: reduce) {
+  .header,
+  .header .logo-img {
+    transition: none;
+  }
+}
 
 /* header logo (overrides the global `img { width: 100% }`) */
 .logo-img {
@@ -783,8 +833,9 @@ body {
   gap: 0.4rem;
   margin-bottom: 0.6rem;
 }
+/* block, not inline-block — same 100px-line problem as .post__back */
 .blog__eyebrow {
-  display: inline-block;
+  display: block;
   font-family: var(--sub-font);
   font-size: 0.14rem;
   font-weight: 600;
@@ -991,7 +1042,7 @@ body {
 .archive {
   width: 100vw;
   background: var(--color-black);
-  padding: 2.1rem 0 1.6rem;
+  padding: 1.78rem 0 1.6rem; /* a clear gap under the fixed header */
 }
 .archive__title {
   font-family: var(--main-font);
@@ -1033,12 +1084,17 @@ body {
 }
 .filters__btn:hover {
   color: var(--color-white);
-  border-color: var(--color-muted);
+  border-color: var(--color-accent);
 }
+/* the active topic wears the accent, like every other "on" state */
 .filters__btn[aria-pressed="true"] {
-  background: var(--color-white);
-  border-color: var(--color-white);
-  color: var(--color-black);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+.filters__btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 0.03rem;
 }
 .filters__count {
   margin-left: auto;
@@ -1085,9 +1141,15 @@ body {
     padding: 0.36rem 0.7rem;
     border-radius: 0.9rem;
   }
+  /* one card per row on the archive: two side by side squeezed the
+     headlines into four or five short lines. Wider than tall, so a phone
+     still shows more than one post per screen. */
   .blog__grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.4rem;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .blog__grid .bpost {
+    aspect-ratio: 4 / 3.4;
   }
   .blog__track {
     grid-auto-columns: 72%;
@@ -1161,14 +1223,18 @@ body {
 .post {
   width: 100vw;
   background: var(--color-black);
-  padding: 2.1rem 0 1.6rem;
+  padding: 1.78rem 0 1.6rem; /* a clear gap under the fixed header */
 }
 .post__inner {
-  max-width: 6.4rem; /* ~65 characters a line, which is what reads well */
+  max-width: 7.4rem; /* ~75 characters a line — still comfortable to read */
   margin: 0 auto;
 }
+/* block-level on purpose (flex + fit-content, not inline-flex): an inline
+   box sits on a line sized by the 100px root font, which pushed it ~75px
+   down from the top of the post */
 .post__back {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
   align-items: center;
   gap: 0.08rem;
   font-family: var(--sub-font);
@@ -1180,7 +1246,36 @@ body {
   transition: color 0.25s ease;
 }
 .post__back:hover {
-  color: var(--color-white);
+  color: var(--color-accent);
+}
+.post__back span {
+  transition: transform 0.25s ease;
+}
+.post__back:hover span {
+  transform: translateX(-0.05rem);
+}
+
+/* reading progress — a hairline of accent across the top that fills as the
+   post scrolls. Scroll-driven, so no script; browsers without
+   animation-timeline simply do not draw it. */
+@supports (animation-timeline: scroll()) {
+  .post::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 1001;
+    background: var(--color-accent);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    animation: post-progress linear both;
+    animation-timeline: scroll(root);
+  }
+  @keyframes post-progress {
+    to { transform: scaleX(1); }
+  }
 }
 .post__meta {
   display: flex;
@@ -1193,15 +1288,19 @@ body {
   color: var(--color-dim);
   margin-bottom: 0.2rem;
 }
-/* the post pages reuse the card's tag, but as an outlined pill on the page
-   background rather than as plain text on a photo */
+/* the post pages reuse the card's tag, as a solid accent pill — blue text
+   on black was too faint to read, white on blue is not. Sans and tighter
+   than the mono date beside it, so it reads as a word, not a code. */
 .post__meta .bpost__tag {
-  font: inherit;
   margin: 0;
-  color: var(--color-white);
-  border: 1px solid var(--color-border);
+  font-family: var(--sub-font);
+  font-size: 0.12rem;
+  font-weight: 600;
+  letter-spacing: 0.01rem;
+  color: #fff;
+  background: var(--color-accent);
   border-radius: 0.3rem;
-  padding: 0.05rem 0.13rem;
+  padding: 0.04rem 0.12rem;
 }
 .post__title {
   font-family: var(--main-font);
@@ -1209,7 +1308,22 @@ body {
   line-height: 1.08;
   font-weight: 700;
   color: var(--color-heading);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+/* the same cover as the post's card in blog.html, cropped wide */
+.post__cover {
+  aspect-ratio: 16 / 9;
+  margin: 0 0 0.5rem;
+  border-radius: 0.16rem;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.post__cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .post__body p {
   font-family: var(--sub-font);
@@ -1217,8 +1331,12 @@ body {
   line-height: 0.32rem;
   color: var(--color-muted);
 }
+/* one rhythm between blocks: whatever follows a paragraph or a list gets
+   the same gap, so text never runs straight on from a list's last bullet */
 .post__body p + p,
-.post__body h2 + p {
+.post__body h2 + p,
+.post__body ul + p,
+.post__body p + ul {
   margin-top: 0.24rem;
 }
 .post__body h2 {
@@ -1230,14 +1348,20 @@ body {
   margin: 0.5rem 0 0.16rem;
 }
 .post__body a {
-  color: var(--color-white);
+  color: var(--color-accent);
   text-decoration: underline;
   text-underline-offset: 0.04rem;
+}
+.post__body strong {
+  font-weight: 600;
+  color: var(--color-heading);
 }
 .post__body ul {
   list-style: disc;
   padding-left: 0.28rem;
-  margin-top: 0.2rem;
+}
+.post__body li::marker {
+  color: var(--color-accent);
 }
 .post__body li {
   font-family: var(--sub-font);
@@ -1251,8 +1375,11 @@ body {
   border: 1px solid var(--color-border);
   margin: 0.34rem 0;
 }
+/* long lines wrap instead of disappearing past the panel edge — in a
+   column this narrow, a cut-off line read as a rendering bug */
 .post__body pre {
-  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.12rem;
@@ -1272,6 +1399,14 @@ body {
   font-size: 0.145rem;
   color: var(--color-body);
 }
+/* inline code gets a chip so it stands apart from the prose; code inside a
+   <pre> already sits in its own panel */
+.post__body :not(pre) > code {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.05rem;
+  padding: 0.01rem 0.05rem;
+}
 
 @media (max-width: 700px) {
   .post {
@@ -1280,14 +1415,38 @@ body {
   .post__inner {
     max-width: 100%;
   }
+  /* the base 0.32rem gutter is ~9px on a phone; this lines the text up with
+     the header and footer instead */
+  .post .container,
+  .archive .container,
+  .blog .container {
+    padding: 0 0.6rem;
+  }
   .post__title {
     font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+  }
+  .post__cover {
+    margin-bottom: 1rem;
+    border-radius: 0.4rem;
+  }
+  .post__body :not(pre) > code {
+    border-radius: 0.12rem;
+    padding: 0.02rem 0.12rem;
+  }
+  .post__body pre {
+    font-size: 0.4rem; /* matches the code inside, see the strut note above */
+    padding: 0.5rem;
+    border-radius: 0.3rem;
+    margin: 0.7rem 0;
   }
   .post__meta {
     font-size: 0.36rem;
+    margin-bottom: 0.44rem; /* ~12px to the title on a phone */
   }
   .post__meta .bpost__tag {
-    padding: 0.14rem 0.34rem;
+    font-size: 0.32rem;
+    padding: 0.1rem 0.3rem;
     border-radius: 0.9rem;
   }
   .post__back {
@@ -1298,6 +1457,18 @@ body {
   .post__body li {
     font-size: 0.5rem;
     line-height: 0.82rem;
+  }
+  .post__body p + p,
+  .post__body h2 + p,
+  .post__body ul + p,
+  .post__body p + ul {
+    margin-top: 0.55rem;
+  }
+  .post__body li {
+    margin-bottom: 0.2rem;
+  }
+  .post__body ul {
+    padding-left: 0.6rem;
   }
   .post__body h2 {
     font-size: 0.8rem;
@@ -2807,7 +2978,7 @@ body {
 }
 
 .cform__submit {
-  --blob-color: var(--color-white);
+  --blob-color: var(--color-accent);
   --blob-bg: var(--color-surface);
   --blob-text-hover: var(--color-black);
   width: 100%;
@@ -2828,6 +2999,9 @@ body {
   .contact__window {
     grid-template-columns: 1fr;
     border-radius: 0.8rem;
+    /* the desktop cap is in rem, which scales with the viewport — on a
+       phone 7.2rem is under 200px, so lift it and let the card fill */
+    max-width: none;
   }
   .contact__form-col {
     padding: 1.4rem 1.1rem;
@@ -2859,6 +3033,12 @@ body {
     font-size: 0.5rem;
     line-height: 1rem !important;
     padding: 0;
+  }
+  .cform textarea {
+    min-height: 2.6rem;
+    font-size: 0.5rem;
+    line-height: 0.74rem !important;
+    padding: 0.2rem 0;
   }
   .cservice__legend {
     font-size: 0.46rem;
@@ -2902,7 +3082,7 @@ body {
   width: 100vw;
   background: var(--color-black);
   color: var(--color-white);
-  padding: 1rem 0.32rem 0.5rem;
+  padding: 1rem 0.32rem 0; /* no bottom padding: the MISC mark runs off the page */
 }
 .footer__inner {
   max-width: 13.2rem;
@@ -2958,14 +3138,47 @@ body {
   font-family: var(--sub-font);
   font-size: 0.15rem;
   font-weight: 500;
-  color: var(--color-body);
+  color: var(--color-accent);
 }
+/* a live dot: the solid core stays put while a copy of it pings outward */
 .footer__dot {
+  position: relative;
   width: 0.1rem;
   height: 0.1rem;
   border-radius: 50%;
-  background: var(--color-muted);
-  box-shadow: 0 0 0 0.04rem var(--glass-border);
+  background: var(--color-accent);
+}
+.footer__dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: footer-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes footer-ping {
+  from { transform: scale(1);   opacity: 0.7; }
+  to   { transform: scale(2.8); opacity: 0;   }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer__dot::after { animation: none; opacity: 0; }
+}
+
+/* MISC as a field of dots closing the page (hero-particles.js). It runs
+   past the footer's side padding to both edges, and the box is cut shorter
+   than the word so the letters run off the bottom of the page — the script
+   places the word to match (originY). The space above is room for a shove. */
+.footer__mark {
+  position: relative;
+  margin: 0.6rem -0.32rem 0;
+  aspect-ratio: 600 / 160;
+}
+.footer__particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 .footer__nav {
   display: grid;
@@ -3010,7 +3223,7 @@ body {
 
 @media (max-width: 700px) {
   .footer {
-    padding: 1.6rem 0.6rem 1rem;
+    padding: 1.6rem 0.6rem 0;
   }
   .footer__top {
     grid-template-columns: 1fr;
@@ -3035,6 +3248,7 @@ body {
   }
   .footer__loc {
     font-size: 0.42rem;
+    gap: 0.25rem;
   }
   .footer__dot {
     width: 0.28rem;
@@ -3057,6 +3271,9 @@ body {
     align-items: flex-start;
     gap: 0.3rem;
     font-size: 0.4rem;
+  }
+  .footer__mark {
+    margin: 1rem -0.6rem 0;
   }
 }
 
@@ -3088,6 +3305,10 @@ body {
   .header .header-menu__item:not(:last-child) {
     margin-right: 0.7rem;
   }
+  .header-btn svg {
+    width: 0.46rem;
+    height: 0.46rem;
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -3106,9 +3327,14 @@ body {
   width: min(82vw, 720px);
   height: auto;
 }
+/* already seen this visit (set in the <head> of index.html) */
+.intro-seen .loader {
+  display: none;
+}
 
-/* Wave transition — a layered blue panel that sweeps up to cover the loader
-   and then reveals the page beneath (driven in JS on loader dismiss). */
+/* Page curtain — one navy panel with a curved leading edge that closes the
+   loader and covers page-to-page navigation (page-transition.js draws and
+   moves the shape; this only places it and colours it). */
 .loader-wave {
   position: fixed;
   inset: 0;
@@ -3119,11 +3345,29 @@ body {
 }
 .loader-wave__svg {
   position: absolute;
-  left: 0;
-  top: 0;
+  inset: 0;
   width: 100%;
-  height: 150vh;   /* taller than the viewport so it can cover, then reveal */
+  height: 100%;
   display: block;
+}
+/* a deep navy rather than the accent itself, which is too loud at full screen */
+.loader-wave__svg path {
+  fill: #0b1666;
+}
+/* arriving through a transition: the <head> sets .curtain-in, so the very
+   first paint is already the curtain colour; page-transition.js swaps in
+   the real curtain and drops the class. If the script never runs, this
+   steps aside after 3s rather than leave the page covered. */
+html.curtain-in::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  background: #0b1666; /* same as the curtain path above */
+  animation: curtain-hold-timeout 0s 3s forwards;
+}
+@keyframes curtain-hold-timeout {
+  to { visibility: hidden; }
 }
 
 /* ------------------------------------------------------------------ */
@@ -3251,7 +3495,20 @@ body {
   border-radius: 0.16rem;
 }
 .showcase__arrow {
+  display: inline-block; /* an inline box would ignore the rotation */
   font-size: 0.16rem;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* on hover the → turns 45deg up into a ↗ — an off-site ↗ already points
+   there, so it stays put */
+.showcase__now:hover .showcase__arrow,
+.showcase__now:focus-visible .showcase__arrow,
+.work-card:hover .showcase__arrow:not(.showcase__arrow--out),
+.work-card:focus-visible .showcase__arrow:not(.showcase__arrow--out) {
+  transform: rotate(-45deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .showcase__arrow { transition: none; }
 }
 
 /* "01 / 04" — the second signal that there is more work stacked up */
@@ -3297,6 +3554,14 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.08rem;
+  /* the project name sits in a glass pill, like the names on the cards;
+     the ring is the text colour faded, so it turns blue with it on hover */
+  padding: 0.07rem 0.2rem;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-radius: 0.3rem;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   font-family: var(--sub-font);
   font-size: 0.17rem;
   font-weight: 500;
@@ -3304,12 +3569,15 @@ body {
   text-decoration: none;
   white-space: nowrap;
   opacity: 0;
-  transition: opacity 0.6s ease, transform 0.4s ease;
+  transition: opacity 0.6s ease, transform 0.4s ease, color 0.25s ease, border-color 0.25s ease;
 }
 .showcase__stage.is-ready .showcase__now { opacity: 1; }
 .showcase__stage.is-focused .showcase__now { transform: translate(-50%, -0.1rem); }
 .showcase__now:hover,
-.showcase__now:focus-visible { color: var(--color-accent); }
+.showcase__now:focus-visible {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
 /* trails the pointer over a shot; difference keeps it legible in both themes */
 .showcase__cursor {
   position: absolute;
@@ -3356,7 +3624,12 @@ body {
   .showcase--carousel .showcase__label { font-size: 0.42rem; }
   .showcase--carousel .showcase__title { font-size: 1.15rem; }
   .showcase__stage { height: 60vh; }
-  .showcase__now { font-size: 0.46rem; }
+  .showcase__now {
+    font-size: 0.46rem;
+    gap: 0.2rem;
+    padding: 0.18rem 0.5rem;
+    border-radius: 0.8rem;
+  }
   .showcase__close { font-size: 0.42rem; }
   .showcase__head {
     display: block;
@@ -3982,7 +4255,8 @@ body {
    flex + zero line-height collapses it onto the same centre line. The gap to
    "Contact" comes from that item's own margin-right, so the button adds none. */
 .theme-toggle-item,
-.sound-toggle-item {
+.sound-toggle-item,
+.header-icon-item {
   display: flex;
   align-items: center;
   font-size: 0;
@@ -4094,7 +4368,6 @@ body {
 /* API paints the outgoing theme over the incoming one; masking that   */
 /* top layer with the logo's wave and sliding the mask down erases the */
 /* old theme progressively, so the page changes under the crest.       */
-/* Same curve as the page-to-page transition (page-transition.js).     */
 /* ------------------------------------------------------------------ */
 :root {
   --theme-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 2000' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M-120 2200 L-120 1021.4 L0.0 1021.4 L30.0 1038.0 L60.0 1049.6 L90.0 1054.8 L120.0 1052.9 L150.0 1044.1 L180.0 1029.5 L210.0 1011.2 L240.0 991.3 L270.0 972.6 L300.0 957.5 L330.0 947.9 L360.0 945.0 L390.0 949.3 L420.0 960.2 L450.0 976.3 L480.0 995.4 L510.0 1015.2 L540.0 1032.9 L570.0 1046.4 L600.0 1053.9 L630.0 1054.3 L660.0 1047.7 L690.0 1034.9 L720.0 1017.6 L750.0 997.9 L780.0 978.6 L810.0 962.0 L840.0 950.4 L870.0 945.2 L900.0 947.1 L930.0 955.9 L960.0 970.5 L990.0 988.8 L1020.0 1008.7 L1050.0 1027.4 L1080.0 1042.5 L1110.0 1052.1 L1140.0 1055.0 L1170.0 1050.7 L1200.0 1039.8 L1230.0 1023.7 L1260.0 1004.6 L1290.0 984.8 L1320.0 967.1 L1350.0 953.6 L1380.0 946.1 L1410.0 945.7 L1440.0 952.3 L1560 952.3 L1560 2200 Z'/%3E%3C/svg%3E");
@@ -4148,5 +4421,76 @@ html.theme-sweep::view-transition-old(root) {
   .sound-toggle i { width: 0.09rem; }
   .sound-toggle-item.header-menu__item:not(:last-child) { margin-right: 0.32rem; }
   .footer__credit { font-size: 0.34rem; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Header icon controls — sound, theme and About as one set: the same  */
+/* ring, the same size, the same gap. The ring is the icon's own colour */
+/* faded, so it follows the theme, and it firms up on hover.            */
+/* ------------------------------------------------------------------ */
+.sound-toggle,
+.theme-toggle,
+.header-menu__item .header-btn {
+  width: 0.36rem;
+  height: 0.36rem;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  /* the <li> around each one already fades to 0.85 and back on hover; a
+     second fade on the button made two of the three dimmer than the third */
+  opacity: 1;
+  transition: border-color 0.25s ease;
+}
+.sound-toggle:hover,
+.theme-toggle:hover,
+.header-menu__item .header-btn:hover {
+  border-color: currentColor;
+}
+.header .header-menu .sound-toggle-item:not(:last-child),
+.header .header-menu .theme-toggle-item:not(:last-child) {
+  margin-right: 0.1rem;
+}
+.theme-toggle__disc {
+  width: 0.15rem;
+  height: 0.15rem;
+}
+/* .header's "last span shifts right" rule is for the STUDIO line of the
+   logo, but the disc is a last-child span too — keep it centred */
+.header .flex-wrapper span.theme-toggle__disc {
+  left: 0;
+}
+/* the bars stand in the middle of the ring at mixed heights, so the switch
+   reads as an equaliser even while it is off */
+.sound-toggle {
+  align-items: center;
+  gap: 0.024rem;
+  padding: 0.1rem 0;
+}
+.sound-toggle i:nth-child(1) { height: 45%; }
+.sound-toggle i:nth-child(2) { height: 85%; }
+.sound-toggle i:nth-child(3) { height: 60%; }
+.sound-toggle i:nth-child(4) { height: 35%; }
+
+@media (max-width: 700px) {
+  .sound-toggle,
+  .theme-toggle,
+  .header-menu__item .header-btn {
+    width: 1rem;
+    height: 1rem;
+  }
+  .theme-toggle__disc {
+    width: 0.42rem;
+    height: 0.42rem;
+  }
+  .sound-toggle {
+    gap: 0.065rem;
+    padding: 0.28rem 0;
+  }
+  .sound-toggle i {
+    width: 0.05rem;
+  }
+  .header .header-menu .sound-toggle-item:not(:last-child),
+  .header .header-menu .theme-toggle-item:not(:last-child) {
+    margin-right: 0.26rem;
+  }
 }
 

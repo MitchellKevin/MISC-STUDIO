@@ -33,7 +33,8 @@
   }
 
   // the main pages hang the nav off a <ul.header-menu>, the detail pages off a
-  // <nav.site-header__nav> — the button goes last in either
+  // <nav.site-header__nav> — the button goes last in either, except for the
+  // About icon, which stays after it
   function build() {
     if (document.querySelector('.theme-toggle')) return null;
     var menu = document.querySelector('.header-menu');
@@ -45,13 +46,14 @@
     btn.className = 'theme-toggle';
     btn.innerHTML = '<span class="theme-toggle__disc" aria-hidden="true"></span>';
 
+    // the About icon stays at the far end, so the switch goes in before it
     if (menu) {
       var li = document.createElement('li');
       li.className = 'header-menu__item theme-toggle-item';
       li.appendChild(btn);
-      menu.appendChild(li);
+      menu.insertBefore(li, menu.querySelector('.header-icon-item'));
     } else {
-      nav.appendChild(btn);
+      nav.insertBefore(btn, nav.querySelector('.header-btn'));
     }
     return btn;
   }

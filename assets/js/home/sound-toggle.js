@@ -101,10 +101,10 @@
     li.className = 'header-menu__item sound-toggle-item';
     li.appendChild(btn);
 
-    // sits before the theme switch if that one is already in place
-    var themeItem = menu.querySelector('.theme-toggle-item');
-    if (themeItem) menu.insertBefore(li, themeItem);
-    else menu.appendChild(li);
+    // sits before the theme switch if that one is already in place, and
+    // before the About icon either way
+    var next = menu.querySelector('.theme-toggle-item') || menu.querySelector('.header-icon-item');
+    menu.insertBefore(li, next);
     return btn;
   }
 

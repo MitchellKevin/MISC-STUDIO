@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /* NOMI STUDIO — service detail pages.                                  */
-/* Shares the main site's look: Poppins, black bg, grey accent,         */
+/* Shares the main site's look: Poppins, black bg, blue accent,         */
 /* glass header, dark footer, gooey "blob" buttons.                     */
 /* ------------------------------------------------------------------ */
 
@@ -11,9 +11,8 @@ html {
 :root {
   --font: "Poppins", sans-serif;
   --bg: #000000;
-  /* kept as --blue for compatibility with the rest of this file; it is the
-     grey accent now */
-  --blue: #9a9a9a;
+  /* the same blue accent as --color-accent in nomi-studio.css */
+  --blue: #0022ff;
   --ink: #ffffff;
   --muted: #a3a3a3;
   --line: #2a2a2a;
@@ -30,7 +29,7 @@ html {
 /* light mode — the same eleven-value inversion the main sheet does */
 :root[data-theme="light"] {
   --bg: #ffffff;
-  --blue: #6a6a6a;
+  --blue: #0022ff;
   --ink: #000000;
   --muted: #5a5a5a;
   --line: #d9d9d9;
@@ -129,7 +128,7 @@ body {
 .site-header__nav {
   display: flex;
   align-items: center;
-  gap: 0.37rem;
+  gap: 0.1rem; /* only icons in here now, so they sit close together */
 }
 .site-header__nav a {
   font-size: 0.14rem;
@@ -140,6 +139,67 @@ body {
 }
 .site-header__nav a:hover {
   opacity: 1;
+}
+/* the header's one link (About me): a line icon after the theme switch.
+   Both sit in the same ring at the same size — same as nomi-studio.css */
+.site-header__nav .header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.site-header__nav .theme-toggle,
+.site-header__nav .header-btn {
+  width: 0.36rem;
+  height: 0.36rem;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  transition: opacity 0.2s ease, border-color 0.25s ease;
+}
+.site-header__nav .theme-toggle:hover,
+.site-header__nav .header-btn:hover {
+  border-color: currentColor;
+}
+.site-header__nav .theme-toggle__disc {
+  width: 0.15rem;
+  height: 0.15rem;
+}
+.header-btn svg {
+  width: 0.18rem;
+  height: 0.18rem;
+}
+.site-header__nav .header-btn:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 0.03rem;
+}
+
+/* Compact header on scroll — same as .header in nomi-studio.css */
+@media (min-width: 701px) {
+  .site-header {
+    --compact-ease: 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    transition: top var(--compact-ease), left var(--compact-ease),
+                right var(--compact-ease), height var(--compact-ease),
+                padding var(--compact-ease);
+  }
+  .site-header__logo img {
+    transition: width var(--compact-ease), height var(--compact-ease);
+  }
+  .site-header.is-scrolled {
+    top: 0.14rem;
+    left: 2.4rem;
+    right: 2.4rem;
+    height: 0.6rem;
+    padding: 0 0.24rem;
+  }
+  .site-header.is-scrolled .site-header__logo img {
+    width: 0.42rem;
+    height: 0.42rem;
+  }
+}
+@media (min-width: 701px) and (prefers-reduced-motion: reduce) {
+  .site-header,
+  .site-header__logo img {
+    transition: none;
+  }
 }
 
 /* ---------- Shared bits ---------- */
@@ -255,7 +315,7 @@ body {
 
 /* ---------- Hero ---------- */
 .detail-hero {
-  padding: 2.1rem 0 1rem;
+  padding: 1.78rem 0 1rem; /* a clear gap under the fixed header */
 }
 .detail-hero__inner {
   position: relative;
@@ -267,8 +327,11 @@ body {
 .detail-hero__text {
   max-width: 8rem;
 }
+/* block-level flex, not inline-flex: an inline box sits on a line sized by
+   the ~100px root font and lands ~75px lower than the padding says */
 .detail-hero__label {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
   align-items: center;
   gap: 0.12rem;
   font-size: 0.15rem;
@@ -501,7 +564,7 @@ body {
 .footer {
   background: var(--bg);
   color: var(--ink);
-  padding: 0.9rem 0.4rem 0.5rem;
+  padding: 0.9rem 0.4rem 0; /* no bottom padding: the MISC mark runs off the page */
 }
 .footer__inner {
   max-width: 13.4rem;
@@ -543,6 +606,50 @@ body {
   line-height: 0.24rem;
   color: var(--muted);
   max-width: 3.7rem;
+  margin-bottom: 0.28rem;
+}
+/* availability line and the dotted MISC — same as nomi-studio.css */
+.footer__loc {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.11rem;
+  font-size: 0.15rem;
+  font-weight: 500;
+  color: var(--blue);
+}
+.footer__dot {
+  position: relative;
+  width: 0.1rem;
+  height: 0.1rem;
+  border-radius: 50%;
+  background: var(--blue);
+}
+.footer__dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: footer-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes footer-ping {
+  from { transform: scale(1);   opacity: 0.7; }
+  to   { transform: scale(2.8); opacity: 0;   }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer__dot::after { animation: none; opacity: 0; }
+}
+.footer__mark {
+  position: relative;
+  margin: 0.6rem -0.4rem 0;
+  aspect-ratio: 600 / 160;
+}
+.footer__particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 .footer__nav {
   display: grid;
@@ -605,10 +712,23 @@ body {
     left: 0.3rem;
   }
   .site-header__nav {
-    gap: 0.6rem;
+    gap: 0.32rem;
   }
   .site-header__nav a {
     font-size: 0.46rem;
+  }
+  .site-header__nav .theme-toggle,
+  .site-header__nav .header-btn {
+    width: 1rem;
+    height: 1rem;
+  }
+  .site-header__nav .theme-toggle__disc {
+    width: 0.42rem;
+    height: 0.42rem;
+  }
+  .header-btn svg {
+    width: 0.46rem;
+    height: 0.46rem;
   }
 
   .section-label {
@@ -641,6 +761,12 @@ body {
   }
   .detail-hero__icon {
     display: none;
+  }
+  /* rem caps scale with the viewport, so on a phone they squeeze the text
+     into a third of the screen — let these run the full width instead */
+  .detail-hero__text,
+  .detail-cta__title {
+    max-width: none;
   }
   .detail-hero__label {
     font-size: 0.46rem;
@@ -738,7 +864,7 @@ body {
   }
 
   .footer {
-    padding: 1.4rem 0.6rem 1rem;
+    padding: 1.4rem 0.6rem 0;
   }
   .footer__top {
     grid-template-columns: 1fr;
@@ -756,6 +882,15 @@ body {
     font-size: 0.44rem;
     line-height: 0.64rem;
     max-width: 100%;
+    margin-bottom: 0.6rem;
+  }
+  .footer__loc {
+    font-size: 0.42rem;
+    gap: 0.25rem;
+  }
+  .footer__dot {
+    width: 0.28rem;
+    height: 0.28rem;
   }
   .footer__nav {
     grid-template-columns: 1fr 1fr;
@@ -774,6 +909,9 @@ body {
     align-items: flex-start;
     gap: 0.3rem;
     font-size: 0.4rem;
+  }
+  .footer__mark {
+    margin: 1rem -0.6rem 0;
   }
 }
 
@@ -868,7 +1006,7 @@ body {
 }
 
 /* ------------------------------------------------------------------ */
-/* Page-transition wave overlay (shared with page-transition.js)      */
+/* Page curtain overlay (shared with page-transition.js)              */
 /* ------------------------------------------------------------------ */
 .loader-wave {
   position: fixed;
@@ -880,11 +1018,25 @@ body {
 }
 .loader-wave__svg {
   position: absolute;
-  left: 0;
-  top: 0;
+  inset: 0;
   width: 100%;
-  height: 150vh;
+  height: 100%;
   display: block;
+}
+.loader-wave__svg path {
+  fill: #0b1666; /* same navy as nomi-studio.css */
+}
+/* first-paint hold while arriving through a transition — see nomi-studio.css */
+html.curtain-in::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  background: #0b1666;
+  animation: curtain-hold-timeout 0s 3s forwards;
+}
+@keyframes curtain-hold-timeout {
+  to { visibility: hidden; }
 }
 
 /* ------------------------------------------------------------------ */

@@ -128,7 +128,8 @@
       img.src = p.img || '';
       img.alt = p.name;
       const meta = el('span', 'work-card__meta', p.name + ' ');
-      meta.appendChild(el('span', 'showcase__arrow', external ? '↗' : '→'));
+      // an off-site ↗ already points where the hover turns the → to
+      meta.appendChild(el('span', external ? 'showcase__arrow showcase__arrow--out' : 'showcase__arrow', external ? '↗' : '→'));
       a.appendChild(img); a.appendChild(meta);
       work.appendChild(a);
     });

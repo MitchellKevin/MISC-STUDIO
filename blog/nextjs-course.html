@@ -7,11 +7,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../assets/img/brand/logo.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/brand/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/img/brand/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/img/brand/apple-touch-icon.png">
     <script>
       /* read the saved theme before first paint — otherwise a light-mode
          reload flashes the black page for a frame */
       (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
+      /* arriving through a page transition: start in the curtain colour so the
+         page never flashes before page-transition.js lifts the curtain */
+      (function(){try{if(sessionStorage.getItem('nomi-wave-enter'))document.documentElement.classList.add('curtain-in');}catch(e){}})();
     </script>
     <link rel="stylesheet" href="../assets/css/nomi-studio.css">
     <title>Fifteen chapters of Next.js, and what actually stuck — Mitchell Scholte</title>
@@ -33,13 +38,12 @@
           <img class="logo-img" src="../assets/img/brand/logo.png" alt="">
         </a>
         <div class="logo-text">
-          <span class="btn-2">MITCHELL</span>
-          <span class="btn-2">SCHOLTE</span>
+          <span class="btn-2">MISC</span>
+          <span class="btn-2">STUDIO</span>
         </div>
       </div>
       <ul class="header-menu">
-        <li class="header-menu__item header-text-1"><a href="../blog.html">Blog</a></li>
-        <li class="header-menu__item header-text-1"><a href="../index.html#contact">Contact</a></li>
+        <li class="header-menu__item header-icon-item"><a class="header-btn" href="../about.html" aria-label="About me" title="About me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></a></li>
       </ul>
     </div>
   </header>
@@ -57,6 +61,7 @@
           16 min
         </p>
         <h1 class="post__title">Fifteen chapters of Next.js, and what actually stuck</h1>
+        <figure class="post__cover"><img src="../assets/img/blog/nextjs-course.jpg" alt=""></figure>
 
         <div class="post__body">
           <p>React hands you components and a way to render them, and then leaves the rest of the building to you: routing, fetching data, deciding what runs where, making any of it fast. Next.js is a set of answers to exactly those questions. It fills the gaps React leaves open so you can spend your time on the app instead of on the plumbing.</p>
@@ -549,7 +554,7 @@ export const metadata = { title: 'Invoices' };
         <div class="footer__brand">
           <div class="footer__logo-row">
             <img class="footer__logo-img" src="../assets/img/brand/logo.png" alt="">
-            <div class="footer__logo"><span>MITCHELL</span><span>SCHOLTE</span></div>
+            <div class="footer__logo"><span>MISC</span><span>STUDIO</span></div>
           </div>
           <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
           <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
@@ -570,10 +575,9 @@ export const metadata = { title: 'Invoices' };
           </div>
           <div class="footer__col">
             <h4 class="footer__heading">Elsewhere</h4>
-            <a class="footer__link" href="#">LinkedIn</a>
-            <a class="footer__link" href="#">Instagram</a>
-            <a class="footer__link" href="#">X (Twitter)</a>
-            <a class="footer__link" href="#">Dribbble</a>
+            <a class="footer__link" href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
+            <a class="footer__link" href="https://github.com/MitchellKevin">Github</a>
+            <a class="footer__link" href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>
           </div>
         </nav>
       </div>
@@ -583,7 +587,14 @@ export const metadata = { title: 'Invoices' };
         <span class="footer__made">Made in the Netherlands 🇳🇱</span>
       </div>
     </div>
+    <!-- MISC drawn in dots that scatter under the cursor (hero-particles.js);
+         it runs edge to edge and off the bottom of the page -->
+    <div class="footer__mark" aria-hidden="true"><canvas class="footer__particles" data-src="../assets/img/brand/misc-wordmark.svg"></canvas></div>
   </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+    <script src="../assets/js/shared/page-transition.js"></script>
+    <script src="../assets/js/shared/hero-particles.js"></script>
+    <script src="../assets/js/shared/header-scroll.js"></script>
     <script src="../assets/js/shared/theme-toggle.js"></script>
 </body>
 </html>

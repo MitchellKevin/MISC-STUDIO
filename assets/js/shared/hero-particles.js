@@ -13,7 +13,8 @@
 //     brightness. Right for a photograph, where a hard cut-off would
 //     collapse the whole thing into a silhouette.
 //
-// Used by the homepage hero (the logo) and the about hero (a portrait).
+// Used by the homepage hero (the logo), the about hero (a portrait) and the
+// MISC wordmark in every footer.
 // Dependency-free on purpose — this runs before GSAP has anything to do,
 // and a canvas loop has no business waiting on a CDN.
 window.initParticles = function (options) {
@@ -76,14 +77,19 @@ window.initParticles = function (options) {
     canvas.height = Math.round(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    // draw at the size it will occupy, so one source pixel is one dot
+    // draw at the size it will occupy, so one source pixel is one dot.
+    // `size` is the width; a non-square source keeps its own proportions
+    // unless `square` crops it (the logo is square, so it is unaffected)
     const size = Math.round(o.fill ? o.fill(width, height)
                                    : Math.min(height * 1.45, width * 0.95));
     if (size < 40) { particles = []; return; }
+    const ratio = !o.square && image.naturalWidth && image.naturalHeight
+      ? image.naturalHeight / image.naturalWidth : 1;
+    const sizeY = Math.round(size * ratio);
 
     const off = document.createElement('canvas');
     off.width = size;
-    off.height = size;
+    off.height = sizeY;
     const octx = off.getContext('2d', { willReadFrequently: true });
 
     if (o.square && image.naturalWidth && image.naturalHeight) {
@@ -93,12 +99,12 @@ window.initParticles = function (options) {
       const sy = (image.naturalHeight - s) / 2;
       octx.drawImage(image, sx, sy, s, s, 0, 0, size, size);
     } else {
-      octx.drawImage(image, 0, 0, size, size);
+      octx.drawImage(image, 0, 0, size, sizeY);
     }
 
     let data;
     try {
-      data = octx.getImageData(0, 0, size, size).data;
+      data = octx.getImageData(0, 0, size, sizeY).data;
     } catch (err) {
       // a tainted canvas (file://) would throw here — leave the section as it
       // was rather than blow up
@@ -109,13 +115,13 @@ window.initParticles = function (options) {
     const originX = o.align === 'right'
       ? Math.round(width - size - o.inset)
       : Math.round((width - size) / 2);
-    const originY = Math.round((height - size) / 2);
+    const originY = Math.round((height - sizeY) / 2);
 
     const halftone = o.mode === 'halftone';
     const span = Math.max(0.0001, o.white - o.black);
     const invGamma = 1 / o.gamma;
     particles = [];
-    for (let y = 0; y < size; y += o.gap) {
+    for (let y = 0; y < sizeY; y += o.gap) {
       for (let x = 0; x < size; x += o.gap) {
         const i = (y * size + x) * 4;
         if (data[i + 3] < 128) continue;
@@ -237,3 +243,17 @@ window.initParticles = function (options) {
 // calls initParticles() itself with its own image, so this only fires where
 // .hero__particles actually exists.
 if (document.querySelector('.hero__particles')) window.initParticles();
+
+// The MISC wordmark that closes every page, edge to edge, with the same dot
+// size and push as the hero logo. The canvas carries its own image path in
+// data-src, because the pages sit at different depths and a path written
+// here would only resolve from one of them.
+const footerMark = document.querySelector('.footer__particles');
+if (footerMark) {
+  window.initParticles({
+    canvas: '.footer__particles',
+    container: '.footer__mark',
+    src: footerMark.dataset.src,
+    fill: (w) => w
+  });
+}

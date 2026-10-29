@@ -304,38 +304,35 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // MARK: Loading screen — shapes morph into "MISC"; when it fades out, and only
-// then, the hero intro plays.
+// then, the hero intro plays. Only on the first landing of a visit: the
+// <head> marks <html> .intro-seen after that, and the CSS keeps it hidden.
 (() => {
   const loaderEl = document.getElementById('loader');
   const startHero = () => heroIntro.play();
 
-  if (!loaderEl) {
+  if (!loaderEl || document.documentElement.classList.contains('intro-seen')) {
     startHero();
     return;
   }
+  try { sessionStorage.setItem('misc-intro-seen', '1'); } catch (e) {}
 
   document.documentElement.style.overflow = 'hidden'; // no scrolling behind it
 
-  const loaderWave = document.getElementById('loader-wave');
   let dismissed = false;
   const dismiss = () => {
     if (dismissed) return;
     dismissed = true;
 
-    if (loaderWave) {
-      // wave sweeps up: covers the loader, then reveals the page beneath
-      const panel = loaderWave.querySelector('.loader-wave__svg');
-      gsap.set(panel, { yPercent: 100 });
-      gsap.set(loaderWave, { visibility: 'visible' });
-      const tl = gsap.timeline({ onComplete: () => { loaderWave.style.display = 'none'; } });
-      tl.to(panel, { yPercent: -100, duration: 1.4, ease: 'power2.inOut' }, 0);
-      // once the wave fully covers the screen, drop the loader behind it
-      tl.add(() => {
+    if (window.pageCurtain) {
+      // the page-transition curtain comes up over the loader, the loader is
+      // dropped behind it, and the curtain lifts off the hero
+      window.pageCurtain.cover(() => {
         loaderEl.style.display = 'none';
         document.documentElement.style.overflow = '';
-      }, 0.8);
-      // play the hero intro as the wave starts pulling back to reveal it
-      tl.add(startHero, 0.95);
+        window.pageCurtain.reveal();
+        // the hero starts as the curtain begins to lift
+        gsap.delayedCall(0.15, startHero);
+      });
     } else {
       gsap.to(loaderEl, {
         autoAlpha: 0,
