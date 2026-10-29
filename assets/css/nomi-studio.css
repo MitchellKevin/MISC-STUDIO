@@ -31,6 +31,8 @@ html {
   --color-body: #ffffff;
   --color-muted: #a3a3a3;
   --color-dim: #858585; /* 4.6:1 on the #101010 cards */
+  /* form validation errors */
+  --color-error: #ff6b6b;
 
   /* the giant faded words sitting behind the showcase / process sections */
   --color-faint: #161616;
@@ -82,6 +84,7 @@ html {
   --color-body: #111111;
   --color-muted: #5a5a5a;
   --color-dim: #6b6b6b; /* 5.3:1 on white */
+  --color-error: #c81e1e;
 
   --color-faint: #f0f0f0;
 
@@ -724,6 +727,16 @@ body {
   justify-content: center;
   gap: 0.2rem;
   will-change: transform, filter, opacity;
+}
+/* "How it works" label above each step, styled like .focus__eyebrow */
+.service__eyebrow {
+  align-self: flex-start;
+  font-family: var(--sub-font);
+  font-size: 0.14rem;
+  font-weight: 600;
+  letter-spacing: 0.03rem;
+  text-transform: uppercase;
+  color: var(--color-accent-text);
 }
 .service__title {
   font-family: var(--main-font);
@@ -2251,6 +2264,11 @@ body {
     text-align: center;
     gap: 0.3rem;
   }
+  .service__eyebrow {
+    align-self: center;
+    font-size: 0.42rem;
+    letter-spacing: 0.08rem;
+  }
   .service__title {
     width: 100%;
     font-size: 1.4rem;
@@ -2894,6 +2912,23 @@ body {
   border-bottom-color: var(--color-white);
 }
 
+/* Validation — contact-form.js sets .is-invalid and fills the message */
+.cfield.is-invalid input,
+.cfield.is-invalid textarea {
+  border-bottom-color: var(--color-error);
+}
+.cfield__error {
+  margin-top: 0.06rem;
+  font-family: var(--sub-font);
+  font-size: 0.13rem;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--color-error);
+}
+.cfield__error:empty {
+  display: none;
+}
+
 /* Service picker */
 .cservice {
   border: none;
@@ -2996,6 +3031,28 @@ body {
   font-size: 0.17rem;
   font-weight: 600;
 }
+/* while EmailJS is sending */
+.cform__submit:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+/* sent / failed message under the button (contact-form.js) */
+.cform__status {
+  margin-top: 0.16rem;
+  font-family: var(--sub-font);
+  font-size: 0.15rem;
+  line-height: 1.4;
+  color: var(--color-muted);
+}
+.cform__status:empty {
+  display: none;
+}
+.cform__status.is-success {
+  color: var(--color-heading);
+}
+.cform__status.is-error {
+  color: var(--color-error);
+}
 
 @media (max-width: 700px) {
   .contact {
@@ -3077,6 +3134,14 @@ body {
     height: 1.6rem;
     border-radius: 0.4rem;
     font-size: 0.5rem;
+  }
+  .cform__status {
+    margin-top: 0.5rem;
+    font-size: 0.44rem;
+  }
+  .cfield__error {
+    margin-top: 0.15rem;
+    font-size: 0.4rem;
   }
 }
 
@@ -4077,71 +4142,73 @@ html.curtain-in::after {
 }
 
 /* ===== SVG illustration animations (theme-independent) ===== */
-/* Thinking — a brain with synapses firing across it */
-.focus-thinking .brain-outline {
-  transform-origin: center;
-  transform-box: fill-box;
-  animation: brainPulse 3.4s ease-in-out infinite;
-}
-@keyframes brainPulse {
-  0%, 100% { transform: scale(1);    opacity: 0.9; }
-  50%      { transform: scale(1.03); opacity: 1;   }
-}
-.focus-thinking .synapse {
-  transform-origin: center;
-  transform-box: fill-box;
-  animation: synapseFire 2.4s ease-in-out infinite;
-}
-.focus-thinking .s1 { animation-delay: 0s;    }
-.focus-thinking .s2 { animation-delay: 0.25s; }
-.focus-thinking .s3 { animation-delay: 0.5s;  }
-.focus-thinking .s4 { animation-delay: 0.75s; }
-.focus-thinking .s5 { animation-delay: 1.0s;  }
-.focus-thinking .s6 { animation-delay: 1.25s; }
-.focus-thinking .s7 { animation-delay: 0.6s;  }
-@keyframes synapseFire {
-  0%, 100% { opacity: 0.25; transform: scale(0.7);  }
-  45%      { opacity: 1;    transform: scale(1.45); }
-}
-
-/* Accessibility — pulsing rings, blinking nodes */
-.focus-accessibility .ring {
+/* System Architecture — a hub with pulsing rings and blinking nodes */
+.focus-architecture .ring {
   transform-origin: 100px 65px;
   transform-box: fill-box;
   animation: ringPulse 3.2s ease-out infinite;
 }
-.focus-accessibility .r1 { animation-delay: 0s;   }
-.focus-accessibility .r2 { animation-delay: 0.4s; }
-.focus-accessibility .r3 { animation-delay: 0.8s; }
+.focus-architecture .r1 { animation-delay: 0s;   }
+.focus-architecture .r2 { animation-delay: 0.4s; }
+.focus-architecture .r3 { animation-delay: 0.8s; }
 @keyframes ringPulse {
   0%   { transform: scale(0.5); opacity: 0.8; }
   100% { transform: scale(1.2); opacity: 0;   }
 }
-.focus-accessibility .node {
+.focus-architecture .node {
   transform-origin: center;
   transform-box: fill-box;
   animation: nodeBlink 2.6s ease-in-out infinite;
 }
-.focus-accessibility .n1 { animation-delay: 0s;   }
-.focus-accessibility .n2 { animation-delay: 0.3s; }
-.focus-accessibility .n3 { animation-delay: 0.6s; }
-.focus-accessibility .n4 { animation-delay: 0.9s; }
-.focus-accessibility .n5 { animation-delay: 1.2s; }
-.focus-accessibility .n6 { animation-delay: 1.5s; }
+.focus-architecture .n1 { animation-delay: 0s;   }
+.focus-architecture .n2 { animation-delay: 0.3s; }
+.focus-architecture .n3 { animation-delay: 0.6s; }
+.focus-architecture .n4 { animation-delay: 0.9s; }
+.focus-architecture .n5 { animation-delay: 1.2s; }
+.focus-architecture .n6 { animation-delay: 1.5s; }
 @keyframes nodeBlink {
   0%, 100% { opacity: 0.35; transform: scale(0.8);  }
   50%      { opacity: 1;    transform: scale(1.25); }
 }
 
-/* Responsiveness — devices shimmer & subtly bounce */
-.focus-responsive .device {
+/* Secure Software — shield breathes, scan line sweeps, lock glows */
+.focus-security .shield {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: shieldPulse 3.4s ease-in-out infinite;
+}
+@keyframes shieldPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.9; }
+  50%      { transform: scale(1.03); opacity: 1;   }
+}
+.focus-security .scan {
+  animation: shieldScan 2.8s ease-in-out infinite;
+}
+@keyframes shieldScan {
+  0%   { transform: translateY(0);     opacity: 0;   }
+  15%  {                               opacity: 0.6; }
+  85%  {                               opacity: 0.6; }
+  100% { transform: translateY(100px); opacity: 0;   }
+}
+.focus-security .lock {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: lockGlow 2.8s ease-in-out infinite;
+}
+@keyframes lockGlow {
+  0%, 100% { filter: drop-shadow(0 0 0    rgba(var(--tile-color), 0));   }
+  50%      { filter: drop-shadow(0 0 8px  rgba(var(--tile-color), 0.5)); }
+}
+
+/* UX Design — devices shimmer & subtly bounce */
+.focus-ux .device {
   transform-origin: center bottom;
   transform-box: fill-box;
   animation: deviceFloat 3.2s ease-in-out infinite;
 }
-.focus-responsive .device-monitor { animation-delay: 0s;    }
-.focus-responsive .device-tablet  { animation-delay: 0.25s; }
-.focus-responsive .device-phone   { animation-delay: 0.5s;  }
+.focus-ux .device-monitor { animation-delay: 0s;    }
+.focus-ux .device-tablet  { animation-delay: 0.25s; }
+.focus-ux .device-phone   { animation-delay: 0.5s;  }
 @keyframes deviceFloat {
   0%, 100% { transform: translateY(0)    scale(1);    filter: drop-shadow(0 0 0    rgba(var(--tile-color), 0));   }
   50%      { transform: translateY(-4px) scale(1.02); filter: drop-shadow(0 0 10px rgba(var(--tile-color), 0.45)); }
@@ -4157,11 +4224,12 @@ html.curtain-in::after {
 .focusPoint_tile.animate:nth-of-type(3) { transition-delay: 0.25s; }
 
 @media (prefers-reduced-motion: reduce) {
-  .focus-thinking .brain-outline,
-  .focus-thinking .synapse,
-  .focus-accessibility .ring,
-  .focus-accessibility .node,
-  .focus-responsive .device {
+  .focus-architecture .ring,
+  .focus-architecture .node,
+  .focus-security .shield,
+  .focus-security .scan,
+  .focus-security .lock,
+  .focus-ux .device {
     animation: none;
   }
 }

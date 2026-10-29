@@ -193,12 +193,12 @@ const dialWheel = document.querySelector('.dial-wheel');
 const dialNums = gsap.utils.toArray('.dial-num');
 const services = gsap.utils.toArray('.service');
 
-const SERVICE_COUNT = services.length;   // 2
-const STEP_ANGLE = 28;                   // deg the dial turns per service (must match --step-angle in CSS)
-const LAST = SERVICE_COUNT - 1;          // number of transitions (2)
-const SPREAD = 135;                      // % of viewport between services (>100 leaves an empty gap)
+const SERVICE_COUNT = services.length;   // 5 process steps
+const STEP_ANGLE = 28;                   // deg the dial turns per step (must match --step-angle in CSS)
+const LAST = SERVICE_COUNT - 1;          // number of transitions (4)
+const SPREAD = 135;                      // % of viewport between steps (>100 leaves an empty gap)
 const MAX_BLUR = 14;                     // px of blur at the extremes; 0 at centre
-const SCROLL_PER = 1.4;                  // viewport-heights of scroll per transition
+const SCROLL_PER = 1.0;                  // viewport-heights of scroll per transition (kept short: 5 steps)
 
 const setActiveDial = (idx) => {
   dialNums.forEach((num, i) => num.classList.toggle('is-active', i === idx));
@@ -248,10 +248,10 @@ if (servicesSection && SERVICE_COUNT > 1) {
     carousel.to(service, { yPercent: (i - LAST) * SPREAD, ease: 'none' }, 0);
   });
 
-  // right-side line icon morphs from one service's icon to the next, in sync
+  // right-side line icon morphs from one step's icon to the next, in sync
   // with the scrub — one morph per transition, spread across the timeline.
   const svcIcon = document.querySelector('#svc-icon');
-  const iconIds = ['#icon-ux', '#icon-web'];
+  const iconIds = ['#icon-intro', '#icon-scope', '#icon-ux', '#icon-web', '#icon-launch'];
   if (svcIcon && window.MorphSVGPlugin && iconIds.length === SERVICE_COUNT) {
     const seg = carousel.duration() / LAST;
     for (let i = 0; i < LAST; i++) {
