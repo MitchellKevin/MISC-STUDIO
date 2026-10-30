@@ -53,10 +53,10 @@
         <div class="filters" role="group" aria-label="Filter by topic">
         <button type="button" class="filters__btn" data-filter="all" aria-pressed="true">All</button>
         <button type="button" class="filters__btn" data-filter="Development" aria-pressed="false">Development</button>
-        <button type="button" class="filters__btn" data-filter="Design" aria-pressed="false">Design</button>
-        <!-- Hardware and Security are gone with the placeholder posts: a filter
-             that can only ever return nothing reads as a broken button. One
-             line each to add back alongside the first post. -->
+        <button type="button" class="filters__btn" data-filter="Security" aria-pressed="false">Security</button>
+        <!-- Only topics that have a post get a button: a filter that can only
+             ever return nothing reads as a broken button. Design and Hardware
+             are one line each to add back alongside their first post. -->
           <span class="filters__count" id="filter-count" aria-live="polite"></span>
         </div>
 
@@ -65,30 +65,30 @@
              picks it up from the DOM, so nothing else needs touching. The
              cover is a portrait photo in img/blog/ (about 900 x 1440). -->
         <div class="blog__grid" id="archive-grid">
-        <a class="bpost" href="blog/react-to-vanilla.html" data-tag="Development">
-          <span class="bpost__media"><img src="assets/img/blog/react-to-vanilla.jpg" alt="" loading="lazy"></span>
-          <span class="bpost__tag">Development</span>
-          <span class="bpost__title">Porting React components to a site without React</span>
-          <span class="bpost__foot">
-            <span class="bpost__meta"><time datetime="2026-10-28">2026-10-28</time> · 7 min</span>
-            <span class="bpost__btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-          </span>
-        </a>
-        <a class="bpost" href="blog/theme-switch.html" data-tag="Design">
-          <span class="bpost__media"><img src="assets/img/blog/theme-switch.jpg" alt="" loading="lazy"></span>
-          <span class="bpost__tag">Design</span>
-          <span class="bpost__title">A dark mode switch that does not flash</span>
-          <span class="bpost__foot">
-            <span class="bpost__meta"><time datetime="2026-10-28">2026-10-28</time> · 6 min</span>
-            <span class="bpost__btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-          </span>
-        </a>
         <a class="bpost" href="blog/nextjs-course.html" data-tag="Development">
           <span class="bpost__media"><img src="assets/img/blog/nextjs-course.jpg" alt="" loading="lazy"></span>
           <span class="bpost__tag">Development</span>
           <span class="bpost__title">Fifteen chapters of Next.js, and what actually stuck</span>
           <span class="bpost__foot">
             <span class="bpost__meta"><time datetime="2026-09-10">2026-09-10</time> · 16 min</span>
+            <span class="bpost__btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+          </span>
+        </a>
+        <a class="bpost" href="blog/shopify-architecture.html" data-tag="Development">
+          <span class="bpost__media"><img src="assets/img/blog/shopify-architecture.jpg" alt="" loading="lazy"></span>
+          <span class="bpost__tag">Development</span>
+          <span class="bpost__title">How Shopify is built</span>
+          <span class="bpost__foot">
+            <span class="bpost__meta"><time datetime="2026-10-30">2026-10-30</time> · 8 min</span>
+            <span class="bpost__btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+          </span>
+        </a>
+        <a class="bpost" href="blog/web-security.html" data-tag="Security">
+          <span class="bpost__media"><img src="assets/img/blog/web-security.jpg" alt="" loading="lazy"></span>
+          <span class="bpost__tag">Security</span>
+          <span class="bpost__title">Pentesting and hardening a website</span>
+          <span class="bpost__foot">
+            <span class="bpost__meta"><time datetime="2026-10-30">2026-10-30</time> · 10 min</span>
             <span class="bpost__btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
           </span>
         </a>

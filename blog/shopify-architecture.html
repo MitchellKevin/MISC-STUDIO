@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How Shopify is put together: one Rails monolith split into pods, a separate renderer for storefronts, themes, apps, headless and a checkout you extend but never replace.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/brand/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/img/brand/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/img/brand/apple-touch-icon.png">
+    <script>
+      /* read the saved theme before first paint — otherwise a light-mode
+         reload flashes the black page for a frame */
+      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
+      /* arriving through a page transition: start in the curtain colour so the
+         page never flashes before page-transition.js lifts the curtain */
+      (function(){try{if(sessionStorage.getItem('nomi-wave-enter'))document.documentElement.classList.add('curtain-in');}catch(e){}})();
+    </script>
+    <link rel="stylesheet" href="../assets/css/nomi-studio.css">
+    <title>How Shopify is built — Mitchell Scholte</title>
+    <link rel="canonical" href="https://miscstudio.nl/blog/shopify-architecture.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://miscstudio.nl/blog/shopify-architecture.html">
+    <meta property="og:site_name" content="MISC STUDIO">
+    <meta property="og:title" content="How Shopify is built">
+    <meta property="og:description" content="One monolith, split into pods, with everything you build plugged in at the edges.">
+    <meta property="article:published_time" content="2026-10-30">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <header class="header">
+    <div class="flex-wrapper">
+      <div class="logo-wrap">
+        <a class="logo-link" href="../index.html" aria-label="Back to home">
+          <img class="logo-img" src="../assets/img/brand/logo-192.webp" alt="">
+        </a>
+        <div class="logo-text">
+          <span class="btn-2">MISC</span>
+          <span class="btn-2">STUDIO</span>
+        </div>
+      </div>
+      <ul class="header-menu">
+        <li class="header-menu__item header-icon-item"><a class="header-btn" href="../about.html" aria-label="About me" title="About me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <article class="post">
+      <div class="container post__inner">
+        <a class="post__back" href="../blog.html"><span aria-hidden="true">←</span> All posts</a>
+
+        <!-- keep these three in sync with the card in blog.html -->
+        <p class="post__meta">
+          <span class="bpost__tag">Development</span>
+          <time datetime="2026-10-30">2026-10-30</time>
+          <span aria-hidden="true">·</span>
+          8 min
+        </p>
+        <h1 class="post__title">How Shopify is built</h1>
+        <figure class="post__cover"><img src="../assets/img/blog/shopify-architecture.jpg" alt=""></figure>
+
+        <div class="post__body">
+          <p>Most of the web shops I work on run on Shopify. You can build a good theme without knowing what happens behind it, but the platform’s limits start to make sense once you do. Why can I not set my own headers? Why does an app run on a different server? Why can checkout only be extended, never replaced? It all follows from how the thing is put together.</p>
+
+          <h2>1. One application, a million shops</h2>
+
+          <p>Shopify is not software you install. Every store runs on the same platform, and at its centre is one very large Ruby on Rails application. Shopify deliberately did not break it up into hundreds of microservices. Instead it is a <strong>modular monolith</strong>: one codebase, one deploy, split into components such as orders, inventory and billing, with strict rules about which component may call which. Shopify even built its own tool, Packwerk, to check those boundaries automatically.</p>
+
+          <p>The benefit is that a change touching orders and inventory together is one pull request in one codebase, instead of a coordinated release across several services. The cost is that the boundaries only hold if they are enforced, which is why the tooling exists.</p>
+
+          <p><strong>The idea:</strong> the hard part of a big system is the boundaries, not the number of servers. You can draw those inside one codebase.</p>
+
+          <h2>2. Pods: splitting the data, not the code</h2>
+
+          <p>One codebase is fine. One database for every store in the world is not. Shopify solves that with <strong>pods</strong>. A pod is a self-contained copy of the data layer, with its own MySQL databases, caches and queues. Every store lives in exactly one pod, and the same application code runs against all of them.</p>
+
+          <ul>
+            <li><strong>Scaling</strong> means adding pods, not making one database bigger.</li>
+            <li><strong>Failures stay small.</strong> If a pod has a bad day, only the stores in that pod notice.</li>
+            <li><strong>Busy stores can move.</strong> Shopify can move a store from one pod to another while it keeps selling, so one huge flash sale does not slow down the neighbours.</li>
+          </ul>
+
+          <p>This is also why everything in Shopify is tied to a single store. A request always belongs to one store, which tells the platform which pod to talk to. Queries across stores are never something you get to do.</p>
+
+          <h2>3. Reading is a different job from writing</h2>
+
+          <p>On a storefront, almost every request is a read: show a product, show a collection, show the homepage. Shopify takes those out of the main application and gives them to a separate service, the <strong>Storefront Renderer</strong>. It reads data, renders Liquid into HTML, caches heavily, and does nothing else.</p>
+
+          <p>Writes, such as an order, a stock change or an edit in the admin, go through the core application. In front of all of it sits Cloudflare, which terminates TLS, serves cached responses close to the visitor and absorbs traffic spikes and attacks before they reach Shopify.</p>
+
+          <p>The result is that a Black Friday rush on the storefront mostly puts pressure on the part that is built for it, and the admin stays usable for the merchant fulfilling the orders.</p>
+
+          <h2>4. The theme: Liquid and JSON</h2>
+
+          <p>A Liquid theme is the part of this most people actually touch. Since Online Store 2.0, a page is no longer one big Liquid file. A template is a <strong>JSON file</strong> that lists sections, and every section is a Liquid file with a schema describing its settings and blocks:</p>
+
+          <pre><code>// templates/product.json
+{
+  "sections": {
+    "main": { "type": "main-product", "blocks": { … } },
+    "reviews": { "type": "app-reviews" }
+  },
+  "order": ["main", "reviews"]
+}</code></pre>
+
+          <p>When a merchant drags a section around in the theme editor, Shopify rewrites that JSON. The developer owns the sections, the merchant owns the order and the content, and neither has to touch the other’s files.</p>
+
+          <p>Two smaller APIs make a Liquid theme feel more like an app:</p>
+
+          <ul>
+            <li><strong>The Ajax Cart API</strong> (<code>/cart.js</code>, <code>/cart/add.js</code>) lets the theme change the cart without a page reload.</li>
+            <li><strong>The Section Rendering API</strong> returns the HTML of a single section, so after adding something to the cart you can re-render only the cart drawer, using the same Liquid as the full page.</li>
+          </ul>
+
+          <p>What a theme cannot do is run on the server. There are no custom routes, no response headers and no database. Everything dynamic comes from Shopify’s own data, or from an app.</p>
+
+          <h2>5. Apps live somewhere else</h2>
+
+          <p>An app is not a plugin running inside Shopify. It is a separate web application on its own server, talking to the store through the <strong>Admin API</strong>. The merchant approves a list of scopes when installing it, such as <code>read_orders</code> or <code>write_products</code>, and the app gets an access token limited to exactly those.</p>
+
+          <ul>
+            <li><strong>In the admin</strong>, an app usually shows up embedded: Shopify loads it in an iframe and App Bridge connects the two, so it feels like part of the admin.</li>
+            <li><strong>On the storefront and in checkout</strong>, apps add things through <em>extensions</em>. Those are small bundles the app uploads to Shopify, which Shopify then hosts and runs. That is how a reviews app gets a block into the product page from the JSON above.</li>
+            <li><strong>Going the other way</strong>, Shopify sends webhooks to the app when something happens, such as a new order or a changed product.</li>
+          </ul>
+
+          <p>The Admin API is GraphQL, and its rate limit is based on query cost instead of request count. Every query has a calculated cost, and each app has a bucket of points that refills over time. Asking for one field is cheap; asking for 250 products with all their variants is not. It pushes you towards asking for exactly what you need.</p>
+
+          <h2>6. Headless: bring your own front-end</h2>
+
+          <p>The <strong>Storefront API</strong> is a public GraphQL API for everything a shopper does: products, collections, cart, customer account. With it you can drop the Liquid theme entirely and build the front-end in anything.</p>
+
+          <p>Shopify’s own answer is <strong>Hydrogen</strong>, a React framework built on React Router, hosted on <strong>Oxygen</strong>, which runs your code in workers close to the visitor. You get full control over routes, rendering and headers. In return you take on everything the theme layer used to do for you: caching, SEO, the theme editor merchants were used to, and the hosting.</p>
+
+          <p>I only reach for headless when the front-end really needs something a theme cannot do. A well-built Liquid theme is fast, cheap to run and editable by the merchant, and that is hard to beat.</p>
+
+          <h2>7. Checkout: one, owned by Shopify</h2>
+
+          <p>Every store shares the same checkout, hosted by Shopify. That is not just convenience. It is the part that handles card data, so it is the part Shopify keeps closest. The old <code>checkout.liquid</code>, where you could edit the checkout’s HTML and add your own scripts, has been retired. Today you extend checkout in two ways:</p>
+
+          <ul>
+            <li><strong>Checkout UI extensions</strong> add interface: a gift note field, a loyalty banner. They run sandboxed in a web worker and describe their UI with Shopify’s components, so they never touch the real page.</li>
+            <li><strong>Shopify Functions</strong> change the logic: discounts, shipping options, payment methods, cart validation. You write them in Rust or JavaScript, they are compiled to WebAssembly, and Shopify runs them inside its own infrastructure under strict time limits.</li>
+          </ul>
+
+          <p>Functions are the interesting part architecturally. Instead of Shopify calling your server during checkout and waiting for an answer, your code gets shipped to Shopify and runs next to the data. No network round trip, and checkout never depends on your server being up.</p>
+
+          <h2>8. Custom data without a database</h2>
+
+          <p>Because you cannot add tables to Shopify, custom data goes into <strong>metafields</strong> and <strong>metaobjects</strong>. A metafield adds a typed field to something that exists already, such as a care label on a product. A metaobject is a type of your own, such as “designer” with a name, a photo and a bio, that products can point to. Both are editable in the admin, readable from Liquid and available through both APIs, so the data lives in the same place as everything else and comes along to whichever front-end you use.</p>
+
+          <h2>9. What this means for security</h2>
+
+          <p>The architecture draws a clear line. Shopify runs the servers, the network, the TLS certificates, the checkout and the card data. Everything on the edges is yours: the theme code, the apps you install and the access they get, the staff accounts, and any app or headless front-end you build. I wrote about hardening those parts in <a href="web-security.html">a separate post on pentesting and hardening</a>.</p>
+
+          <p><strong>The idea:</strong> Shopify is one monolith split into pods, with a fast lane for reading storefronts and a locked room for checkout. Everything you build plugs in at the edges, and the limits you run into are usually those edges doing their job.</p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <div class="footer__logo-row">
+            <img class="footer__logo-img" src="../assets/img/brand/logo-192.webp" alt="">
+            <div class="footer__logo"><span>MISC</span><span>STUDIO</span></div>
+          </div>
+          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
+          <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
+        </div>
+
+        <nav class="footer__nav">
+          <div class="footer__col">
+            <h2 class="footer__heading">Services</h2>
+            <a class="footer__link" href="../detail-pages/services/ux-design.html">UX Design</a>
+            <a class="footer__link" href="../detail-pages/services/web-development.html">Web Development</a>
+          </div>
+          <div class="footer__col">
+            <h2 class="footer__heading">Company</h2>
+            <a class="footer__link" href="../index.html#services">Process</a>
+            <a class="footer__link" href="../index.html#showcase">Work</a>
+            <a class="footer__link" href="../blog.html">Blog</a>
+            <a class="footer__link" href="../index.html#contact">Contact</a>
+          </div>
+          <div class="footer__col">
+            <h2 class="footer__heading">Elsewhere</h2>
+            <a class="footer__link" href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
+            <a class="footer__link" href="https://github.com/MitchellKevin">Github</a>
+            <a class="footer__link" href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
+        <span class="footer__made">Made in the Netherlands</span>
+      </div>
+    </div>
+    <!-- MISC drawn in dots that scatter under the cursor (hero-particles.js);
+         it runs edge to edge and off the bottom of the page -->
+    <div class="footer__mark" aria-hidden="true"><canvas class="footer__particles" data-src="../assets/img/brand/misc-wordmark.svg"></canvas></div>
+  </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+    <script src="../assets/js/shared/page-transition.js"></script>
+    <script src="../assets/js/shared/hero-particles.js"></script>
+    <script src="../assets/js/shared/header-scroll.js"></script>
+    <script src="../assets/js/shared/theme-toggle.js"></script>
+</body>
+</html>

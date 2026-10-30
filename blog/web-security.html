@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How I pentest a website, from scope and recon to the findings that come up again and again, and how I harden a site afterwards: headers, cookies, input, dependencies and operations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/brand/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/img/brand/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/img/brand/apple-touch-icon.png">
+    <script>
+      /* read the saved theme before first paint — otherwise a light-mode
+         reload flashes the black page for a frame */
+      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
+      /* arriving through a page transition: start in the curtain colour so the
+         page never flashes before page-transition.js lifts the curtain */
+      (function(){try{if(sessionStorage.getItem('nomi-wave-enter'))document.documentElement.classList.add('curtain-in');}catch(e){}})();
+    </script>
+    <link rel="stylesheet" href="../assets/css/nomi-studio.css">
+    <title>Pentesting and hardening a website — Mitchell Scholte</title>
+    <link rel="canonical" href="https://miscstudio.nl/blog/web-security.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://miscstudio.nl/blog/web-security.html">
+    <meta property="og:site_name" content="MISC STUDIO">
+    <meta property="og:title" content="Pentesting and hardening a website">
+    <meta property="og:description" content="Attack it before someone else does, then close what you found and the things around it.">
+    <meta property="article:published_time" content="2026-10-30">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <header class="header">
+    <div class="flex-wrapper">
+      <div class="logo-wrap">
+        <a class="logo-link" href="../index.html" aria-label="Back to home">
+          <img class="logo-img" src="../assets/img/brand/logo-192.webp" alt="">
+        </a>
+        <div class="logo-text">
+          <span class="btn-2">MISC</span>
+          <span class="btn-2">STUDIO</span>
+        </div>
+      </div>
+      <ul class="header-menu">
+        <li class="header-menu__item header-icon-item"><a class="header-btn" href="../about.html" aria-label="About me" title="About me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <article class="post">
+      <div class="container post__inner">
+        <a class="post__back" href="../blog.html"><span aria-hidden="true">←</span> All posts</a>
+
+        <!-- keep these three in sync with the card in blog.html -->
+        <p class="post__meta">
+          <span class="bpost__tag">Security</span>
+          <time datetime="2026-10-30">2026-10-30</time>
+          <span aria-hidden="true">·</span>
+          10 min
+        </p>
+        <h1 class="post__title">Pentesting and hardening a website</h1>
+        <figure class="post__cover"><img src="../assets/img/blog/web-security.jpg" alt=""></figure>
+
+        <div class="post__body">
+          <p>A penetration test is attacking a website on purpose, with permission, to find the holes before someone else does. Hardening is what you do afterwards: closing what you found, plus the things around it that make the next hole harder to use. This is how I go about both.</p>
+
+          <h2>1. Permission first</h2>
+
+          <p>Before anything else there is a written agreement. It says which domains and environments are in scope, what is off limits (production payments, other customers’ data, denial of service), when testing happens and who to call if something breaks. Testing a site you do not have permission for is not research. In the Netherlands it is <em>computervredebreuk</em>, and good intentions do not change that.</p>
+
+          <p>When possible I test a staging environment that mirrors production, with test accounts for every role: a normal user, an admin, and a second normal user. That second user turns out to be the most useful account of all, as you will see in section 4.</p>
+
+          <h2>2. Recon: what can anyone see?</h2>
+
+          <p>Attackers start with what is public, so I do too. A surprising amount of what goes wrong is visible before you send a single unusual request.</p>
+
+          <pre><code># subdomains, from certificate transparency logs
+curl -s "https://crt.sh/?q=%25.example.com&amp;output=json" \
+  | jq -r '.[].name_value' | sort -u
+
+# files and folders that should not be public
+ffuf -u https://example.com/FUZZ -w wordlist.txt -mc 200,403
+
+# TLS versions, ciphers and certificate
+testssl.sh example.com</code></pre>
+
+          <p>What I am looking for:</p>
+
+          <ul>
+            <li><strong>Forgotten hosts.</strong> A <code>staging.</code> or <code>old.</code> subdomain still running last year’s code, often with a test admin account.</li>
+            <li><strong>Files left behind.</strong> A readable <code>/.git/</code> folder, a <code>.env</code> file, <code>backup.zip</code>, or source maps that hand over the original front-end code with comments.</li>
+            <li><strong>The stack.</strong> Headers, error pages and file names usually tell you the framework and often its version, which tells you which known vulnerabilities to check.</li>
+            <li><strong>The headers themselves.</strong> Missing security headers are not a hole on their own, but they show how much attention security got.</li>
+          </ul>
+
+          <h2>3. Sit in the middle</h2>
+
+          <p>The main tool for a web pentest is an intercepting proxy, such as Burp Suite or OWASP ZAP. It sits between the browser and the site, so every request can be paused, changed and sent again. It makes one thing very clear: <strong>everything the browser does can be skipped.</strong> A disabled button, a dropdown with three options, a price in a hidden field, a check in JavaScript. With a proxy, none of it exists. The only checks that count are on the server.</p>
+
+          <p>For structure I follow the OWASP Web Security Testing Guide and keep the OWASP Top 10 next to it as a reminder of what goes wrong most often. Automated scanners are useful for the obvious things, but the findings that matter most are almost always found by hand, because they depend on what the application is supposed to do.</p>
+
+          <h2>4. What I find again and again</h2>
+
+          <p><strong>Broken access control.</strong> Number one on the OWASP list, and number one in my reports. Log in as the first user, open one of your orders, and change the number in the URL. If you can now see the second user’s order, the server checked that you were logged in but not that the order is yours:</p>
+
+          <pre><code>// before: any logged-in user can read any order
+app.get('/api/orders/:id', requireLogin, async (req, res) =&gt; {
+  const order = await db.order.findUnique({ where: { id: req.params.id } });
+  res.json(order);
+});
+
+// after: the order has to belong to whoever is asking
+app.get('/api/orders/:id', requireLogin, async (req, res) =&gt; {
+  const order = await db.order.findFirst({
+    where: { id: req.params.id, customerId: req.user.id },
+  });
+  if (!order) return res.sendStatus(404); // not 403: do not confirm it exists
+  res.json(order);
+});</code></pre>
+
+          <p>The same check is missing surprisingly often on file downloads, invoices and admin endpoints that “are not linked anywhere”.</p>
+
+          <p><strong>Cross-site scripting.</strong> Somewhere a value from the visitor ends up in the page without being encoded: a search term, a name, a URL parameter. If <code>&lt;img src=x onerror=alert(1)&gt;</code> makes a pop-up appear, any script can run there instead, with access to the page and the user’s session.</p>
+
+          <p><strong>No rate limiting.</strong> A login form that accepts a thousand passwords a minute, a password reset that sends unlimited emails, a contact form that becomes a spam relay.</p>
+
+          <p><strong>Errors that say too much.</strong> A stack trace with file paths, a database error with the query in it, or a login that says “unknown email” for one address and “wrong password” for another, which tells anyone which accounts exist.</p>
+
+          <p><strong>Outdated dependencies.</strong> A package with a known vulnerability and a public exploit is the cheapest attack there is, because someone else already did the work.</p>
+
+          <p><strong>Secrets in the wrong place.</strong> API keys in a front-end bundle, or in a commit from two years ago that was “removed” in the next one. Git history keeps everything.</p>
+
+          <h2>5. The report</h2>
+
+          <p>A finding nobody can reproduce does not get fixed. Every finding in my reports has the same parts: where it is, the exact steps to reproduce it, what an attacker could actually do with it, how serious that is, and a concrete fix. The report starts with a short summary for whoever decides on budget, because “three high findings, one of which exposes customer addresses” gets action faster than forty pages of detail.</p>
+
+          <p>After the fixes I test again. A fix that blocks the exact request from the report but not a slightly different one is common enough that a retest is part of the job, not an extra.</p>
+
+          <h2>6. Hardening: the headers</h2>
+
+          <p>Headers will not fix a broken access check, but they make many other bugs much harder to use. This is the set I start from:</p>
+
+          <pre><code>Strict-Transport-Security: max-age=31536000; includeSubDomains
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{random}';
+  object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()</code></pre>
+
+          <ul>
+            <li><strong>HSTS</strong> makes the browser use HTTPS for a year, even when someone types the address without it.</li>
+            <li><strong>CSP</strong> is the important one. With a fresh nonce on every response, only scripts you wrote into the page can run, so an injected script is blocked even if it got through. Roll it out as <code>Content-Security-Policy-Report-Only</code> first and watch what it would have blocked.</li>
+            <li><strong><code>frame-ancestors 'none'</code></strong> stops other sites from loading yours in an invisible frame to trick clicks.</li>
+            <li><strong>The other three</strong> stop browsers guessing file types, keep full URLs out of other sites’ logs, and switch off device features the site does not use.</li>
+          </ul>
+
+          <p>On a static host that does not let you set headers, a <code>&lt;meta http-equiv="Content-Security-Policy"&gt;</code> tag gets you most of CSP. <code>frame-ancestors</code> and reporting do not work in a meta tag, though, so for those you need a host or CDN that lets you add headers.</p>
+
+          <h2>7. Hardening: cookies and sessions</h2>
+
+          <pre><code>Set-Cookie: __Host-session=…; Path=/; Secure; HttpOnly; SameSite=Lax</code></pre>
+
+          <ul>
+            <li><strong><code>HttpOnly</code></strong>: JavaScript cannot read it, so an XSS bug cannot steal the session.</li>
+            <li><strong><code>Secure</code></strong>: only sent over HTTPS.</li>
+            <li><strong><code>SameSite=Lax</code></strong>: not sent along with form posts from other sites, which blocks most cross-site request forgery.</li>
+            <li><strong>The <code>__Host-</code> prefix</strong>: the browser only accepts the cookie if it is secure, set for the exact host and for the whole site, so a subdomain cannot overwrite it.</li>
+          </ul>
+
+          <p>On top of that: issue a new session ID at login, end sessions on the server at logout instead of just deleting the cookie, and offer two-factor authentication, at least for admins.</p>
+
+          <h2>8. Hardening: input and output</h2>
+
+          <ul>
+            <li><strong>Validate on the server</strong>, against what is allowed rather than what is forbidden. An amount is a positive number below a limit; a country is one of a known list.</li>
+            <li><strong>Never build a query out of strings.</strong> Parameters keep data and code apart: <code>db.query('SELECT * FROM users WHERE email = $1', [email])</code>.</li>
+            <li><strong>Encode output for where it lands.</strong> HTML, an attribute, a URL and a script each need different escaping. Use the template engine’s automatic escaping and treat every way of switching it off as something to justify in review.</li>
+            <li><strong>Check permissions on every request, for every object.</strong> Not once at login, and not by hiding the button.</li>
+          </ul>
+
+          <h2>9. Hardening: dependencies</h2>
+
+          <p>Most of the code on a modern site was written by someone else. Commit the lockfile so every install is the same. Let Dependabot or <code>npm audit</code> report known vulnerabilities, and actually merge the updates. Remove packages nothing uses any more. For scripts loaded from a CDN, add a hash so the browser refuses a file that has changed:</p>
+
+          <pre><code>&lt;script src="https://cdn.example.com/library@2.1.0/library.min.js"
+        integrity="sha384-…"
+        crossorigin="anonymous"&gt;&lt;/script&gt;</code></pre>
+
+          <p>That only works with a pinned version. A URL that always points to the latest release can never have a fixed hash, which is a good reason to pin it anyway.</p>
+
+          <h2>10. Hardening: everything around the code</h2>
+
+          <ul>
+            <li><strong>Least privilege everywhere.</strong> The database user of the website cannot drop tables. The deploy key can deploy and do nothing else.</li>
+            <li><strong>Secrets</strong> live in environment variables or a secret manager, never in the repository, and get rotated when someone leaves or a leak is suspected.</li>
+            <li><strong>Log what matters</strong>: logins, failed logins, permission changes, password resets. Without logs you cannot tell afterwards what happened.</li>
+            <li><strong>Backups that have been restored at least once.</strong> A backup nobody has tested is a hope, not a backup.</li>
+            <li><strong>A <code>/.well-known/security.txt</code></strong> with a contact address, so someone who finds a problem knows where to report it instead of posting it online.</li>
+          </ul>
+
+          <h2>11. The short version</h2>
+
+          <ul>
+            <li>Get written permission and a clear scope before testing anything.</li>
+            <li>Start with what is public: subdomains, leftover files, headers.</li>
+            <li>Assume every check in the browser can be skipped.</li>
+            <li>Test access control with two accounts of the same role.</li>
+            <li>Report so it can be reproduced, and retest after the fix.</li>
+            <li>Harden with headers, strict cookies, server-side validation, pinned dependencies and least privilege.</li>
+          </ul>
+
+          <p><strong>The idea:</strong> a pentest tells you where the holes are today. Hardening makes sure the next bug someone writes does less damage. You need both, and you need to do them again, because the site keeps changing.</p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <div class="footer__logo-row">
+            <img class="footer__logo-img" src="../assets/img/brand/logo-192.webp" alt="">
+            <div class="footer__logo"><span>MISC</span><span>STUDIO</span></div>
+          </div>
+          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
+          <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
+        </div>
+
+        <nav class="footer__nav">
+          <div class="footer__col">
+            <h2 class="footer__heading">Services</h2>
+            <a class="footer__link" href="../detail-pages/services/ux-design.html">UX Design</a>
+            <a class="footer__link" href="../detail-pages/services/web-development.html">Web Development</a>
+          </div>
+          <div class="footer__col">
+            <h2 class="footer__heading">Company</h2>
+            <a class="footer__link" href="../index.html#services">Process</a>
+            <a class="footer__link" href="../index.html#showcase">Work</a>
+            <a class="footer__link" href="../blog.html">Blog</a>
+            <a class="footer__link" href="../index.html#contact">Contact</a>
+          </div>
+          <div class="footer__col">
+            <h2 class="footer__heading">Elsewhere</h2>
+            <a class="footer__link" href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
+            <a class="footer__link" href="https://github.com/MitchellKevin">Github</a>
+            <a class="footer__link" href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
+        <span class="footer__made">Made in the Netherlands</span>
+      </div>
+    </div>
+    <!-- MISC drawn in dots that scatter under the cursor (hero-particles.js);
+         it runs edge to edge and off the bottom of the page -->
+    <div class="footer__mark" aria-hidden="true"><canvas class="footer__particles" data-src="../assets/img/brand/misc-wordmark.svg"></canvas></div>
+  </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+    <script src="../assets/js/shared/page-transition.js"></script>
+    <script src="../assets/js/shared/hero-particles.js"></script>
+    <script src="../assets/js/shared/header-scroll.js"></script>
+    <script src="../assets/js/shared/theme-toggle.js"></script>
+</body>
+</html>
