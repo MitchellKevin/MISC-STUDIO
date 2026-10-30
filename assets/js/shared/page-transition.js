@@ -1,5 +1,5 @@
 // ------------------------------------------------------------------
-// Page transition — one navy panel with a single soft curve on its
+// Page transition — one accent-blue panel with a single soft curve on its
 // leading edge. Clicking an internal link to another .html page brings
 // the panel up from the bottom to cover the screen, then navigates; the
 // arriving page lifts it away off the top. The curve only exists while

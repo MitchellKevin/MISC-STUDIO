@@ -1024,7 +1024,7 @@ body {
   display: block;
 }
 .loader-wave__svg path {
-  fill: #0b1666; /* same navy as nomi-studio.css */
+  fill: var(--blue); /* the accent, as in nomi-studio.css */
 }
 /* first-paint hold while arriving through a transition — see nomi-studio.css */
 html.curtain-in::after {
@@ -1032,7 +1032,7 @@ html.curtain-in::after {
   position: fixed;
   inset: 0;
   z-index: 10001;
-  background: #0b1666;
+  background: var(--blue);
   animation: curtain-hold-timeout 0s 3s forwards;
 }
 @keyframes curtain-hold-timeout {

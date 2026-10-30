@@ -67,34 +67,18 @@
     </script>
 </head>
 <body>
-  <!-- Loading screen: geometric shapes morph into "MISC" (GSAP MorphSVG) -->
-  <div class="loader" id="loader">
-    <svg class="loader__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" aria-label="MISC Studio">
-      <defs>
-        <!-- runs left to right across the whole word MISC; the stop colours
-             are set in the CSS (#mino-grad stop) -->
-        <linearGradient id="mino-grad" x1="44.8" y1="200" x2="715.2" y2="200" gradientUnits="userSpaceOnUse">
-          <stop offset="0"></stop>
-          <stop offset="1"></stop>
-        </linearGradient>
-        <!-- MISC in Poppins Bold, glyph outlines taken straight from the font so
-             the four letters stay consistent with each other. Cap height spans
-             y 125-275; S and C overshoot slightly, as round letters should. -->
-        <g id="misc-letters">
-          <path id="ltr-m" d="M212.33 125L255.28 125L255.28 275L218.74 275L218.74 185.04L185.20 275L155.71 275L121.95 184.83L121.95 275L85.41 275L85.41 125L128.57 125L170.67 228.85Z"></path>
-          <path id="ltr-i" d="M300.96 125L337.50 125L337.50 275L300.96 275Z"></path>
-          <path id="ltr-s" d="M437.67 276.50Q421.22 276.50 408.18 271.15Q395.15 265.81 387.35 255.34Q379.55 244.87 379.12 230.13L418.01 230.13Q418.87 238.46 423.78 242.84Q428.70 247.22 436.60 247.22Q444.72 247.22 449.42 243.48Q454.12 239.74 454.12 233.12Q454.12 227.56 450.38 223.93Q446.64 220.30 441.20 217.95Q435.75 215.60 425.70 212.61Q411.17 208.12 401.99 203.63Q392.80 199.15 386.17 190.38Q379.55 181.62 379.55 167.52Q379.55 146.58 394.72 134.72Q409.89 122.86 434.25 122.86Q459.04 122.86 474.21 134.72Q489.38 146.58 490.45 167.74L450.92 167.74Q450.49 160.47 445.58 156.30Q440.66 152.14 432.97 152.14Q426.35 152.14 422.29 155.66Q418.23 159.19 418.23 165.81Q418.23 173.08 425.06 177.14Q431.90 181.20 446.43 185.90Q460.96 190.81 470.04 195.30Q479.12 199.79 485.75 208.33Q492.37 216.88 492.37 230.34Q492.37 243.16 485.85 253.63Q479.34 264.10 466.94 270.30Q454.55 276.50 437.67 276.50Z"></path>
-          <path id="ltr-c" d="M528.01 199.79Q528.01 177.56 537.63 160.15Q547.24 142.74 564.44 133.01Q581.64 123.29 603.44 123.29Q630.15 123.29 649.16 137.39Q668.18 151.50 674.59 175.85L634.42 175.85Q629.93 166.45 621.71 161.54Q613.48 156.62 603.01 156.62Q586.13 156.62 575.66 168.38Q565.19 180.13 565.19 199.79Q565.19 219.44 575.66 231.20Q586.13 242.95 603.01 242.95Q613.48 242.95 621.71 238.03Q629.93 233.12 634.42 223.72L674.59 223.72Q668.18 248.08 649.16 262.07Q630.15 276.07 603.44 276.07Q581.64 276.07 564.44 266.35Q547.24 256.62 537.63 239.32Q528.01 222.01 528.01 199.79Z"></path>
-        </g>
-      </defs>
-      <!-- each shape sits centred on the letter it morphs into. MISC wears
-           the blue gradient, STUDIO is plain; both fills are in the CSS. -->
-      <rect id="shp-m" x="127.84" y="157.5" width="85" height="85"></rect>
-      <polygon id="shp-i" points="319.23,157.5 361.73,200 319.23,242.5 276.73,200"></polygon>
-      <polygon id="shp-s" points="435.75,157.5 393.25,242.5 478.25,242.5"></polygon>
-      <circle id="shp-c" cx="601.30" cy="200" r="42.5"></circle>
-      <text id="loader-studio" x="380" y="342" text-anchor="middle">STUDIO</text>
-    </svg>
+  <!-- Loading screen: a drop of glass lands, spreads into the logo's tile and
+       settles into the icon (glass-reveal.js draws it into a canvas here).
+       The plain icon is only shown when the browser has no WebGL2. -->
+  <div class="loader" id="loader" role="img" aria-label="MISC Studio">
+    <!-- the icon and its name move as one; MISC / STUDIO is clipped at the
+         icon's right edge so it slides out from behind it, as in the header -->
+    <div class="loader__stage">
+      <img class="loader__fallback" src="assets/img/brand/logo-640.webp" alt="" loading="lazy" hidden>
+      <div class="loader__lockup" aria-hidden="true">
+        <div class="loader__words"><span>MISC</span><span>STUDIO</span></div>
+      </div>
+    </div>
   </div>
 
   <!-- Gooey filter used by every .blob-btn (referenced via filter: url(#goo)) -->
@@ -1167,7 +1151,7 @@
          them at the right point in ScrollTrigger's pin order -->
     <script src="assets/js/shared/showcase.js"></script>
     <script src="assets/js/shared/timeline.js"></script>
-    <script src="assets/js/home/loader-morph-data.js"></script>
+    <script src="assets/js/home/glass-reveal.js"></script>
     <script src="assets/js/home/nomi-studio.js"></script>
     <!-- contact form -> email, via EmailJS (keys in contact-form.js) -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>

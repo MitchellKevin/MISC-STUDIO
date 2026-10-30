@@ -3389,20 +3389,60 @@ body {
   inset: 0;
   z-index: 9999;
   background: var(--color-black);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.loader__svg {
-  width: min(82vw, 720px);
-  height: auto;
+  overflow: hidden;
 }
 /* already seen this visit (set in the <head> of index.html) */
 .intro-seen .loader {
   display: none;
 }
+/* The icon (glass-reveal.js draws it into a canvas here) and its name. Once
+   the reveal is done nomi-studio.js slides the whole stage left, and scales
+   it down if the screen is too narrow, so icon + name end up centred. */
+.loader__stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* the plain icon, only when there is no WebGL2 for the glass reveal */
+.loader__fallback {
+  width: 260px;
+  max-width: 57vw;
+  height: auto;
+}
+/* MISC / STUDIO stacked flush left, close to the icon, sized off its tile:
+   glass-reveal.js publishes half of it as --glass-icon-half (nomi-studio.js
+   sets it for the fallback). The lockup starts at the icon's right edge and
+   clips there, so the words slide out from behind the icon. Above the
+   canvas, which is added after it. */
+.loader__lockup {
+  --tile: calc(var(--glass-icon-half, 90px) * 2);
+  position: absolute;
+  left: calc(50% + var(--glass-icon-half, 90px));
+  top: 50%;
+  transform: translateY(-50%);
+  /* its full width even where it runs off the screen before the stage
+     scales down — nomi-studio.js measures it to fit the lockup */
+  width: max-content;
+  z-index: 1;
+  overflow: hidden;
+}
+.loader__words {
+  display: flex;
+  flex-direction: column;
+  padding-left: calc(var(--tile) * 0.2);
+  color: var(--color-white);
+  font-family: var(--sub-font);
+  font-size: calc(var(--tile) * 0.47);
+  line-height: 1;
+  font-weight: 600;
+  white-space: nowrap;
+  /* hidden behind the icon until the slide (nomi-studio.js) */
+  transform: translateX(-100%);
+}
 
-/* Page curtain — one navy panel with a curved leading edge that closes the
+/* Page curtain — one accent-blue panel with a curved leading edge that closes the
    loader and covers page-to-page navigation (page-transition.js draws and
    moves the shape; this only places it and colours it). */
 .loader-wave {
@@ -3420,9 +3460,8 @@ body {
   height: 100%;
   display: block;
 }
-/* a deep navy rather than the accent itself, which is too loud at full screen */
 .loader-wave__svg path {
-  fill: #0b1666;
+  fill: var(--color-accent);
 }
 /* arriving through a transition: the <head> sets .curtain-in, so the very
    first paint is already the curtain colour; page-transition.js swaps in
@@ -3433,7 +3472,7 @@ html.curtain-in::after {
   position: fixed;
   inset: 0;
   z-index: 10001;
-  background: #0b1666; /* same as the curtain path above */
+  background: var(--color-accent); /* same as the curtain path above */
   animation: curtain-hold-timeout 0s 3s forwards;
 }
 @keyframes curtain-hold-timeout {
@@ -4279,46 +4318,6 @@ html.curtain-in::after {
 .plan {
   transform-style: preserve-3d;
   will-change: transform;
-}
-
-/* The loader: MISC (the shapes, and the letters they morph into) runs from a
-   light blue into the blue accent, readable on both themes; STUDIO below is
-   plain heading colour, so white on the dark page and black in light mode.
-   MorphSVG keeps the ids when it turns the shapes into paths, so these rules
-   still apply afterwards. */
-#shp-m,
-#shp-i,
-#shp-s,
-#shp-c {
-  fill: url(#mino-grad);
-}
-#mino-grad stop:first-child {
-  stop-color: #7a88ff;
-}
-#mino-grad stop:last-child {
-  stop-color: var(--color-accent);
-}
-
-/* "STUDIO" under the animated MISC in the loader — smaller than the letters,
-   brightens + rises into place once the shapes have morphed into the word.
-   It starts dimmed rather than invisible on purpose: the browser only
-   counts text it can see, and this is the largest text on the first frame —
-   at opacity 0 the page's "largest paint" waited for the whole intro. */
-#loader-studio {
-  fill: var(--color-heading);
-  font-family: var(--main-font);
-  font-size: 62px;
-  font-weight: 700;
-  letter-spacing: 16px;
-  opacity: 0.25;
-  transform: translateY(14px);
-  animation: loaderStudioIn 0.7s ease 1.7s forwards;
-}
-@keyframes loaderStudioIn {
-  to { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  #loader-studio { animation: none; opacity: 1; transform: none; }
 }
 
 /* ------------------------------------------------------------------ */

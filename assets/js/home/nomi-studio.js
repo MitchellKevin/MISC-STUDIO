@@ -303,12 +303,19 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(renderLocalTime, 1000);
 });
 
-// MARK: Loading screen — shapes morph into "MISC"; when it fades out, and only
-// then, the hero intro plays. Only on the first landing of a visit: the
-// <head> marks <html> .intro-seen after that, and the CSS keeps it hidden.
+// MARK: Loading screen — the logo forms out of a drop of glass (glass-reveal.js);
+// when it fades out, and only then, the hero intro plays. Only on the first
+// landing of a visit: the <head> marks <html> .intro-seen after that, and the
+// CSS keeps it hidden.
 (() => {
   const loaderEl = document.getElementById('loader');
   const startHero = () => heroIntro.play();
+  let reveal = null;
+  // drop the canvas (and its WebGL context) along with the loader
+  const hideLoader = () => {
+    loaderEl.style.display = 'none';
+    if (reveal) reveal.dispose();
+  };
 
   if (!loaderEl || document.documentElement.classList.contains('intro-seen')) {
     startHero();
@@ -327,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // the page-transition curtain comes up over the loader, the loader is
       // dropped behind it, and the curtain lifts off the hero
       window.pageCurtain.cover(() => {
-        loaderEl.style.display = 'none';
+        hideLoader();
         document.documentElement.style.overflow = '';
         window.pageCurtain.reveal();
         // the hero starts as the curtain begins to lift
@@ -339,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
         duration: 0.7,
         ease: 'power2.inOut',
         onComplete: () => {
-          loaderEl.style.display = 'none';
+          hideLoader();
           document.documentElement.style.overflow = '';
           startHero();
         },
@@ -347,28 +354,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  if (window.MorphSVGPlugin) {
-    gsap.registerPlugin(MorphSVGPlugin);
-    MorphSVGPlugin.convertToPath('#shp-m, #shp-i, #shp-s, #shp-c');
-    // the shape-to-letter mapping comes precompiled (loader-morph-data.js);
-    // without that file MorphSVG works it out itself, just slower
-    const morph = (k) => {
-      const pre = window.LOADER_MORPHS && window.LOADER_MORPHS[k];
-      return { morphSVG: pre ? { shape: '#ltr-' + k, precompile: pre } : '#ltr-' + k };
-    };
-    // slow, deliberate morph
-    gsap.timeline({ defaults: { ease: 'power2.inOut', duration: 1.05 }, onComplete: dismiss })
-      .to('#shp-m', morph('m'), 0.2)
-      .to('#shp-i', morph('i'), 0.65)
-      .to('#shp-s', morph('s'), 1.1)
-      .to('#shp-c', morph('c'), 1.55)
-      .to({}, { duration: 1.0 }); // hold on the finished word before fading
-  } else {
-    // plugin failed to load — never leave the page stuck behind the loader
-    gsap.delayedCall(1.4, dismiss);
+  const stage = loaderEl.querySelector('.loader__stage');
+  const lockup = loaderEl.querySelector('.loader__lockup');
+  const words = loaderEl.querySelector('.loader__words');
+
+  // The icon is done: it moves left while MISC / STUDIO slides out from behind
+  // it, until icon + name sit centred together — scaled down to fit on a
+  // narrow screen. Then hold before fading.
+  const showName = () => {
+    const tile = 2 * parseFloat(getComputedStyle(stage).getPropertyValue('--glass-icon-half'));
+    const width = tile + lockup.offsetWidth; // icon + gap + words
+    const scale = Math.min(1, (window.innerWidth * 0.86) / width);
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    gsap.timeline({
+      defaults: { duration: still ? 0 : 1.1, ease: 'power3.inOut' },
+      onComplete: () => gsap.delayedCall(1.1, dismiss),
+    })
+      // the stage scales round the icon (the screen centre), then shifts by
+      // half of what sits to the icon's right
+      .to(stage, { x: (-scale * (width - tile)) / 2, scale }, 0)
+      // x: 0 drops the CSS translateX(-100%) that hides them until now
+      .fromTo(words, { x: 0, xPercent: -100 }, { xPercent: 0 }, still ? 0 : 0.1);
+  };
+
+  if (window.playGlassReveal) {
+    // the canvas paints its own backdrop, so it takes the page colour of the
+    // current theme
+    const background = getComputedStyle(document.documentElement).getPropertyValue('--color-black').trim() || '#000000';
+    reveal = window.playGlassReveal(stage, {
+      logo: 'assets/img/brand/logo-mark.png',
+      background,
+      // light page: no cool halo round the glass, a soft shadow under it instead
+      ...(background === '#ffffff' ? { halo: 0, shadow: 1 } : {}),
+      onDone: () => gsap.delayedCall(0.3, showName),
+    });
+  }
+  if (!reveal) {
+    // no WebGL2 (or the script failed to load) — the plain icon, then the same
+    // slide. Its plate fills ~69% of the image, which sets the words' size.
+    const fallback = loaderEl.querySelector('.loader__fallback');
+    if (fallback) {
+      fallback.hidden = false;
+      stage.style.setProperty('--glass-icon-half', fallback.getBoundingClientRect().width * 0.345 + 'px');
+    }
+    gsap.delayedCall(0.8, showName);
   }
   // safety net in case the timeline never completes
-  gsap.delayedCall(8, dismiss);
+  gsap.delayedCall(10, dismiss);
 })();
 
 // MARK: Testimonials — cards start stacked, then fan out on scroll
