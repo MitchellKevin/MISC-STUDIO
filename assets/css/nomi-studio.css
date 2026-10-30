@@ -4258,6 +4258,15 @@ html.curtain-in::after {
   opacity: 1;
   transform: translateY(0);
 }
+/* Deck intro (nomi-studio.js): on desktop the side tiles start tucked behind
+   the middle one and fan out with the scroll; on phones each tile slides down
+   out from under the one above. Separate transform properties, so the hover
+   lift and the reveal above, both on `transform`, still apply. */
+.focusPoint_tile {
+  translate: var(--deck-x, 0px) var(--deck-y, 0px);
+  rotate: var(--deck-r, 0deg);
+  scale: var(--deck-s, 1);
+}
 .focusPoint_tile.animate:first-of-type  { transition-delay: 0.05s; }
 .focusPoint_tile.animate:nth-of-type(2) { transition-delay: 0.15s; }
 .focusPoint_tile.animate:nth-of-type(3) { transition-delay: 0.25s; }

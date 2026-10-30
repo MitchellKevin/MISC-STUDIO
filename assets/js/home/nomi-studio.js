@@ -199,6 +199,9 @@ const LAST = SERVICE_COUNT - 1;          // number of transitions (4)
 const SPREAD = 135;                      // % of viewport between steps (>100 leaves an empty gap)
 const MAX_BLUR = 14;                     // px of blur at the extremes; 0 at centre
 const SCROLL_PER = 1.0;                  // viewport-heights of scroll per transition (kept short: 5 steps)
+// viewport-heights of pinned scroll in which the first step fades in, before
+// the carousel moves (the dial itself slides in on the way up — Section intros)
+const INTRO_SCROLL = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 0.7;
 
 const setActiveDial = (idx) => {
   dialNums.forEach((num, i) => num.classList.toggle('is-active', i === idx));
@@ -221,6 +224,13 @@ setActiveDial(0);
 applyDepth();
 
 if (servicesSection && SERVICE_COUNT > 1) {
+  // The timeline runs in viewport-heights of scroll: the first step fades in
+  // over INTRO_SCROLL, then each transition takes SCROLL_PER.
+  const TOTAL = INTRO_SCROLL + LAST * SCROLL_PER;
+  // settle on the pin's start, the faded-in first step and each service after
+  // it, instead of resting mid-way
+  const stops = [0, ...Array.from({ length: SERVICE_COUNT }, (_, k) => (INTRO_SCROLL + k * SCROLL_PER) / TOTAL)];
+
   const carousel = gsap.timeline({
     // Driven every frame the scrub/snap moves the timeline — including the
     // settle after a snap — so the blur tracks the cards all the way to a
@@ -228,24 +238,35 @@ if (servicesSection && SERVICE_COUNT > 1) {
     // stops firing once the scroll itself stops, which left the blur stuck).
     onUpdate: () => {
       applyDepth();
-      setActiveDial(Math.round(carousel.progress() * LAST));
+      setActiveDial(gsap.utils.clamp(0, LAST, Math.round((carousel.time() - INTRO_SCROLL) / SCROLL_PER)));
     },
     scrollTrigger: {
       trigger: servicesSection,
       start: 'top top',
       // longer pin so each transition has room to breathe
-      end: () => '+=' + window.innerHeight * LAST * SCROLL_PER,
+      end: () => '+=' + window.innerHeight * TOTAL,
       pin: true,
       scrub: 1,
-      // settle on each service instead of resting mid-transition
-      snap: { snapTo: 1 / LAST, duration: 0.3, ease: 'power1.inOut' },
+      snap: { snapTo: stops, duration: 0.3, ease: 'power1.inOut' },
     },
   });
 
+  // the first step's content and the icon fade in, one after another
+  if (INTRO_SCROLL) {
+    const firstStep = services[0].querySelectorAll('.service__eyebrow, .service__title, .service__desc, .service__pills, .service__link');
+    const content = [...firstStep, document.querySelector('.svc-visual__svg')].filter(Boolean);
+    // each fades over two slots, a slot after the one before: the last one
+    // lands exactly as the intro ends
+    const slot = INTRO_SCROLL / (content.length + 1);
+    carousel.fromTo(content, { autoAlpha: 0, y: '0.15rem' },
+      { autoAlpha: 1, y: 0, ease: 'power1.out', duration: slot * 2, stagger: slot }, 0);
+  }
+
   // rotate the whole dial across the section, then carousel every card upward
-  carousel.to(dialWheel, { rotation: -LAST * STEP_ANGLE, ease: 'none' }, 0);
+  const span = LAST * SCROLL_PER;
+  carousel.to(dialWheel, { rotation: -LAST * STEP_ANGLE, ease: 'none', duration: span }, INTRO_SCROLL);
   services.forEach((service, i) => {
-    carousel.to(service, { yPercent: (i - LAST) * SPREAD, ease: 'none' }, 0);
+    carousel.to(service, { yPercent: (i - LAST) * SPREAD, ease: 'none', duration: span }, INTRO_SCROLL);
   });
 
   // right-side line icon morphs from one step's icon to the next, in sync
@@ -253,9 +274,8 @@ if (servicesSection && SERVICE_COUNT > 1) {
   const svcIcon = document.querySelector('#svc-icon');
   const iconIds = ['#icon-intro', '#icon-scope', '#icon-ux', '#icon-web', '#icon-launch'];
   if (svcIcon && window.MorphSVGPlugin && iconIds.length === SERVICE_COUNT) {
-    const seg = carousel.duration() / LAST;
     for (let i = 0; i < LAST; i++) {
-      carousel.to(svcIcon, { morphSVG: iconIds[i + 1], ease: 'none', duration: seg }, i * seg);
+      carousel.to(svcIcon, { morphSVG: iconIds[i + 1], ease: 'none', duration: SCROLL_PER }, INTRO_SCROLL + i * SCROLL_PER);
     }
   }
 }
@@ -293,6 +313,173 @@ if (window.initShowcase) window.initShowcase();
 // Lives in timeline.js now — shared with the about page. Built here so it
 // lands in the right spot in ScrollTrigger's top-to-bottom pin order.
 if (window.initTimeline) window.initTimeline();
+
+// MARK: Section intros — each section makes its entrance once, the first time
+// it scrolls into view. Built after every pin above, so the one scroll-driven
+// intro (the focus deck) measures against the pin spacers. Reduced motion
+// skips them all and leaves the page as it is.
+(() => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const onceInView = (el, threshold, fn) => {
+    if (!el) return;
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      io.disconnect();
+      fn();
+    }, { threshold });
+    io.observe(el);
+  };
+
+  // Focus points: the tiles start as one pile and the scroll deals them out.
+  // Desktop: the middle tile is in front, the other two tucked behind it with
+  // a slight turn like a hand of cards. Phones, where the tiles are stacked:
+  // the first is on top with the others under it, each peeking out a little,
+  // and each slides down out from under the one above.
+  const focusTiles = gsap.utils.toArray('.focusPoint_tile');
+  if (focusTiles.length === 3) {
+    gsap.matchMedia().add('(max-width: 700px)', () => {
+      const [first, second, third] = focusTiles;
+      focusTiles.forEach((tile) => tile.classList.add('animate'));
+      // shrink from the bottom edge, so the smaller tiles underneath still peek
+      // out by the full amount. A plain style, not gsap.set: GSAP would also
+      // write its own inline transform, freezing the tile's CSS fade-up and hover.
+      focusTiles.forEach((tile, i) => {
+        tile.style.zIndex = 3 - i;
+        tile.style.transformOrigin = '50% 100%';
+      });
+      // how far below the tile above an underneath tile's edge shows
+      const peek = () => parseFloat(getComputedStyle(document.documentElement).fontSize) * 0.4;
+      // offsetTop ignores transforms, so this is the layout gap every refresh;
+      // `under` is the tile it sits beneath and `depth` how many tiles down
+      const tuck = (tile, under, depth) => () => under.offsetTop - tile.offsetTop + depth * peek() + 'px';
+      gsap.timeline({
+        defaults: { ease: 'none', duration: 1 },
+        scrollTrigger: {
+          trigger: '.focusPoint_container',
+          start: 'top 70%',
+          end: 'bottom 90%',
+          scrub: 0.6,
+          invalidateOnRefresh: true,
+        },
+      })
+        // the second slides out from under the first, carrying the third with it
+        .fromTo(second, { '--deck-y': tuck(second, first, 1), '--deck-s': 0.95 },
+          { '--deck-y': '0px', '--deck-s': 1 }, 0)
+        .fromTo(third, { '--deck-y': tuck(third, first, 2), '--deck-s': 0.9 },
+          { '--deck-y': tuck(third, second, 1), '--deck-s': 0.95 }, 0)
+        // then the third slides out from under the second
+        .to(third, { '--deck-y': '0px', '--deck-s': 1 }, 1);
+      return () => {
+        focusTiles.forEach((tile) => {
+          tile.style.zIndex = '';
+          tile.style.transformOrigin = '';
+        });
+        gsap.set(focusTiles, { clearProps: '--deck-y,--deck-s' });
+      };
+    });
+    gsap.matchMedia().add('(min-width: 701px)', () => {
+      const [left, middle, right] = focusTiles;
+      // the deck is visible from the start; the fade-up reveal is not used here
+      focusTiles.forEach((tile) => tile.classList.add('animate'));
+      gsap.set(middle, { zIndex: 2 });
+      // offsetLeft ignores transforms, so this is the layout gap every refresh
+      const tuck = (tile) => () => middle.offsetLeft - tile.offsetLeft + 'px';
+      gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: {
+          trigger: '.focusPoint_container',
+          start: 'top 85%',
+          end: 'top 50%',
+          scrub: 0.6,
+          invalidateOnRefresh: true,
+        },
+      })
+        .fromTo(left, { '--deck-x': tuck(left), '--deck-r': '-7deg', '--deck-s': 0.94 },
+          { '--deck-x': '0px', '--deck-r': '0deg', '--deck-s': 1 }, 0)
+        .fromTo(right, { '--deck-x': tuck(right), '--deck-r': '7deg', '--deck-s': 0.94 },
+          { '--deck-x': '0px', '--deck-r': '0deg', '--deck-s': 1 }, 0);
+      return () => gsap.set(focusTiles, { clearProps: 'zIndex,--deck-x,--deck-r,--deck-s' });
+    });
+  }
+
+  // Process: driven by the scroll as soon as the section is a fifth up. The dial swings in
+  // from off the left edge (on phones, where it is an arc across the top, it
+  // drops in from above) and lands as the section pins; the first step then
+  // fades in over the start of the pinned scroll (INTRO_SCROLL, set with the
+  // carousel above), before the carousel moves.
+  if (servicesSection) {
+    const dialParts = [document.querySelector('.dial-ring'), dialWheel].filter(Boolean);
+    const intro = (away) => gsap.fromTo(dialParts, away, {
+      x: 0,
+      y: 0,
+      // gentle all the way in, rather than most of the move in the first stretch
+      ease: 'sine.out',
+      scrollTrigger: {
+        trigger: servicesSection,
+        start: 'top 80%',
+        end: 'top top', // where the pin starts
+        scrub: 1,
+        invalidateOnRefresh: true,
+      },
+    });
+    // a screen's width (or height) away is always clear of the ring and its numbers
+    gsap.matchMedia()
+      .add('(min-width: 701px)', () => { intro({ x: () => -window.innerWidth, y: 0 }); })
+      .add('(max-width: 700px)', () => { intro({ x: 0, y: () => -window.innerHeight }); });
+  }
+
+  // Pricing: the cards start cut down to their name and description, then
+  // grow to full length with the details fading in.
+  const pricingGrid = document.querySelector('.pricing__grid');
+  const plans = gsap.utils.toArray('.plan');
+  if (pricingGrid && plans.length) {
+    const details = plans.map((plan) => plan.querySelectorAll('.plan__divider, .plan__features, .plan__price, .plan__btn'));
+    // all cut at the same height (the longest description), so they line up
+    const collapse = () => {
+      const height = Math.max(...plans.map((plan) => {
+        const desc = plan.querySelector('.plan__desc');
+        return desc.getBoundingClientRect().bottom - plan.getBoundingClientRect().top
+          + parseFloat(getComputedStyle(plan).paddingBottom);
+      }));
+      gsap.set(plans, { height, overflow: 'hidden' });
+    };
+    collapse();
+    gsap.set(details, { autoAlpha: 0 });
+    // text rewraps on resize and once Poppins arrives; keep the cut under the
+    // description until revealed
+    let revealed = false;
+    window.addEventListener('resize', collapse);
+    if (document.fonts) document.fonts.ready.then(() => { if (!revealed) collapse(); });
+    onceInView(pricingGrid, 0.5, () => {
+      revealed = true;
+      window.removeEventListener('resize', collapse);
+      const tl = gsap.timeline({
+        onComplete: () => gsap.set(plans, { clearProps: 'height,overflow' }),
+      });
+      plans.forEach((plan, i) => {
+        tl.to(plan, { height: 'auto', duration: 0.9, ease: 'power3.inOut' }, i * 0.12)
+          .to(details[i], { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out', stagger: 0.06 }, i * 0.12 + 0.35);
+      });
+    });
+  }
+
+  // Blog posts and the contact form rise in from below.
+  const posts = gsap.utils.toArray('.blog__track .bpost');
+  if (posts.length) {
+    gsap.set(posts, { autoAlpha: 0, y: '0.6rem' });
+    onceInView(document.querySelector('.blog__track'), 0.2, () => {
+      gsap.to(posts, { autoAlpha: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.1 });
+    });
+  }
+  const contactWindow = document.querySelector('.contact__window');
+  if (contactWindow) {
+    gsap.set(contactWindow, { autoAlpha: 0, y: '0.8rem' });
+    onceInView(contactWindow, 0.15, () => {
+      gsap.to(contactWindow, { autoAlpha: 1, y: 0, duration: 1, ease: 'power3.out' });
+    });
+  }
+})();
 
 // Build the hero intro but hold it on its first frame, so the hero stays hidden
 // behind the loading screen and only animates in once the loader is gone.
