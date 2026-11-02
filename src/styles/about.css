@@ -408,7 +408,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('../img/about/bg-cmd.png') center / cover no-repeat;
+  background: url('/assets/img/about/bg-cmd.png') center / cover no-repeat;
   opacity: 0;
   transition: opacity 0.55s cubic-bezier(0.76, 0, 0.24, 1);
 }

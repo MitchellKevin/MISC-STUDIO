@@ -4,8 +4,8 @@ html {
 
 :root {
   /* Poppins everywhere — headings and body share one typeface. */
-  --main-font: "Poppins", sans-serif;
-  --sub-font: "Poppins", sans-serif;
+  --main-font: var(--font-poppins), sans-serif; /* next/font, set on <html> in app/layout.tsx */
+  --sub-font: var(--font-poppins), sans-serif;
   /* system mono for the credentials datasheet — no extra font to download */
   --mono-font: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   /* Monochrome dark theme. The two legacy names are kept because they are
@@ -2631,8 +2631,8 @@ body {
   font-size: 0.5rem;
   color: var(--color-dim);
 }
-.tcard__photo--1 { background-image: url("../img/people/MS.jpg"); background-size: cover; background-position: center; }
-.tcard__photo--2 { background-image: url("../img/people/NR.jpg"); background-size: cover; background-position: center; }
+.tcard__photo--1 { background-image: url("/assets/img/people/MS.jpg"); background-size: cover; background-position: center; }
+.tcard__photo--2 { background-image: url("/assets/img/people/NR.jpg"); background-size: cover; background-position: center; }
 
 .tcard__body {
   margin-top: auto;

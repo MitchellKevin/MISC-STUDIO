@@ -9,7 +9,7 @@ html {
 }
 
 :root {
-  --font: "Poppins", sans-serif;
+  --font: var(--font-poppins), sans-serif; /* next/font, set on <html> in app/layout.tsx */
   --bg: #000000;
   /* the same blue accent as --color-accent in nomi-studio.css */
   --blue: #0022ff;
