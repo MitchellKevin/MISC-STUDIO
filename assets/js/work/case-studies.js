@@ -97,8 +97,8 @@ window.CASE_STUDIES = [
     ],
   },
   {
-    slug: 'hackathon',
-    title: 'Hackathon',
+    slug: 'sron',
+    title: 'SRON',
     label: 'Hackathon',
     intro: 'A space-themed site designed and built in the few days of a hackathon.',
     image: 'assets/img/projects/hackathon.webp',

@@ -63,6 +63,9 @@ const ENTRY = {
   growStagger: 0.085, lensBloom: 1.4, lensBloomEase: 'power2.inOut',
 };
 
+// longest the row stays hidden waiting for its shots before showing anyway
+const LOAD_WAIT_MS = 2500;
+
 const LENS_VERTEX = /* glsl */ `
 varying vec2 vUv;
 void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }
@@ -336,27 +339,36 @@ function createCarousel(mount, cursorElement, options) {
   camera.position.z = 10;
 
   const loader = new THREE.TextureLoader();
+  // one promise per shot, settled on load or error, so the row can be shown
+  // once in its final layout instead of popping in and resizing shot by shot
+  const loads = [];
   const sources = items.map((img) => {
     const s = { tex: null, aspect: img.aspect || PORTRAIT_ASPECT, locked: img.aspect != null };
-    loader.load(
-      img.src,
-      (tex) => {
-        tex.minFilter = THREE.LinearMipmapLinearFilter;
-        tex.magFilter = THREE.LinearFilter;
-        tex.generateMipmaps = true;
-        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-        tex.colorSpace = THREE.SRGBColorSpace;
-        if (!s.locked && tex.image) s.aspect = tex.image.width / tex.image.height;
-        s.tex = tex;
-        recomputeTotal();
-        if (!userInteracted) {
-          scroll = centerForIndex(0);
-          target = scroll;
-        }
-      },
-      undefined,
-      () => { s.aspect = s.aspect || PORTRAIT_ASPECT; },
-    );
+    loads.push(new Promise((resolve) => {
+      loader.load(
+        img.src,
+        (tex) => {
+          tex.minFilter = THREE.LinearMipmapLinearFilter;
+          tex.magFilter = THREE.LinearFilter;
+          tex.generateMipmaps = true;
+          tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+          tex.colorSpace = THREE.SRGBColorSpace;
+          if (!s.locked && tex.image) s.aspect = tex.image.width / tex.image.height;
+          s.tex = tex;
+          recomputeTotal();
+          if (!userInteracted) {
+            scroll = centerForIndex(0);
+            target = scroll;
+          }
+          resolve();
+        },
+        undefined,
+        () => {
+          s.aspect = s.aspect || PORTRAIT_ASPECT;
+          resolve();
+        },
+      );
+    }));
     return s;
   });
 
@@ -1080,7 +1092,11 @@ function createCarousel(mount, cursorElement, options) {
 
   startLoop();
   if (entryOn) playEntry();
-  else options.onEntryDone(true);
+  else {
+    // reveal once every shot is in, or after LOAD_WAIT_MS if one hangs
+    const timeout = new Promise((resolve) => setTimeout(resolve, LOAD_WAIT_MS));
+    Promise.race([Promise.all(loads), timeout]).then(() => options.onEntryDone(true));
+  }
 
   function onResize() {
     W = Math.max(1, mount.clientWidth);
@@ -1200,7 +1216,6 @@ if (deck) {
       gap: 16,
       background: token('--color-black'),
       ringColor: token('--color-accent'),
-      entry: true,
       onActiveChange: show,
       // One click opens the case study: the focus zoom plays as the start of
       // the page transition instead of waiting for a second click. It goes
@@ -1245,8 +1260,8 @@ if (deck) {
   };
 
   section.classList.add('showcase--carousel');
-  // build on first approach so the intro plays in view and the shots are
-  // not downloaded for visitors who never scroll this far
+  // build on first approach so the shots are not downloaded for visitors
+  // who never scroll this far
   const io = new IntersectionObserver(([entry]) => {
     if (!entry.isIntersecting) return;
     io.disconnect();

@@ -47,7 +47,7 @@ window.ABOUT = {
     // { name: 'Day-to-Day',           img: 'assets/img/projects/d2d.webp',                  link: 'detail-pages/work/case-study.html?project=day-to-day' },
     { name: 'Visdeurbel Datavis.',  img: 'assets/img/projects/visdeurbel.webp',           link: 'detail-pages/work/case-study.html?project=visdeurbel' },
     { name: 'AI Academy',           img: 'assets/img/projects/ai-academy-salessite.jpg', link: 'detail-pages/work/case-study.html?project=ai-academy' },
-    { name: 'Hackathon',            img: 'assets/img/projects/hackathon.webp',            link: 'detail-pages/work/case-study.html?project=hackathon' }
+    { name: 'SRON',                 img: 'assets/img/projects/hackathon.webp',            link: 'detail-pages/work/case-study.html?project=sron' }
   ],
 
   // ---- The switch — IT on the left, CMD on the right -----------------

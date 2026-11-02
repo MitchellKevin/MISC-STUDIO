@@ -3653,7 +3653,19 @@ html.curtain-in::after {
   outline: none;
 }
 .showcase__stage:focus-visible { outline: 1px solid var(--color-accent); outline-offset: -1px; }
-.showcase__mount { position: absolute; inset: 0; }
+/* the row stays hidden until its shots have loaded, then fades in whole,
+   together with the title pill (.is-ready is set by showcase-carousel.js) */
+.showcase__mount {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(0.12rem);
+  transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.showcase__stage.is-ready .showcase__mount { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .showcase__mount { transform: none; transition: opacity 0.4s ease; }
+}
 .showcase__now {
   position: absolute;
   z-index: 2;
