@@ -3036,6 +3036,85 @@ body {
   cursor: wait;
   opacity: 0.6;
 }
+/* Sent (contact-form.js sets .is-sent for a moment): the button gives a small
+   press, the blobs fill it as on hover, the label lifts away and "Sent" rises
+   in as its tick draws (pathLength="1", so a dash offset of 1 hides it) */
+.cform__submit-label {
+  display: inline-block;
+}
+.cform__submit-label,
+.cform__submit-sent {
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cform__submit-sent {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35em;
+  opacity: 0;
+  transform: translateY(0.6em);
+  pointer-events: none;
+}
+.cform__submit-sent svg {
+  width: 1.1em;
+  height: 1.1em;
+}
+.cform__submit-sent path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.4s ease 0.25s;
+}
+.cform__submit.is-sent {
+  color: var(--blob-text-hover);
+  animation: cform-sent-press 0.45s ease;
+}
+/* still disabled, so a second click can't send the emptied form */
+.cform__submit.is-sent:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.cform__submit.is-sent .cform__submit-label {
+  opacity: 0;
+  transform: translateY(-0.6em);
+}
+.cform__submit.is-sent .cform__submit-sent {
+  opacity: 1;
+  transform: none;
+}
+.cform__submit.is-sent .cform__submit-sent path {
+  stroke-dashoffset: 0;
+}
+.cform__submit.is-sent .blob-btn__blob {
+  transform: translateZ(0) scale(1.7);
+}
+@supports (filter: url("#goo")) {
+  .cform__submit.is-sent .blob-btn__blob {
+    transform: translateZ(0) scale(1.4);
+  }
+}
+@keyframes cform-sent-press {
+  40% { transform: scale(0.96); }
+}
+/* reduced motion: the fill and a plain cross-fade, nothing moves */
+@media (prefers-reduced-motion: reduce) {
+  .cform__submit.is-sent {
+    animation: none;
+  }
+  .cform__submit-sent,
+  .cform__submit.is-sent .cform__submit-label {
+    transform: none;
+  }
+  .cform__submit-sent path {
+    transition: none;
+  }
+}
 /* sent / failed message under the button (contact-form.js) */
 .cform__status {
   margin-top: 0.16rem;

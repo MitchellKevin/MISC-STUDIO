@@ -2,31 +2,44 @@
 // Fill in the values below from the EmailJS dashboard. The public key is
 // meant to be public; restrict it to this domain under Account -> Security.
 //
-// Two templates are sent: the notification to me, then a confirmation to the
-// visitor (its "To Email" field must be {{email}}). Both receive: first_name,
-// last_name, name, company, email, message and services (e.g. "UX Design,
-// Web Development").
+// The template sends the notification to me; the confirmation to the visitor
+// is its linked Auto-Reply in the EmailJS dashboard, so the code sends only
+// the one. The template receives: first_name, last_name, name, company, email,
+// message and services (e.g. "UX Design, Web Development").
 const EMAILJS_PUBLIC_KEY = 'f7G-WWInszKCe-eFH';
 const EMAILJS_SERVICE_ID = 'service_2pu3q87';
 const EMAILJS_TEMPLATE_ID = 'template_h2dzhbh';
-const EMAILJS_AUTOREPLY_TEMPLATE_ID = 'template_8e3o54b';
 
 (() => {
   const form = document.getElementById('contact-form');
   if (!form) return;
 
-  // blockHeadless refuses automated browsers (rejects with status 451)
-  if (window.emailjs) emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY, blockHeadless: true });
-
-  // at most one enquiry per 10s per browser (rejects with status 429). Set on
-  // the notification send only: a global limit would also block the
-  // auto-reply that goes out straight after it.
-  const LIMIT_RATE = { id: 'contact-form', throttle: 10000 };
+  // blockHeadless refuses automated browsers (rejects with status 451);
+  // limitRate allows one enquiry per 10s per browser (rejects with status 429)
+  if (window.emailjs) {
+    emailjs.init({
+      publicKey: EMAILJS_PUBLIC_KEY,
+      blockHeadless: true,
+      limitRate: { id: 'contact-form', throttle: 10000 },
+    });
+  }
 
   const button = form.querySelector('.cform__submit');
   const label = form.querySelector('.cform__submit-label');
   const status = form.querySelector('.cform__status');
   const idleLabel = label.textContent;
+
+  // the button shows "Sent" for a moment (.is-sent in nomi-studio.css), then
+  // settles back; it stays disabled until then
+  const SENT_HOLD = 2600;
+  const flashSent = () => {
+    button.classList.add('is-sent');
+    setTimeout(() => {
+      button.classList.remove('is-sent');
+      label.textContent = idleLabel;
+      button.disabled = false;
+    }, SENT_HOLD);
+  };
 
   const setStatus = (text, kind) => {
     status.textContent = text;
@@ -116,22 +129,19 @@ const EMAILJS_AUTOREPLY_TEMPLATE_ID = 'template_8e3o54b';
     };
 
     try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params, { limitRate: LIMIT_RATE });
-      // the enquiry reached me, so a failed confirmation is not the visitor's
-      // problem; log it instead of showing an error
-      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_AUTOREPLY_TEMPLATE_ID, params)
-        .catch((err) => console.error('EmailJS auto-reply failed', err));
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
       form.reset();
       fields.forEach((input) => input.removeAttribute('aria-invalid'));
       // reset() unticks "Not sure yet" but leaves the other cards locked
       form.querySelectorAll('input[name="service"]').forEach((cb) => { cb.disabled = false; });
       setStatus('Thanks, your message is on its way. I’ll get back to you the same day.', 'success');
+      flashSent();
     } catch (err) {
       console.error('EmailJS send failed', err);
       setStatus(err?.status === 429
         ? 'Your message was just sent. Please wait a few seconds before sending another.'
         : 'Something went wrong sending your message. Please try again in a moment.', 'error');
-    } finally {
+      // on success flashSent() restores these once "Sent" has shown
       button.disabled = false;
       label.textContent = idleLabel;
     }
