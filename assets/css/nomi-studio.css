@@ -3091,13 +3091,11 @@ body {
 .cform__submit.is-sent .cform__submit-sent path {
   stroke-dashoffset: 0;
 }
+/* this button is much wider than it is tall, so the shared blob scale leaves
+   notches along the top where the blobs meet; stretch them taller to close it */
+.cform__submit:hover .blob-btn__blob,
 .cform__submit.is-sent .blob-btn__blob {
-  transform: translateZ(0) scale(1.7);
-}
-@supports (filter: url("#goo")) {
-  .cform__submit.is-sent .blob-btn__blob {
-    transform: translateZ(0) scale(1.4);
-  }
+  transform: translateZ(0) scale(1.4, 2.6);
 }
 @keyframes cform-sent-press {
   40% { transform: scale(0.96); }
