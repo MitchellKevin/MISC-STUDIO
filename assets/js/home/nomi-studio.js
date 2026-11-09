@@ -791,45 +791,27 @@ if (tcardLeft && tcardRight) {
   });
 })();
 
-// MARK: Pricing — 3D tilt on hover. The card leans toward the cursor (in real
-// perspective) and lifts slightly; it eases back to flat on leave. Desktop /
-// real-hover pointers only — reverted on touch by gsap.matchMedia.
+// MARK: Pricing — the card scales up slightly on hover and eases back on
+// leave. Desktop / real-hover pointers only — reverted on touch by
+// gsap.matchMedia.
 (() => {
   const planMM = gsap.matchMedia();
   planMM.add('(min-width: 701px) and (hover: hover)', () => {
     const cards = gsap.utils.toArray('.plan');
-    const MAX = 9; // max tilt in degrees
 
     const teardown = cards.map((card) => {
-      gsap.set(card, { transformPerspective: 900, transformOrigin: 'center' });
-      // quickTo keeps the rotation buttery under rapid pointermove events
-      const rotX = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3' });
-      const rotY = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3' });
-
-      const onMove = (e) => {
-        const r = card.getBoundingClientRect();
-        const px = (e.clientX - r.left) / r.width - 0.5;  // -0.5 … 0.5
-        const py = (e.clientY - r.top) / r.height - 0.5;
-        rotY(px * MAX * 2);
-        rotX(-py * MAX * 2);
-      };
       const onEnter = () =>
-        gsap.to(card, { scale: 1.03, z: 30, duration: 0.4, ease: 'power3', overwrite: 'auto' });
-      const onLeave = () => {
-        rotX(0);
-        rotY(0);
-        gsap.to(card, { scale: 1, z: 0, duration: 0.6, ease: 'power3', overwrite: 'auto' });
-      };
+        gsap.to(card, { scale: 1.03, duration: 0.4, ease: 'power3', overwrite: 'auto' });
+      const onLeave = () =>
+        gsap.to(card, { scale: 1, duration: 0.6, ease: 'power3', overwrite: 'auto' });
 
-      card.addEventListener('pointermove', onMove);
       card.addEventListener('pointerenter', onEnter);
       card.addEventListener('pointerleave', onLeave);
 
       return () => {
-        card.removeEventListener('pointermove', onMove);
         card.removeEventListener('pointerenter', onEnter);
         card.removeEventListener('pointerleave', onLeave);
-        gsap.set(card, { clearProps: 'all' });
+        gsap.set(card, { clearProps: 'transform' });
       };
     });
 

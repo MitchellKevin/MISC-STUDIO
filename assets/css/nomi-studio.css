@@ -2117,9 +2117,35 @@ body {
 
 .plan__price {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 0.08rem;
   margin-bottom: 0.26rem;
+}
+/* Normal rate struck through + portfolio-discount label, on its own row */
+.plan__deal {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  margin-bottom: 0.04rem;
+}
+.plan__was {
+  font-family: var(--sub-font);
+  font-size: 0.15rem;
+  font-weight: 500;
+  color: var(--color-dim);
+  text-decoration-thickness: 1px;
+}
+.plan__badge {
+  font-family: var(--sub-font);
+  font-size: 0.11rem;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0.05rem 0.09rem;
+  border-radius: 1rem;
+  color: var(--color-accent-text);
+  border: 1px solid currentColor;
 }
 .plan__amount {
   font-family: var(--main-font);
@@ -2207,6 +2233,17 @@ body {
   }
   .plan__period {
     font-size: 0.44rem;
+  }
+  .plan__deal {
+    gap: 0.3rem;
+    margin-bottom: 0.1rem;
+  }
+  .plan__was {
+    font-size: 0.48rem;
+  }
+  .plan__badge {
+    font-size: 0.36rem;
+    padding: 0.16rem 0.3rem;
   }
   .plan__btn {
     height: 1.6rem;
@@ -4411,10 +4448,8 @@ html.curtain-in::after {
   }
 }
 
-/* 3D tilt on the pricing cards — the rotation/lift is driven by GSAP on
-   hover (see nomi-studio.js); this just prepares the cards for 3D. */
+/* Pricing cards scale up slightly on hover (GSAP, see nomi-studio.js). */
 .plan {
-  transform-style: preserve-3d;
   will-change: transform;
 }
 
