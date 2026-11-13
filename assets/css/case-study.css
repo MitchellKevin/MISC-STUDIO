@@ -189,6 +189,262 @@
   color: var(--muted);
 }
 
+/* ---------- Extra sections (optional, per project) ---------- */
+/* Filled by renderExtras() in case-study.js: decisions, visual system,
+   page structure, build notes and figures. */
+.cs-extra > section {
+  padding: 0.6rem 0 0.8rem;
+}
+.cs-head {
+  max-width: 7.6rem;
+  margin-bottom: 0.5rem;
+}
+.cs-head__title {
+  font-size: 0.48rem;
+  line-height: 1.08;
+  font-weight: 700;
+  color: var(--ink);
+  margin-top: 0.1rem;
+}
+.cs-head__body {
+  font-size: 0.17rem;
+  line-height: 0.28rem;
+  color: var(--muted);
+  max-width: 6.2rem;
+  margin-top: 0.2rem;
+}
+
+/* Design decisions: text beside a screenshot, sides alternate */
+.cs-decisions .cs-head {
+  margin-bottom: 0.2rem;
+}
+.cs-decision {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--line);
+}
+.cs-decision--flip .cs-decision__text {
+  order: 2;
+}
+.cs-decision__label {
+  display: block;
+  font-size: 0.13rem;
+  font-weight: 600;
+  letter-spacing: 0.02rem;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.14rem;
+}
+.cs-decision__heading {
+  font-size: 0.38rem;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.18rem;
+}
+.cs-decision__body {
+  font-size: 0.17rem;
+  line-height: 0.28rem;
+  color: var(--muted);
+}
+.cs-decision__quote {
+  margin: 0.26rem 0 0;
+  padding-left: 0.18rem;
+  border-left: 2px solid var(--blue);
+}
+.cs-decision__quote p {
+  font-size: 0.18rem;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--ink);
+}
+.cs-decision__quote span {
+  display: block;
+  font-size: 0.14rem;
+  color: var(--dim);
+  margin-top: 0.04rem;
+}
+/* screenshots of a dark site: keep them on black in both themes */
+.cs-decision__shot {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0.16rem;
+  border: 1px solid var(--glass-border);
+  background: #000;
+  box-shadow: 0 0.24rem 0.6rem var(--shadow-color);
+}
+.cs-decision__shot img {
+  display: block;
+  width: 100%;
+}
+
+/* Visual system */
+.cs-swatches {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.14rem;
+}
+.cs-swatch {
+  display: grid;
+  gap: 0.06rem;
+}
+.cs-swatch__chip {
+  display: block;
+  aspect-ratio: 1 / 1.1;
+  border-radius: 0.12rem;
+  border: 1px solid var(--line);
+  margin-bottom: 0.08rem;
+}
+.cs-swatch strong {
+  font-size: 0.15rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.cs-swatch span {
+  font-size: 0.13rem;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+.cs-fonts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 0.4rem;
+  margin-top: 0.5rem;
+}
+.cs-fonts > div {
+  border-top: 1px solid var(--line);
+  padding-top: 0.2rem;
+}
+.cs-fonts dt {
+  font-size: 0.36rem;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--ink);
+}
+.cs-fonts dd {
+  font-size: 0.16rem;
+  color: var(--muted);
+  margin-top: 0.06rem;
+}
+
+/* Page structure: the site's sections, in order */
+.cs-steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 0.4rem;
+}
+.cs-steps li {
+  display: grid;
+  grid-template-columns: 0.4rem 1fr;
+  gap: 0.04rem 0.1rem;
+  align-content: start;
+  padding: 0.22rem 0;
+  border-top: 1px solid var(--line);
+}
+.cs-steps__num {
+  grid-row: span 2;
+  font-size: 0.14rem;
+  font-weight: 600;
+  line-height: 0.26rem;
+  color: var(--blue);
+}
+.cs-steps strong {
+  font-size: 0.19rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.cs-steps__text {
+  font-size: 0.15rem;
+  line-height: 0.24rem;
+  color: var(--muted);
+}
+
+/* Build notes: each one a passed check, like a line in the scanner's own
+   results ("a security product's site has to pass its own scan") */
+.cs-notes {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.16rem;
+}
+.cs-notes li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.28rem 0.28rem 0.32rem;
+  border: 1px solid var(--line);
+  border-radius: 0.16rem;
+  background: var(--surface);
+  line-height: normal;
+}
+.cs-notes li::before {
+  content: "✓  Pass";
+  white-space: pre;
+  align-self: flex-start;
+  margin-bottom: 0.1rem;
+  padding: 0.04rem 0.11rem;
+  border-radius: 1rem;
+  font-size: 0.12rem;
+  font-weight: 600;
+  letter-spacing: 0.015rem;
+  text-transform: uppercase;
+  color: #22a35a;
+  background: rgba(34, 163, 90, 0.12);
+}
+.cs-notes strong {
+  display: block;
+  font-size: 0.2rem;
+  line-height: 1.25;
+  font-weight: 600;
+  color: var(--ink);
+}
+.cs-notes span {
+  display: block;
+  font-size: 0.155rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* Figures */
+.cs-figures__row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--ink);
+}
+.cs-figures__row > div {
+  padding: 0.26rem 0.2rem 0 0;
+}
+.cs-figures__row > div + div {
+  padding-left: 0.2rem;
+  border-left: 1px solid var(--line);
+}
+.cs-figures__row strong {
+  display: block;
+  font-size: 1rem;
+  line-height: 0.95;
+  font-weight: 800;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.cs-figures__row small {
+  font-size: 0.34rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-left: 0.06rem;
+}
+.cs-figures__row span {
+  display: block;
+  font-size: 0.15rem;
+  line-height: 1.45;
+  color: var(--muted);
+  margin-top: 0.14rem;
+  max-width: 2.6rem;
+}
+
 /* ---------- Next project ---------- */
 .cs-next {
   padding: 0 0 1.2rem;
@@ -345,5 +601,159 @@
   }
   .cs-next__title {
     font-size: 1.1rem;
+  }
+}
+
+/* Extra sections on a phone: one column, and sizes scaled up the same way
+   as the rest of this file (rem follows the viewport width). */
+@media (max-width: 700px) {
+  .cs-extra > section {
+    padding: 1rem 0 1.2rem;
+  }
+  .cs-head {
+    max-width: none;
+    margin-bottom: 0.9rem;
+  }
+  .cs-head__title {
+    font-size: 0.95rem;
+    margin-top: 0.3rem;
+  }
+  .cs-head__body {
+    font-size: 0.5rem;
+    line-height: 0.8rem;
+    max-width: none;
+    margin-top: 0.4rem;
+  }
+
+  .cs-decision {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    padding: 1rem 0;
+  }
+  .cs-decision--flip .cs-decision__text {
+    order: 0;
+  }
+  .cs-decision__label {
+    font-size: 0.36rem;
+    margin-bottom: 0.3rem;
+  }
+  .cs-decision__heading {
+    font-size: 0.8rem;
+    margin-bottom: 0.35rem;
+  }
+  .cs-decision__body {
+    font-size: 0.5rem;
+    line-height: 0.8rem;
+  }
+  .cs-decision__quote {
+    margin-top: 0.5rem;
+    padding-left: 0.4rem;
+  }
+  .cs-decision__quote p {
+    font-size: 0.5rem;
+  }
+  .cs-decision__quote span {
+    font-size: 0.4rem;
+    margin-top: 0.1rem;
+  }
+  .cs-decision__shot {
+    border-radius: 0.3rem;
+  }
+
+  .cs-swatches {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem 0.3rem;
+  }
+  .cs-swatch__chip {
+    border-radius: 0.25rem;
+    margin-bottom: 0.15rem;
+  }
+  .cs-swatch strong {
+    font-size: 0.4rem;
+  }
+  .cs-swatch span {
+    font-size: 0.34rem;
+  }
+  .cs-fonts {
+    grid-template-columns: 1fr;
+    margin-top: 0.9rem;
+  }
+  .cs-fonts > div {
+    padding: 0.4rem 0;
+  }
+  .cs-fonts dt {
+    font-size: 0.8rem;
+  }
+  .cs-fonts dd {
+    font-size: 0.45rem;
+    margin-top: 0.1rem;
+  }
+
+  .cs-steps,
+  .cs-notes {
+    grid-template-columns: 1fr;
+  }
+  .cs-steps li {
+    grid-template-columns: 1rem 1fr;
+    gap: 0.1rem 0.2rem;
+    padding: 0.5rem 0;
+  }
+  .cs-steps__num {
+    font-size: 0.4rem;
+    line-height: 0.7rem;
+  }
+  .cs-steps strong {
+    font-size: 0.52rem;
+  }
+  .cs-steps__text {
+    font-size: 0.45rem;
+    line-height: 0.7rem;
+  }
+  .cs-notes {
+    gap: 0.35rem;
+  }
+  .cs-notes li {
+    gap: 0.2rem;
+    padding: 0.6rem 0.6rem 0.7rem;
+    border-radius: 0.3rem;
+  }
+  .cs-notes li::before {
+    margin-bottom: 0.2rem;
+    padding: 0.1rem 0.28rem;
+    font-size: 0.32rem;
+  }
+  .cs-notes strong {
+    font-size: 0.55rem;
+  }
+  .cs-notes span {
+    font-size: 0.45rem;
+  }
+
+  .cs-figures__row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cs-figures__row > div {
+    padding: 0.5rem 0.3rem 0 0;
+  }
+  .cs-figures__row > div + div {
+    padding-left: 0.3rem;
+  }
+  .cs-figures__row > div:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .cs-figures__row > div:nth-child(n + 3) {
+    margin-top: 0.7rem;
+  }
+  .cs-figures__row strong {
+    font-size: 2rem;
+  }
+  .cs-figures__row small {
+    font-size: 0.6rem;
+  }
+  .cs-figures__row span {
+    font-size: 0.42rem;
+    margin-top: 0.25rem;
+    max-width: none;
   }
 }

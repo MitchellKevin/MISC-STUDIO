@@ -16,6 +16,15 @@
 //   facts    the small label / value grid next to the intro
 //   story    the three chapters under the full shot
 //
+// Optional deeper sections, shown under the story only when present
+// (see day-to-day-secure for a full example):
+//   decisions  [{ label, heading, body, quote: { text, translation }, image, alt }]
+//              text beside a screenshot, sides alternating
+//   system     { heading, body, colors: [{ name, hex }], fonts: [{ name, use }] }
+//   structure  { heading, body, steps: [{ title, text }] }  numbered, in order
+//   build      { heading, body, notes: [{ title, text }] }
+//   figures    { heading, items: [{ value, unit, label }] }  big numbers
+//
 // The copy below is a first draft written from the project names and
 // the roadmap. Swap in the real story.
 // ------------------------------------------------------------------
@@ -24,37 +33,270 @@ window.CASE_STUDIES = [
     slug: 'scholtes-klusbedrijf',
     title: 'Scholtes Klusbedrijf',
     label: 'Client website',
-    intro: 'A website for a local handyman business: what they do, the work they have done, and a quick way to ask for a quote.',
+    intro: 'The website for Scholtes Klusbedrijf, a new handyman business in Hoofddorp. It is built as a technical drawing, because every job starts as a plan, and it has to win the first customers without any past work to show.',
     image: 'assets/img/projects/scholtes-klusbedrijf.webp',
     live: 'https://mitchellkevin.github.io/scholtes-klusbedrijf/',
+    gallery: [
+      { src: 'assets/img/projects/scholtes-klusbedrijf/mobile.webp', alt: 'The homepage on a phone, with the house below the headline' },
+      { src: 'assets/img/projects/scholtes-klusbedrijf/flight.webp', alt: 'The folded work order flying off as a paper plane' },
+      { src: 'assets/img/projects/scholtes-klusbedrijf/stamp.webp', alt: 'The confirmation with its “Onderweg” stamp' },
+      { src: 'assets/img/projects/scholtes-klusbedrijf/intro-offer.webp', alt: 'The block with the introductory offer for the first customers' },
+    ],
     facts: [
-      { label: 'Type', value: 'Business website' },
-      { label: 'Role', value: 'Design & development' },
-      { label: 'Built with', value: 'HTML, CSS, JavaScript' },
+      { label: 'Year', value: '2026' },
+      { label: 'Role', value: 'Design, copy & development' },
+      { label: 'Audience', value: 'Homeowners around Hoofddorp' },
+      { label: 'Built with', value: 'HTML, CSS, SVG, GSAP, d3' },
     ],
     story: [
-      { heading: 'The brief', body: 'A small business that mostly got work through word of mouth needed a place to send people: one page that explains the services and makes getting in touch easy.' },
-      { heading: 'The approach', body: 'I kept the structure short and the calls to action obvious, and built it as a light static site so it loads fast on a phone in the middle of a job.' },
-      { heading: 'The result', body: 'A clear, quick site the business can point every new customer to.' },
+      { heading: 'The brief', body: 'Dennis Scholte spent more than fifteen years as head of a technical department, responsible for everything that could break and everything that had to be made. In 2026 that turned into a handyman business of their own in Hoofddorp. The site had to bring in the first customers.' },
+      { heading: 'The constraints', body: 'A brand-new business has none of the usual proof: no photos of finished jobs, no reviews, no list of clients. The people it serves are homeowners in the Haarlemmermeer with four questions: can you do this job, do you come to me, what will it cost, and how do I ask? The site had to answer all four and still look trustworthy, without inventing proof.' },
+      { heading: 'The approach', body: 'I built the whole site as one technical drawing: a blueprint grid, an exploded drawing of a house, dimension lines, spec codes on every service and a title block in the footer. It is the strongest thing the business has, someone who plans the job before picking up a tool. The copy is plain Dutch in the first person, because the customer deals with one person. The decisions below show how that played out.' },
     ],
+
+    decisions: [
+      {
+        label: 'The hero',
+        heading: 'The house is the menu.',
+        body: 'The hero is an exploded drawing of a house: the garden, the ground floor, the first floor and the roof lifted apart, with pins between them like an assembly drawing. Six cards point at the part of the house each service covers, from the bathroom for plumbing to the fence for the garden. Hover a card and that part of the house lights up in safety yellow; click it and the page jumps to the service. On load, the layers drop into place one by one.',
+        quote: { text: 'Van tekening naar werk.', translation: 'From drawing to work.' },
+        image: 'assets/img/projects/scholtes-klusbedrijf/hero-house.webp',
+        alt: 'The exploded house with six service cards, the bathroom lit up',
+      },
+      {
+        label: 'Services',
+        heading: 'A service list that reads like a spec sheet.',
+        body: 'Six services in a grid, each with a code from SVC-001 to SVC-006, one line of plain text and a tool drawn in thin lines. It reads like a parts list on a drawing, which says “organised” before anyone reads a word. The range runs from a dripping tap to a full renovation, and a line underneath invites anything that is not on the list.',
+        quote: { text: 'Alles wat blijft liggen, pak ik op.', translation: 'Everything that keeps getting put off, I pick up.' },
+        image: 'assets/img/projects/scholtes-klusbedrijf/services.webp',
+        alt: 'The services grid with codes SVC-001 to SVC-006',
+      },
+      {
+        label: 'For a first customer',
+        heading: 'New as a business, not new to the trade.',
+        body: 'There are no past jobs to show, so the site says so and leans on what is true: fifteen years of experience, free advice at home and an introductory rate for the first customers. The four-step process ends each step with a stamp, such as “no surprises” and “delivered means cleaned up”, so the customer knows what happens before they ask.',
+        quote: { text: 'Nieuw als ondernemer, niet nieuw in het vak.', translation: 'New as a business owner, not new to the trade.' },
+        image: 'assets/img/projects/scholtes-klusbedrijf/process.webp',
+        alt: 'The four steps from request to finished job, each with a stamp',
+      },
+      {
+        label: 'Service area',
+        heading: 'Answer “do you come to me?” at a glance.',
+        body: 'A d3 radar puts Hoofddorp in the centre with rings at 5, 10 and 15 kilometres, and eight nearby towns placed by their real direction and distance. The rings grow in, the towns appear one by one and a sweep line turns, like a radar screen. Next to it, the towns are listed as tags, and a dashed circle says that further away is open to discussion.',
+        quote: { text: 'Snel ter plaatse in de regio.', translation: 'Quickly on site in the region.' },
+        image: 'assets/img/projects/scholtes-klusbedrijf/area.webp',
+        alt: 'The radar map of the service area around Hoofddorp, with the towns as tags',
+      },
+      {
+        label: 'The quote request',
+        heading: 'Asking for a quote is filling in a work order.',
+        body: 'The contact form is a numbered work order, with the type of job picked from the same six services. When it is sent, the order folds in half three times, turns into a paper plane and flies off along a dashed route marked “Destination: Hoofddorp”, and a stamp lands on the confirmation. Behind the animation the request really goes out, to a form service or as a ready-made email. If sending fails, the card says so and keeps everything filled in.',
+        quote: { text: 'Beschrijf kort wat er moet gebeuren. Je hoort binnen 24 uur van me.', translation: 'Describe briefly what needs doing. You’ll hear from me within 24 hours.' },
+        image: 'assets/img/projects/scholtes-klusbedrijf/work-order.webp',
+        alt: 'The work order form, filled in, next to the three next steps',
+      },
+    ],
+
+    system: {
+      heading: 'Blueprint blue, chalk white and one safety yellow.',
+      body: 'The palette comes from the drawing table and the building site. A deep blueprint blue is the paper, chalk white and cyan are the lines, and safety yellow, the colour of tape measures and site signs, carries every action, every highlight and the part of the house you point at. A muted steel blue softens the second half of the headline.',
+      colors: [
+        { name: 'Blueprint', hex: '#0D2B4A' },
+        { name: 'Deep blue', hex: '#081D33' },
+        { name: 'Chalk', hex: '#EAF2FA' },
+        { name: 'Line cyan', hex: '#7FD3FF' },
+        { name: 'Safety yellow', hex: '#FFB020' },
+        { name: 'Steel', hex: '#9FB4C7' },
+        { name: 'Muted steel', hex: '#6F8CA8' },
+      ],
+      fonts: [
+        { name: 'Big Shoulders Display', use: 'Headings, condensed like signage on a site' },
+        { name: 'Space Grotesk', use: 'Body text' },
+        { name: 'JetBrains Mono', use: 'Spec codes, labels and the title block' },
+        { name: 'Caveat', use: 'The handwritten caption on the photo' },
+      ],
+    },
+
+    structure: {
+      heading: 'Eight sections, in the order a homeowner asks.',
+      body: 'Can you do it, how does it work, who are you, do you come to me, and how do I ask? The page answers in that order and ends at the form.',
+      steps: [
+        { title: 'Hero', text: 'The promise, the exploded house with the six services, and two buttons: request a quote or see the services.' },
+        { title: 'Services', text: 'Six services as a spec sheet, from small repairs to renovation.' },
+        { title: 'Process', text: 'Four steps from request to finished job, each with its stamp.' },
+        { title: 'About', text: 'Who will show up at the door: fifteen years of technical work, no team in between.' },
+        { title: 'Intro offer', text: 'New business, experienced hands: free advice and an introductory rate.' },
+        { title: 'Service area', text: 'The radar around Hoofddorp, with a 15 km radius and the towns as tags.' },
+        { title: 'Questions', text: 'Six short answers about price, small jobs, the area and who does the work.' },
+        { title: 'Work order', text: 'The form, the three next steps and a direct email for anyone who would rather write.' },
+      ],
+    },
+
+    build: {
+      heading: 'Three files and no build step.',
+      body: 'The site is one HTML file, one stylesheet and one script, with GSAP and d3 loaded from a CDN. That keeps it cheap to host, easy to hand over and quick to change while the business finds its feet.',
+      notes: [
+        { title: 'A drawing that is generated', text: 'The exploded house comes from a small Python script with an isometric projection. Every wall, bed and fence post is a 3D box that becomes three shaded faces, painted back to front. Change a size, run it again, and every face and leader line follows.' },
+        { title: 'A fold you can follow', text: 'On send, the filled-in form is copied into slices that hinge in 3D, with crease shadows, three folds in a row. The folded packet is swapped for an SVG plane that flies along a curved GSAP motion path while its wings flutter.' },
+        { title: 'A radar from real distances', text: 'The towns are placed by direction and distance from Hoofddorp, at a fixed scale of 14 pixels per kilometre. The map draws itself once it scrolls into view.' },
+        { title: 'Contact details in one place', text: 'Phone, email, Chamber of Commerce number and the form address live in one settings object. Anything left empty stays hidden, so the site never shows a placeholder number.' },
+        { title: 'Motion with an off switch', text: 'Visitors who prefer reduced motion get the house already assembled, visible sections, a still map and the confirmation straight away instead of the paper plane.' },
+        { title: 'Works without the extras', text: 'If a script from the CDN fails to load, every section stays visible and the work order still sends. Only the animation is lost.' },
+      ],
+    },
+
+    figures: {
+      heading: 'One page that does the job of a portfolio.',
+      items: [
+        { value: '6', label: 'Services, from a dripping tap to a renovation' },
+        { value: '4', unit: 'layers', label: 'From garden to roof in the exploded house' },
+        { value: '3', unit: 'folds', label: 'From work order to paper plane' },
+        { value: '0', label: 'Build steps: one HTML, CSS and JS file' },
+      ],
+    },
   },
+  // {
+  //   slug: 'day-to-day',
+  //   title: 'Day-to-Day',
+  //   label: 'Venture',
+  //   intro: 'The website for Day-to-Day, the software company I founded in 2025.',
+  //   image: 'assets/img/projects/d2d.webp',
+  //   live: 'https://www.day-to-day.nl/',
+  //   facts: [
+  //     { label: 'Year', value: '2025' },
+  //     { label: 'Role', value: 'Founder, design & development' },
+  //     { label: 'Type', value: 'Company website' },
+  //   ],
+  //   story: [
+  //     { heading: 'The brief', body: 'A new company needs to explain what it does in a few seconds, and look like it can be trusted with someone else’s product.' },
+  //     { heading: 'The approach', body: 'I designed and built the site myself, starting from the services and the people we wanted to reach, then letting the visual identity follow.' },
+  //     { heading: 'The result', body: 'The front door of the company: where clients land, and where the work gets shown.' },
+  //   ],
+  // },
   {
-    slug: 'day-to-day',
-    title: 'Day-to-Day',
-    label: 'Venture',
-    intro: 'The website for Day-to-Day, the software company I founded in 2025.',
-    image: 'assets/img/projects/d2d.webp',
-    live: 'https://www.day-to-day.nl/',
+    // TODO: add `live:` once the sales site has its public address.
+    slug: 'day-to-day-secure',
+    title: 'day-to-day secure',
+    label: 'Sales site',
+    intro: 'The sales site for day-to-day secure, the website-security scanner from my company Day-to-Day. It sells to web agencies and shows the real product from the first scroll.',
+    image: 'assets/img/projects/day-to-day-secure.webp',
+    gallery: [
+      { src: 'assets/img/projects/day-to-day-secure/mobile.webp', alt: 'The sales site on a phone' },
+      { src: 'assets/img/projects/day-to-day-secure/platform.webp', alt: 'The platform section with three promises' },
+      { src: 'assets/img/projects/day-to-day-secure/check-https.webp', alt: 'Check card for the encrypted connection' },
+      { src: 'assets/img/projects/day-to-day-secure/check-headers.webp', alt: 'Check card for the security headers' },
+    ],
     facts: [
-      { label: 'Year', value: '2025' },
-      { label: 'Role', value: 'Founder, design & development' },
-      { label: 'Type', value: 'Company website' },
+      { label: 'Year', value: '2026' },
+      { label: 'Role', value: 'Design, copy & development' },
+      { label: 'Audience', value: 'Dutch web agencies' },
+      { label: 'Built with', value: 'Next.js, SCSS, d3' },
     ],
     story: [
-      { heading: 'The brief', body: 'A new company needs to explain what it does in a few seconds, and look like it can be trusted with someone else’s product.' },
-      { heading: 'The approach', body: 'I designed and built the site myself, starting from the services and the people we wanted to reach, then letting the visual identity follow.' },
-      { heading: 'The result', body: 'The front door of the company: where clients land, and where the work gets shown.' },
+      { heading: 'The brief', body: 'day-to-day secure checks websites for the security mistakes that most often lead to a leak, and keeps every client site in one dashboard. It is sold to web agencies, and each agency has three people to convince: the developer who fixes things, the project manager who plans the work, and the client who pays. Most security marketing talks to the first and scares the other two.' },
+      { heading: 'The constraints', body: 'No jargon: the product turns HTTP headers and cookie flags into a grade from A to F, and the site had to read as easily for a bakery owner as for a backend developer. Visibly careful: the deep scan actively tests sites, so the site had to look precise and restrained. And one address: the sales page lives on the app’s own homepage, inside its strict security policy.' },
+      { heading: 'The approach', body: 'I built the page around evidence instead of claims. Every visual is the product itself or a sample of its output, clearly labelled as a sample. The copy is plain Dutch, and each section is written for one of the three readers. The decisions below show how that played out.' },
     ],
+
+    decisions: [
+      {
+        label: 'The hero',
+        heading: 'Show the real product first.',
+        body: 'The hero renders the actual dashboard, built from the app’s own components and filled with demo data. It tilts up into view as you scroll, the numbers count up once it is on screen, and on a phone it switches to the real mobile layout.',
+        quote: { text: 'Vind de lekken voordat een ander het doet.', translation: 'Find the leaks before someone else does.' },
+        image: 'assets/img/projects/day-to-day-secure/dashboard.webp',
+        alt: 'The dashboard preview in the hero, with demo data',
+      },
+      {
+        label: 'For developers',
+        heading: 'Every finding comes with its fix.',
+        body: 'Developers are won over by detail. Each sample finding names the risk in one sentence and shows the exact configuration line for their platform, with tabs for Nginx, Vercel, Next.js and Cloudflare. Check IDs stay in mono, as they appear in the tool.',
+        quote: { text: 'Niet alleen wat er mis is, maar hoe je het oplost.', translation: 'Not just what’s wrong, but how to fix it.' },
+        image: 'assets/img/projects/day-to-day-secure/fix.webp',
+        alt: 'A sample finding with the fix for each platform',
+      },
+      {
+        label: 'For project managers and clients',
+        heading: 'One report everyone understands.',
+        body: 'The sample report leads with a single grade and a short to-do list in everyday Dutch, including roughly how long each fix takes. Further down, a three-column strip shows what the developer, the project manager and the client each get from the same scan.',
+        quote: { text: 'Een rapport dat iedereen begrijpt.', translation: 'A report everyone understands.' },
+        image: 'assets/img/projects/day-to-day-secure/report.webp',
+        alt: 'The sample client report with grade B and two to-dos',
+      },
+      {
+        label: 'For the careful buyer',
+        heading: 'Make restraint visible.',
+        body: 'The deep scan is the premium feature and the riskiest one, because it actively tests a site for injection flaws. Instead of hiding that, the page shows the safeguards: the owner types the domain to confirm, tests run one class at a time, and a footer line spells out the limits.',
+        quote: { text: 'Ga verder dan wat zichtbaar is.', translation: 'Go beyond what you can see.' },
+        image: 'assets/img/projects/day-to-day-secure/deep-scan.webp',
+        alt: 'The deep scan card with the owner’s confirmation',
+      },
+      {
+        label: 'For the agency owner',
+        heading: 'Proof as a picture.',
+        body: 'Agencies buy results they can show their clients. A d3 dumbbell chart plots each client site’s score at the first scan and today, over the same grade bands the scanner uses: A from 90, B from 75, C from 60, D from 40. It is marked as demo data, and its weakest sites match the dashboard in the hero.',
+        quote: { text: 'Laat zien wat je werk oplevert.', translation: 'Show what your work delivers.' },
+        image: 'assets/img/projects/day-to-day-secure/score-chart.webp',
+        alt: 'Before-and-after chart of eight demo client sites',
+      },
+    ],
+
+    system: {
+      heading: 'Black ground, one signal blue, and a traffic light.',
+      body: 'The site is dark-only, so the dashboard previews sit on it naturally. A single saturated blue carries every action and highlight. Green, orange and red are kept for status alone, so a colour always means the same thing on the site as it does in the product.',
+      colors: [
+        { name: 'Ground', hex: '#000000' },
+        { name: 'Surface', hex: '#121216' },
+        { name: 'Signal blue', hex: '#0022FF' },
+        { name: 'Blue ink', hex: '#8090FF' },
+        { name: 'Pass', hex: '#3CCF7A' },
+        { name: 'Warning', hex: '#F0A43A' },
+        { name: 'Problem', hex: '#F06B6B' },
+      ],
+      fonts: [
+        { name: 'Inter', use: 'Headings and body text' },
+        { name: 'Geist Mono', use: 'Check IDs, code and labels' },
+      ],
+    },
+
+    structure: {
+      heading: 'Nine sections, in the order a buyer asks questions.',
+      body: 'What is it, does it work on my stack, what will my client see, and what does it cost? Each section answers the next question.',
+      steps: [
+        { title: 'Hero', text: 'The headline, then the live dashboard tilting into view.' },
+        { title: 'Platform', text: 'Three promises: passive and safe, any stack, all client sites in one view.' },
+        { title: 'Features', text: 'Fixes for developers, reports for clients, and the deep scan.' },
+        { title: 'Checks', text: 'All thirteen checks in four groups, with their real IDs.' },
+        { title: 'Stack', text: 'A logo marquee of the platforms each fix is written for.' },
+        { title: 'Reporting', text: 'One scan, three readers, and the before-and-after chart.' },
+        { title: 'In figures', text: '13 checks, 12 attack classes, 1 site free for good.' },
+        { title: 'Pricing', text: 'A slider that works out the monthly price per site, and three plans.' },
+        { title: 'Close', text: 'Add your first client site for free.' },
+      ],
+    },
+
+    build: {
+      heading: 'A security product’s site has to pass its own scan.',
+      body: 'I built the page inside the product’s Next.js app instead of on a separate site builder. That kept one address and one deploy, kept the app’s strict security headers, and let the hero reuse the real dashboard components.',
+      notes: [
+        { title: 'One address for both', text: 'Logged-out visitors get the sales page on the homepage; logged-in users get their overview at the same URL. Only the homepage is indexed.' },
+        { title: 'The real dashboard, scaled', text: 'The hero renders the app’s own components at a desktop, tablet or phone width, then scales them to fit. Phones see the real mobile layout.' },
+        { title: 'Strict content policy', text: 'A per-request nonce CSP, fonts served from the same origin, and zero requests to third parties.' },
+        { title: 'Isolated theme', text: 'The dark sales-page colours are scoped to one root element, so the app’s light and dark themes and the sales page never affect each other.' },
+        { title: 'Accessible by default', text: 'Decorative previews are inert and hidden from screen readers. Chart tooltips are built from text, never from markup.' },
+        { title: 'Motion with an off switch', text: 'Numbers count up and charts draw in once, when they scroll into view, and stay still for visitors who prefer reduced motion.' },
+      ],
+    },
+
+    figures: {
+      heading: 'From first commit to a responsive launch in two days.',
+      items: [
+        { value: '2', unit: 'days', label: 'Design and build, 11 to 12 November 2026' },
+        { value: '9', label: 'Sections, each answering one buyer question' },
+        { value: '3', label: 'Layout widths for the live dashboard preview' },
+        { value: '0', label: 'Third-party requests on page load' },
+      ],
+    },
   },
   {
     slug: 'visdeurbel',
@@ -81,37 +323,249 @@ window.CASE_STUDIES = [
     ],
   },
   {
-    // TODO: placeholder — add the live URL and the real copy.
+    // TODO: add `live:` once the site has its public address.
     slug: 'ai-academy',
     title: 'AI Academy',
-    label: 'Project',
-    intro: 'AI Academy — case study coming soon.',
-    image: 'assets/img/projects/ai-academy-salessite.jpg',
+    label: 'Sales site',
+    intro: 'The sales site for AI Academy, a learning platform that teaches design and development teams to work with AI. It gives the team lead, the manager and the privacy officer each their reason to say yes.',
+    image: 'assets/img/projects/ai-academy-salessite.webp',
+    gallery: [
+      { src: 'assets/img/projects/ai-academy/mobile-home.webp', alt: 'The homepage on a phone' },
+      { src: 'assets/img/projects/ai-academy/calculator.webp', alt: 'The seat calculator on the pricing page' },
+      { src: 'assets/img/projects/ai-academy/help.webp', alt: 'The help centre with search and topics' },
+      { src: 'assets/img/projects/ai-academy/mobile-demo.webp', alt: 'The demo request form on a phone' },
+    ],
     facts: [
-      { label: 'Role', value: 'Design & development' },
+      { label: 'Year', value: '2026' },
+      { label: 'Role', value: 'Design, copy & development' },
+      { label: 'Audience', value: 'Dutch design and development teams' },
+      { label: 'Built with', value: 'Next.js, SCSS, MongoDB' },
     ],
     story: [
-      { heading: 'The brief', body: 'Coming soon.' },
-      { heading: 'The approach', body: 'Coming soon.' },
-      { heading: 'The result', body: 'Coming soon.' },
+      { heading: 'The brief', body: 'AI Academy teaches whole teams to work with AI. Everyone starts with the shared course AI 101, then designers move on to UI/UX Design and developers to Software Development. Chapters take 20 to 30 minutes and end in an exam and a certificate anyone can verify. The site had to sell that to teams, not to individuals.' },
+      { heading: 'The constraints', body: 'The person who finds the site is rarely the one who signs. A team lead gets interested, L&D wants to know what they will be able to see, and in a Dutch organisation the privacy officer has a say before anything with “AI” in its name goes live. All three had to find their answer without being pushed into a sales call first.' },
+      { heading: 'The approach', body: 'I built the site around three things: show the real product, put the price where anyone can work it out, and keep every promise small and specific. The copy is plain Dutch throughout, including the legal pages. The decisions below show how that played out.' },
     ],
+
+    decisions: [
+      {
+        label: 'The hero',
+        heading: 'The product is the picture.',
+        body: 'There are no stock photos or blurred mock-ups. Next to the headline sits a small version of the learner’s dashboard, built in HTML and CSS from the app’s own design tokens, with a streak, points, the next chapter and an earned certificate. The example figures are fixed in code, so the marketing site can never show real user data.',
+        quote: { text: 'Leer je team effectief en verantwoord werken met AI.', translation: 'Teach your team to work with AI effectively and responsibly.' },
+        image: 'assets/img/projects/ai-academy/hero.webp',
+        alt: 'The homepage hero with the dashboard preview',
+      },
+      {
+        label: 'For the team lead',
+        heading: 'Every feature shows itself.',
+        body: 'The feature grid gives each card its own small piece of interface: a prompt with feedback, a question to the AI tutor, team progress bars, a certificate check and the two single sign-on options. The practice environment gets the wide card, because practising with real AI is what sets the product apart from a video course.',
+        quote: { text: 'Geen losse video’s, maar een platform waarin je leest, oefent en laat zien wat je kunt.', translation: 'Not loose videos, but a platform where you read, practise and show what you can do.' },
+        image: 'assets/img/projects/ai-academy/features.webp',
+        alt: 'The feature grid with small product previews',
+      },
+      {
+        label: 'For managers and L&D',
+        heading: 'The buyer gets a section of their own.',
+        body: 'Managers usually hold the budget, so the homepage shows them the team view: who is done, who is on track and who is behind, a deadline, and a toast confirming that a reminder went out in Slack. Status is shown as a coloured label, so the table reads at a glance.',
+        quote: { text: 'Zie hoe je team groeit, zonder spreadsheets.', translation: 'See your team grow, without spreadsheets.' },
+        image: 'assets/img/projects/ai-academy/managers.webp',
+        alt: 'The manager section with a team progress table',
+      },
+      {
+        label: 'Pricing',
+        heading: 'A price anyone can work out alone.',
+        body: 'There are three plans and one price per user per month, with every learning path included. A toggle switches to yearly billing at 20% off, and prices are shown without VAT, the way Dutch businesses compare them. Below the plans, a seat calculator answers the question a team lead will be asked first: what will it cost for our team? It also warns when a team is too big for the chosen plan.',
+        quote: { text: 'Eén prijs per gebruiker, alle leerpaden inbegrepen.', translation: 'One price per user, all learning paths included.' },
+        image: 'assets/img/projects/ai-academy/pricing.webp',
+        alt: 'The pricing page with Starter, Team and Enterprise',
+      },
+      {
+        label: 'The demo request',
+        heading: 'Say exactly what happens next.',
+        body: 'The form asks for a work address, team size and role, and politely turns away Gmail and other free addresses so the team knows which organisation is asking. A plan picked on the pricing page is filled in already. Beside the form, three numbered steps spell out what follows: a reply within one working day, a 30-minute demo, and 14 days free without a credit card.',
+        quote: { text: 'Geen verkooppraatje aan de telefoon.', translation: 'No sales pitch over the phone.' },
+        image: 'assets/img/projects/ai-academy/demo.webp',
+        alt: 'The demo request form with the three next steps',
+      },
+    ],
+
+    system: {
+      heading: 'A calm, light interface with one blue for action.',
+      body: 'The sales site and the learning app share one set of tokens and one component kit, so someone who books a demo sees the same interface on the other side. One deep blue carries every action. Status colours come from the same muted range, so nothing shouts.',
+      colors: [
+        { name: 'Ink', hex: '#0F172A' },
+        { name: 'Body', hex: '#334155' },
+        { name: 'Canvas', hex: '#F3F6FB' },
+        { name: 'Brand blue', hex: '#1D4ED8' },
+        { name: 'Blue soft', hex: '#E8EEFC' },
+        { name: 'Success', hex: '#15803D' },
+        { name: 'Warning', hex: '#B45309' },
+      ],
+      fonts: [
+        { name: 'Instrument Sans', use: 'Headings, body text and the interface' },
+        { name: 'JetBrains Mono', use: 'Prompts and certificate numbers' },
+      ],
+    },
+
+    structure: {
+      heading: 'Eight pages, each with one job.',
+      body: 'The homepage makes the case, and the other pages answer the questions that come after it: what does it cost, how do we start, and what happens to our data?',
+      steps: [
+        { title: 'Home', text: 'The learning paths, the product, the manager view and the questions people ask most.' },
+        { title: 'Pricing', text: 'Three plans, the seat calculator, a full comparison and billing questions.' },
+        { title: 'Demo', text: 'A short form and the three steps that follow.' },
+        { title: 'Help centre', text: '11 articles in 5 topics, with search that ignores accents. Press “/” to jump to it.' },
+        { title: 'Privacy', text: 'What is stored, where, and for how long.' },
+        { title: 'Terms', text: 'The terms and conditions, in the same plain Dutch.' },
+        { title: 'Cookies', text: 'Only necessary cookies until the visitor chooses. The site asks again after a year.' },
+        { title: 'Accessibility', text: 'The WCAG 2.1 AA status, including the parts that do not meet it yet.' },
+      ],
+    },
+
+    build: {
+      heading: 'Part of the product, not a separate site.',
+      body: 'The sales site lives in the same Next.js app as the learning platform. That keeps one design system and one deploy, and lets the product previews reuse the app’s real tokens.',
+      notes: [
+        { title: 'Previews in HTML and CSS', text: 'Every product image is markup, so it stays sharp at any size and has one clear description for screen readers.' },
+        { title: 'Pricing from one source', text: 'The plan cards, the comparison table and the calculator all read the same plan data, so a price changes in one place.' },
+        { title: 'Protected forms', text: 'The demo form, help feedback and cookie log are rate limited per IP address, with five demo requests an hour.' },
+        { title: 'Security headers', text: 'A content security policy, HSTS and frame blocking cover the whole domain, sales pages included.' },
+        { title: 'Consent on record', text: 'Each cookie choice is logged on the server and stays valid for twelve months.' },
+        { title: 'No borrowed proof', text: 'The logo wall and testimonials are built but switched off. They go live when there are real customers to name.' },
+      ],
+    },
+
+    figures: {
+      heading: 'A complete sales site, not just a homepage.',
+      items: [
+        { value: '8', label: 'Pages, from homepage to accessibility statement' },
+        { value: '11', label: 'Help articles, in 5 topics' },
+        { value: '3', label: 'Plans, one price per user' },
+        { value: '0', label: 'Real user data in the product previews' },
+      ],
+    },
   },
   {
     slug: 'sron',
     title: 'SRON',
     label: 'Hackathon',
-    intro: 'A space-themed site designed and built in the few days of a hackathon.',
-    image: 'assets/img/projects/hackathon.webp',
-    live: 'https://mitchellkevin.github.io/Space/',
+    intro: 'A one-page site for NEBULA-Xplorer, an X-ray space telescope from SRON, the Netherlands Institute for Space Research. Made in a hackathon week, it turns a spacecraft spec sheet into a live Earth, a 3D satellite you can take apart, and data anyone can read.',
+    image: 'assets/img/projects/sron.webp',
+    // live: 'https://mitchellkevin.github.io/Space/',
+    gallery: [
+      { src: 'assets/img/projects/sron/mobile.webp', alt: 'The hero on a phone, with the Earth rising from the bottom' },
+      { src: 'assets/img/projects/sron/stats.webp', alt: 'The key figures: 5 years, 161 kg, 10 concentrators, 89 W' },
+      { src: 'assets/img/projects/sron/mobile-satellite.webp', alt: 'The satellite viewer on a phone, with the solar arrays opened' },
+      { src: 'assets/img/projects/sron/experts.webp', alt: 'The team section with the SRON experts' },
+    ],
     facts: [
-      { label: 'Theme', value: 'Space' },
-      { label: 'Role', value: 'Design & development' },
-      { label: 'Timeframe', value: 'Hackathon' },
+      { label: 'Year', value: '2026' },
+      { label: 'Role', value: 'Design, 3D & development' },
+      { label: 'Client', value: 'SRON, during a hackathon' },
+      { label: 'Built with', value: 'HTML, CSS, JavaScript, three.js, Blender' },
     ],
     story: [
-      { heading: 'The brief', body: 'A theme, a deadline, and a working result at the end of it.' },
-      { heading: 'The approach', body: 'Pick one idea early, cut everything that does not serve it, and get it running before making it pretty.' },
-      { heading: 'The result', body: 'A finished, live site, built under time pressure.' },
+      { heading: 'The brief', body: 'NEBULA-Xplorer is a compact X-ray telescope built under SRON’s NEBULA program by students from fourteen Dutch institutions. It will study binary star systems from low-Earth orbit. The hackathon asked for a website that presents the mission, built in one week from 23 to 29 March 2026.' },
+      { heading: 'The constraints', body: 'The source material is an engineering document: ΔV budgets, arcseconds of pointing accuracy, Wolter-type concentrators and an 89 W power draw. The site had to stay true to those numbers and still make sense to someone who has never heard of an X-ray telescope, and it had to feel like space without turning into a screensaver.' },
+      { heading: 'The approach', body: 'I led with things you can see before numbers you have to read: first the Earth the telescope will orbit, then the satellite itself, then the spec sheet. The look is dark and technical: one clean sans for reading, mono only for data, and one orange for everything that matters. The decisions below show how that played out.' },
     ],
+
+    decisions: [
+      {
+        label: 'The hero',
+        heading: 'A live Earth instead of a stock photo.',
+        body: 'The hero is a three.js Earth, turned so Europe and the Netherlands, home of SRON, face the viewer. On load the camera flies in from deep space, the globe turns slowly and can be dragged around, and the strip along the bottom ticks the UTC time, sidereal time and Earth’s axial tilt every second.',
+        quote: { text: 'A compact X-ray space telescope studying binary star systems from low-Earth orbit.' },
+        image: 'assets/img/projects/sron/earth.webp',
+        alt: 'The three.js Earth in the hero, with Europe facing the viewer',
+      },
+      {
+        label: 'The spacecraft',
+        heading: 'Let people take the satellite apart.',
+        body: 'I modelled the satellite in Blender and load it into the page, where you can drag it around. Five hotspots are pinned to its parts: the X-ray instrument, solar arrays, propulsion, communications and attitude control. Each one opens a short plain-language note, and hotspots on the far side of the model dim so you only reach for what you can see.',
+        quote: { text: 'Rotate the model and select a hotspot to see what each part does.' },
+        image: 'assets/img/projects/sron/satellite.webp',
+        alt: 'The 3D satellite with the X-ray instrument note opened',
+      },
+      {
+        label: 'The engineering',
+        heading: 'Hard numbers, laid out like a spec sheet.',
+        body: 'Six subsystem cards each carry a code (AOCS, PROP, PWR, COMM, THM, C&DH), one paragraph and two key specs. The figures stay exact, down to 26.97 m/s of ΔV, because this audience notices when numbers are rounded off. Mono figures and thin rules make it read like a data sheet, not a brochure.',
+        quote: { text: 'Spacecraft subsystems.' },
+        image: 'assets/img/projects/sron/subsystems.webp',
+        alt: 'The grid of six spacecraft subsystem cards',
+      },
+      {
+        label: 'The mission',
+        heading: 'Explain the telescope before the specs.',
+        body: 'Before any numbers, two short paragraphs say what the telescope is for and why it is small: a 0.8 m focal length, short enough to ride a Falcon 9 rideshare. Next to them, four numbered features name the parts that make that possible.',
+        quote: { text: 'Compact X-ray space telescope.' },
+        image: 'assets/img/projects/sron/about.webp',
+        alt: 'The mission section with the introduction and four numbered features',
+      },
+      {
+        label: 'The layout',
+        heading: 'The Earth as a horizon, below the text.',
+        body: 'With the globe behind the headline, the two fought for attention. Now the Earth rises from the bottom of the screen like a horizon seen from orbit, and the script measures where the text ends so the globe always starts just below it, on any screen. On touch screens the 3D scenes are display-only, so they never trap the page’s scrolling, and the satellite turns slowly by itself while you tap its hotspots.',
+        quote: { text: 'Explore the mission.' },
+        image: 'assets/img/projects/sron/mobile.webp',
+        alt: 'The hero on a phone, with the Earth as a horizon below the text',
+      },
+    ],
+
+    system: {
+      heading: 'Deep space, ice white and one SRON orange.',
+      body: 'Black is the sky and a deep navy marks the raised sections. Text is a cool ice white. SRON’s orange carries every action and highlight, and a single green is kept for the live dot in the data strip.',
+      colors: [
+        { name: 'Space', hex: '#000000' },
+        { name: 'Deep', hex: '#030915' },
+        { name: 'Ice', hex: '#E8F4FF' },
+        { name: 'SRON orange', hex: '#EB5D34' },
+        { name: 'Live', hex: '#64FEAD' },
+      ],
+      fonts: [
+        { name: 'Space Grotesk', use: 'Headings, body text and big numbers' },
+        { name: 'DM Mono', use: 'Small labels, spec values and live data' },
+      ],
+    },
+
+    structure: {
+      heading: 'Eight sections, from orbit down to the people.',
+      body: 'The page starts with the planet and zooms in: the mission, the spacecraft, its parts, then the people and partners behind it.',
+      steps: [
+        { title: 'Hero', text: 'The live Earth, the mission in one line and a strip of real-time data.' },
+        { title: 'Key figures', text: 'Lifetime, mass, concentrators and power, in four big numbers.' },
+        { title: 'Mission', text: 'What the telescope is for and the four parts that make it work.' },
+        { title: 'Spacecraft', text: 'The 3D satellite with five hotspots.' },
+        { title: 'Subsystems', text: 'Six cards that read like a spec sheet.' },
+        { title: 'Team', text: 'The SRON experts and the student team behind the mission.' },
+        { title: 'Partners', text: 'The institutions involved, in a slow scrolling strip.' },
+        { title: 'Footer', text: 'Links to SRON, its missions and internships, and both locations.' },
+      ],
+    },
+
+    build: {
+      heading: 'Plain HTML, CSS and JavaScript, one file per feature.',
+      body: 'No framework and no build step. Each feature has its own stylesheet and script, all colours, fonts and spacing come from one token file, and three.js loads from a CDN.',
+      notes: [
+        { title: 'Real astronomy', text: 'Sidereal time and Earth’s axial tilt are calculated from the current date. They fill the live data strip, and the tilt also angles the globe.' },
+        { title: 'Render only when needed', text: 'The satellite only redraws while it moves, and neither 3D scene renders while it is off screen.' },
+        { title: 'Load the model late', text: 'The satellite model and its 3D scene are only set up once the viewer is about to scroll into view.' },
+        { title: 'Stars drawn once', text: 'The star field is painted once onto a single canvas and only redrawn when the window changes size.' },
+        { title: 'Made for touch', text: 'On phones the 3D scenes are display-only, so they never block scrolling, and the hotspots are large enough to tap.' },
+        { title: 'Motion with an off switch', text: 'Visitors who prefer reduced motion get the content without scroll reveals, scrolling strips or the spinning globe.' },
+      ],
+    },
+
+    figures: {
+      heading: 'One week, from blank page to a live mission site.',
+      items: [
+        { value: '7', unit: 'days', label: 'The hackathon, 23 to 29 March 2026' },
+        { value: '5', label: 'Hotspots on the 3D satellite' },
+        { value: '6', label: 'Subsystems, each with two key specs' },
+        { value: '0', label: 'Frames rendered while a 3D scene is off screen' },
+      ],
+    },
   },
 ];

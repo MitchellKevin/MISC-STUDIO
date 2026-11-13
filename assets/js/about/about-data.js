@@ -46,8 +46,8 @@ window.ABOUT = {
     // { name: 'Scholtes Klusbedrijf', img: 'assets/img/projects/scholtes-klusbedrijf.webp', link: 'detail-pages/work/case-study.html?project=scholtes-klusbedrijf' },
     // { name: 'Day-to-Day',           img: 'assets/img/projects/d2d.webp',                  link: 'detail-pages/work/case-study.html?project=day-to-day' },
     { name: 'Visdeurbel Datavis.',  img: 'assets/img/projects/visdeurbel.webp',           link: 'detail-pages/work/case-study.html?project=visdeurbel' },
-    { name: 'AI Academy',           img: 'assets/img/projects/ai-academy-salessite.jpg', link: 'detail-pages/work/case-study.html?project=ai-academy' },
-    { name: 'SRON',                 img: 'assets/img/projects/hackathon.webp',            link: 'detail-pages/work/case-study.html?project=sron' }
+    { name: 'AI Academy',           img: 'assets/img/projects/ai-academy-salessite.webp', link: 'detail-pages/work/case-study.html?project=ai-academy' },
+    { name: 'SRON',                 img: 'assets/img/projects/sron.webp',            link: 'detail-pages/work/case-study.html?project=sron' }
   ],
 
   // ---- The switch — IT on the left, CMD on the right -----------------

@@ -79,6 +79,8 @@ function render(project, next) {
     story.appendChild(item);
   });
 
+  renderExtras(project, document.querySelector('[data-cs-extra]'));
+
   slot('next').href = `case-study.html?project=${next.slug}`;
   slot('next').setAttribute('aria-label', `Next project: ${next.title}`);
   slot('next-title').textContent = next.title;
@@ -96,6 +98,126 @@ function render(project, next) {
     gallery.appendChild(figure);
   });
   gallery.hidden = !gallery.children.length;
+}
+
+// MARK: Extra sections
+// Optional, per project (see case-studies.js): decisions, system, structure,
+// build, figures. Each one is skipped when the project doesn't have it.
+// Everything is built with textContent, so the copy is never parsed as HTML.
+function renderExtras(project, root) {
+  if (!root) return;
+
+  // a section with the usual label, plus an optional heading and lead
+  const section = (name, label, head = {}) => {
+    const wrap = el('section', `cs-${name}`);
+    const inner = el('div', 'container');
+    const top = el('div', 'cs-head cs-reveal');
+    top.appendChild(el('span', 'section-label', label));
+    if (head.heading) top.appendChild(el('h2', 'cs-head__title', head.heading));
+    if (head.body) top.appendChild(el('p', 'cs-head__body', head.body));
+    inner.appendChild(top);
+    wrap.appendChild(inner);
+    root.appendChild(wrap);
+    return inner;
+  };
+
+  // Design decisions: text beside a screenshot, alternating sides
+  if (project.decisions && project.decisions.length) {
+    const inner = section('decisions', 'Design decisions');
+    project.decisions.forEach((d, i) => {
+      const row = el('article', `cs-decision cs-reveal${i % 2 ? ' cs-decision--flip' : ''}`);
+      const text = el('div', 'cs-decision__text');
+      if (d.label) text.appendChild(el('span', 'cs-decision__label', d.label));
+      text.appendChild(el('h3', 'cs-decision__heading', d.heading));
+      text.appendChild(el('p', 'cs-decision__body', d.body));
+      if (d.quote) {
+        const q = el('blockquote', 'cs-decision__quote');
+        q.appendChild(el('p', null, `“${d.quote.text}”`));
+        if (d.quote.translation) q.appendChild(el('span', null, d.quote.translation));
+        text.appendChild(q);
+      }
+      row.appendChild(text);
+      if (d.image) {
+        const fig = el('figure', 'cs-decision__shot');
+        const img = el('img');
+        img.src = asset(d.image);
+        img.alt = d.alt || '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        fig.appendChild(img);
+        row.appendChild(fig);
+      }
+      inner.appendChild(row);
+    });
+  }
+
+  // Visual system: colour swatches and typefaces
+  if (project.system) {
+    const s = project.system;
+    const inner = section('system', 'Visual system', s);
+    if (s.colors && s.colors.length) {
+      const grid = el('div', 'cs-swatches cs-reveal');
+      s.colors.forEach((c) => {
+        const sw = el('div', 'cs-swatch');
+        const chip = el('span', 'cs-swatch__chip');
+        chip.style.background = c.hex;
+        sw.append(chip, el('strong', null, c.name), el('span', null, c.hex));
+        grid.appendChild(sw);
+      });
+      inner.appendChild(grid);
+    }
+    if (s.fonts && s.fonts.length) {
+      const list = el('dl', 'cs-fonts cs-reveal');
+      s.fonts.forEach((f) => {
+        const row = el('div');
+        row.append(el('dt', null, f.name), el('dd', null, f.use));
+        list.appendChild(row);
+      });
+      inner.appendChild(list);
+    }
+  }
+
+  // Page structure: the sections of the site, in order
+  if (project.structure && project.structure.steps) {
+    const inner = section('structure', 'Page structure', project.structure);
+    const list = el('ol', 'cs-steps');
+    project.structure.steps.forEach((step, i) => {
+      const li = el('li', 'cs-reveal');
+      li.append(
+        el('span', 'cs-steps__num', String(i + 1).padStart(2, '0')),
+        el('strong', null, step.title),
+        el('span', 'cs-steps__text', step.text)
+      );
+      list.appendChild(li);
+    });
+    inner.appendChild(list);
+  }
+
+  // Build notes: the technical choices, two columns
+  if (project.build && project.build.notes) {
+    const inner = section('build', 'Build', project.build);
+    const list = el('ul', 'cs-notes');
+    project.build.notes.forEach((n) => {
+      const li = el('li', 'cs-reveal');
+      li.append(el('strong', null, n.title), el('span', null, n.text));
+      list.appendChild(li);
+    });
+    inner.appendChild(list);
+  }
+
+  // Figures: a row of big numbers
+  if (project.figures && project.figures.items) {
+    const inner = section('figures', 'In numbers', project.figures);
+    const row = el('div', 'cs-figures__row cs-reveal');
+    project.figures.items.forEach((f) => {
+      const cell = el('div');
+      const value = el('strong', null, f.value);
+      if (f.unit) value.appendChild(el('small', null, f.unit));
+      cell.append(value, el('span', null, f.label));
+      row.appendChild(cell);
+    });
+    inner.appendChild(row);
+  }
 }
 
 // MARK: Animate
@@ -166,6 +288,7 @@ function animate(hasGallery) {
     '.cs-overview .btn',
     '.cs-story .section-label',
     ...document.querySelectorAll('.cs-chapter'),
+    ...document.querySelectorAll('.cs-reveal'),
     '.detail-cta__inner',
     '.cs-next__card',
   ].forEach((target) => {
