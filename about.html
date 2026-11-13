@@ -204,22 +204,6 @@
       </div>
     </section>
 
-    <!-- Projects. Same component as the homepage: cards built by about.js,
-         then handed to initShowcase() in showcase.js. -->
-    <section class="showcase" id="showcase" data-chapter data-label="Work">
-      <div class="showcase__bg" aria-hidden="true">
-        <span class="showcase__bgtext">Recent work</span>
-      </div>
-      <div class="container showcase__container">
-        <div class="showcase__head">
-          <span class="showcase__label">Projects</span>
-          <h2 class="showcase__title">Recent work</h2>
-        </div>
-        <div class="showcase__deck" data-work></div>
-        <div class="showcase__counter"><b id="work-index">01</b> / <span id="work-total">01</span></div>
-      </div>
-    </section>
-
     <!-- Internship goals. Removed entirely unless the URL carries ?intro —
          see about.js. The chapter numbers renumber around it either way. -->
     <section class="ab ab--goals" id="ab-goals" data-chapter data-label="Internship" data-intro-only hidden>
@@ -264,8 +248,8 @@
          the model loads async, so its ScrollTrigger is created late — which
          is only safe when nothing is pinned below it. -->
     <section class="apods" id="ab-airpods" data-airpods data-chapter data-label="One more thing">
-      <!-- The heading sits behind the model, the way the giant word sits
-           behind the card in the showcase. The renderer is alpha:true and
+      <!-- The heading sits behind the model, the way a giant word sits
+           behind a card. The renderer is alpha:true and
            never clears to a colour, so the type reads straight through the
            canvas and the AirPods pass in front of it. -->
       <div class="apods__bg">
@@ -275,7 +259,7 @@
              just goes transparent while the canvas is doing the drawing,
              so edit the word here and both follow. -->
         <div class="apods__word">
-          <h2 class="ab__heading apods__bgtext" data-eq>Music</h2>
+          <h2 class="ab__heading apods__bgtext" data-eq>Love</h2>
           <canvas class="apods__eq" data-eq-canvas aria-hidden="true" hidden></canvas>
         </div>
       </div>
@@ -342,7 +326,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
   <script src="assets/js/shared/page-transition.js"></script>
-  <script src="assets/js/shared/showcase.js"></script>
   <script src="assets/js/shared/timeline.js"></script>
   <script type="importmap">
   { "imports": {

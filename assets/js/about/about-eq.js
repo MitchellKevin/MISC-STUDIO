@@ -45,7 +45,6 @@
   // The single segment riding the top of each bar — one row, never a
   // block. A band of colour several rows deep reads as a coloured chunk
   // of the letter; one row reads as the level it actually is.
-  const PEAK = '#1ED760';   // Spotify green
   // Fine enough that a letter is built from ~9 bars rather than ~5: any
   // coarser and the glyphs stop being letters and turn into blocks.
   // All four are shares of the TEXT height, not the canvas height — see
@@ -110,10 +109,15 @@
   // on the black page and black on the white one, so the meter inverts
   // with the rest of the site instead of disappearing into it.
   let ink = '#ffffff';
+  // the peak caps take the site's blue accent, from its token for the same
+  // reason (the accent shifts a little between the themes)
+  let peak = '#0022ff';
   function readInk() {
-    const v = getComputedStyle(document.documentElement)
-      .getPropertyValue('--color-heading').trim();
+    const root = getComputedStyle(document.documentElement);
+    const v = root.getPropertyValue('--color-heading').trim();
     if (v) ink = v;
+    const a = root.getPropertyValue('--color-accent').trim();
+    if (a) peak = a;
   }
 
   // ---- paint -------------------------------------------------------
@@ -170,7 +174,7 @@
       for (let i = 0; i < n; i++) {
         if (r < lit[i] - 1) ctx.fillRect(x0 + i * pitch, y, barW, segH);
       }
-      ctx.fillStyle = PEAK;
+      ctx.fillStyle = peak;
       ctx.globalAlpha = 1;
       for (let i = 0; i < n; i++) {
         if (r === lit[i] - 1) ctx.fillRect(x0 + i * pitch, y, barW, segH);
