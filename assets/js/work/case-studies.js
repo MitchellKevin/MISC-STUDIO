@@ -302,25 +302,123 @@ window.CASE_STUDIES = [
     slug: 'visdeurbel',
     title: 'Visdeurbel Datavis.',
     label: 'Data visualisation',
-    intro: 'A data visualisation of the fish that ring the Utrecht fish doorbell: which species pass the lock, and when.',
+    intro: 'A scrolling data story for the Visdeurbel, Utrecht’s fish doorbell. It turns one month of rings, visitors and fish into an aquarium, a sonar, a cloud of languages and a set of bubbles. The page was built by a team of four; these are my chapters.',
     image: 'assets/img/projects/visdeurbel.webp',
     live: 'https://vis-b05f.onrender.com/',
     gallery: [
-      { src: 'assets/img/projects/visdeurbel/schetsen-1.jpeg', alt: 'Early sketches for the visualisation' },
-      { src: 'assets/img/projects/visdeurbel/canal-wall.jpg', alt: 'The canal wall at the lock' },
-      { src: 'assets/img/projects/visdeurbel/schetsen-2.jpeg', alt: 'Sketches of the layout' },
-      { src: 'assets/img/projects/visdeurbel/schetsen-3.jpeg', alt: 'Sketches of the fish species' },
+      { src: 'assets/img/projects/visdeurbel/mobile.webp', alt: 'The aquarium chapter on a phone, with the species filters above the tank' },
+      { src: 'assets/img/projects/visdeurbel/schetsen-1.jpeg', alt: 'First sketches: swimming fish, bubbles per species and a rotating sonar' },
+      { src: 'assets/img/projects/visdeurbel/mobile-radar.webp', alt: 'The sonar chapter on a phone, with the time slider below it' },
+      { src: 'assets/img/projects/visdeurbel/languages.webp', alt: 'The word for fish in every visitor language, sized by visitors' },
     ],
     facts: [
       { label: 'Year', value: '2026' },
-      { label: 'Role', value: 'Concept, design & development' },
-      { label: 'Type', value: 'Data visualisation' },
+      { label: 'Role', value: 'Concept, design & development of five chapters' },
+      { label: 'Client', value: 'Studio MOAN, for the CMD final project' },
+      { label: 'Built with', value: 'React, D3, GSAP, Python' },
     ],
     story: [
-      { heading: 'The brief', body: 'Thousands of people watch the fish doorbell camera and press the button for the lock keeper. The question was what all those sightings say once you put them together.' },
-      { heading: 'The approach', body: 'I started on paper, sketching how species and seasons could share one view, then built it in the browser with the real data.' },
-      { heading: 'The result', body: 'An interactive piece that lets you browse the species and see the pattern behind the sightings.' },
+      { heading: 'The brief', body: 'The Visdeurbel is a live underwater camera at a lock in Utrecht. When viewers see a fish waiting, they ring the bell and the lock keeper lets it through. For our final project at CMD Amsterdam, Studio MOAN asked a team of four students to show what all those rings say once you put them together, on one scrolling page.' },
+      { heading: 'The constraints', body: 'One month of the doorbell is a 288 MB event log, far too big for a browser. The audience is the same people who watch the camera for fun, so the page had to feel playful, not like a dashboard. And the log records that a fish was reported, not which fish. The rings, countries, languages and hours are real; the split per species is an illustrative estimate scaled to the real number of reports.' },
+      { heading: 'The approach', body: 'I started on paper with swimming fish, bubbles per species and a rotating sonar, then built each idea as a chapter that draws itself as you scroll into it. I prototyped more than ten chapters, from a ring calendar to a tide wave and a pond that replays a week, and cut them back to five that each answer one question. The decisions below show how that played out.' },
     ],
+
+    decisions: [
+      {
+        label: 'The opener',
+        heading: 'Start with numbers anyone can repeat.',
+        body: 'Before any chart, a carousel of eight facts reads the dataset and turns it into sentences with the key number in purple: how often the bell rang, how many people rang it, the most fanatic ringer, the busiest hour. A question-mark button opens a one-line note on where each number comes from, so the claims stay checkable without cluttering the slide.',
+        quote: { text: 'De Visdeurbel in cijfers.', translation: 'The fish doorbell in numbers.' },
+        image: 'assets/img/projects/visdeurbel/facts.webp',
+        alt: 'The facts carousel: 33,748 people pressed the button 49,736 times, with its source note open',
+      },
+      {
+        label: 'The aquarium',
+        heading: 'Make the total feel alive.',
+        body: 'Nobody can picture 49,736 reports, so the aquarium shows a sample of 80 fish, with each species getting its share of the real total. Size follows the cube root of weight, so a catfish is big without filling the tank. Chips switch species on and off, hovering names a fish and its length, and a click sends a ripple through the water that scares nearby fish away.',
+        quote: { text: 'Dit is hoe 49.736 waarnemingen er ongeveer uitzien.', translation: 'This is roughly what 49,736 sightings look like.' },
+        image: 'assets/img/projects/visdeurbel/aquarium.webp',
+        alt: 'The aquarium with twelve species swimming and the filter chips beside it',
+      },
+      {
+        label: 'The sonar',
+        heading: 'A radar for what is under the lock.',
+        body: 'Each species is a ping on a sonar, and the more often it was seen, the closer it sits to the centre. A sweep line lights the pings as it passes. A slider steps through the month week by week, and the pings glide in and out as their counts change. The layout is seeded, so the same species is always in the same direction and you can follow it through time.',
+        quote: { text: 'Wat zwemt er onder de sluis?', translation: 'What is swimming under the lock?' },
+        image: 'assets/img/projects/visdeurbel/radar.webp',
+        alt: 'The sonar in week 2, with the bleak highlighted at 723 sightings',
+      },
+      {
+        label: 'The languages',
+        heading: 'Every visitor’s language, as its word for fish.',
+        body: 'The doorbell has a worldwide audience, and the browser language shows it. Each language appears as its own word for fish, sized by the number of visitors, from Fish, Ryba and Fisch down to 魚 and Kala. A force simulation lets the words drift together without overlapping, and hovering one shows its exact count and share.',
+        quote: { text: 'De sluis spreekt vele talen tegelijk.', translation: 'The lock speaks many languages at once.' },
+        image: 'assets/img/projects/visdeurbel/languages.webp',
+        alt: 'A cloud of the word for fish in 26 languages, with English, Polish and German largest',
+      },
+      {
+        label: 'The bubbles',
+        heading: 'Count, weight, or both.',
+        body: 'The last chapter packs every species into a bubble and asks a better question than “which fish is most common?”. Switch between number of sightings, weight per fish and biomass, and the bubbles resize and slide to their new places. On biomass, a handful of catfish outweighs a whole school of roach.',
+        quote: { text: 'Elke soort, een eigen bel.', translation: 'Every species, a bubble of its own.' },
+        image: 'assets/img/projects/visdeurbel/net.webp',
+        alt: 'The bubble chart on biomass, with the catfish as the largest bubble',
+      },
+    ],
+
+    system: {
+      heading: 'The Visdeurbel’s own colours, under water.',
+      body: 'The chapters use the existing Visdeurbel identity from Studio MOAN’s design file, so the page feels like part of the doorbell site. Deep green carries the text, purple marks every key number, and each chapter gets its own background, joined by drifting waves like on visdeurbel.nl. Scrolling down feels like moving through layers of water.',
+      colors: [
+        { name: 'Dark green', hex: '#01463C' },
+        { name: 'Teal', hex: '#1EACB0' },
+        { name: 'Purple', hex: '#C0A8FF' },
+        { name: 'Bell purple', hex: '#9B74FF' },
+        { name: 'Pink', hex: '#FF80B9' },
+        { name: 'Gold', hex: '#F0AF00' },
+        { name: 'Light gold', hex: '#F8E7CD' },
+        { name: 'Off-white', hex: '#FDF7EF' },
+      ],
+      fonts: [
+        { name: 'Bricolage Grotesque', use: 'Headings, key numbers and the language cloud' },
+        { name: 'PT Sans', use: 'Body text, labels and tooltips' },
+      ],
+    },
+
+    structure: {
+      heading: 'Five chapters, from the big number to the single fish.',
+      body: 'The chapters go from the whole picture to the detail: how big is it, what does it look like, what lives there, who is watching, and what does it weigh?',
+      steps: [
+        { title: 'In numbers', text: 'Eight facts about one month of the doorbell, each with its source.' },
+        { title: 'Aquarium', text: '80 fish in proportion to the real reports, with filters and a scare effect.' },
+        { title: 'Sonar', text: 'Twelve species as pings, with a slider through the weeks.' },
+        { title: 'Languages', text: 'The word for fish in 26 languages, sized by visitors.' },
+        { title: 'Bubbles', text: 'Every species by count, weight per fish or biomass.' },
+      ],
+    },
+
+    build: {
+      heading: '288 MB of events, 40 KB in the browser.',
+      body: 'The page is a React app with Vite. The chapters are drawn with D3 on SVG and canvas, and GSAP drives the guide fish. A Python script does the heavy work before anything reaches the browser.',
+      notes: [
+        { title: 'Count before the browser', text: 'A Python script reads the raw event log line by line and counts everything the chapters need, by country, language, hour and day. Each period becomes a JSON file of about 40 KB.' },
+        { title: 'Draw on arrival', text: 'Each chapter registers a draw function under its section id. One IntersectionObserver calls it the first time the section scrolls into view, and canvas animations pause again when they leave it.' },
+        { title: 'One switch for every chapter', text: 'A Week, Month and Year switch cancels every running animation and observer, clears the chapters and loads the other dataset, after which each chapter redraws as you reach it. The full year is too big to load, so the year view is an estimate built from the month.' },
+        { title: 'A guide that swims along', text: 'A small perch follows you down the page. Every frame it finds the chart nearest the middle of the screen and circles it, with the angle tied to your scroll position. When no chart is in view, it bobs in the corner.' },
+        { title: 'One image per species', text: 'Each fish is a single greyscale photo, tinted per pixel in its species colour on an offscreen canvas and cached, so the aquarium draws 80 fish every frame without loading 80 images.' },
+        { title: 'Accessible and calm', text: 'Every ping, bubble and word can be reached with the keyboard and has a spoken label, and summaries update in live regions. With reduced motion, the guide fish stays away, the simulations settle at once and the transitions are skipped.' },
+      ],
+    },
+
+    figures: {
+      heading: 'One month of the doorbell, in five chapters.',
+      items: [
+        { value: '49.7', unit: 'K', label: 'Rings, from 18 April to 18 May 2026' },
+        { value: '159', label: 'Countries watching the camera' },
+        { value: '26', label: 'Visitor languages in the cloud' },
+        { value: '40', unit: 'KB', label: 'Of data in the browser, down from 288 MB of raw events' },
+      ],
+    },
   },
   {
     // TODO: add `live:` once the site has its public address.
