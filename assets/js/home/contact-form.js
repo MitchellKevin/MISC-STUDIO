@@ -5,7 +5,8 @@
 // The template sends the notification to me; the confirmation to the visitor
 // is its linked Auto-Reply in the EmailJS dashboard, so the code sends only
 // the one. The template receives: first_name, last_name, name, company, email,
-// message and services (e.g. "UX Design, Web Development").
+// message, services (e.g. "UX Design, Web Development") and project_size
+// (e.g. "Small project (from €1,500)").
 const EMAILJS_PUBLIC_KEY = 'f7G-WWInszKCe-eFH';
 const EMAILJS_SERVICE_ID = 'service_2pu3q87';
 const EMAILJS_TEMPLATE_ID = 'template_h2dzhbh';
@@ -91,6 +92,12 @@ const EMAILJS_TEMPLATE_ID = 'template_h2dzhbh';
     });
   });
 
+  // the pricing buttons pre-select their size in the dropdown on the way down
+  const sizeSelect = form.elements.project_size;
+  document.querySelectorAll('[data-project-size]').forEach((btn) => {
+    btn.addEventListener('click', () => { sizeSelect.value = btn.dataset.projectSize; });
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -111,6 +118,9 @@ const EMAILJS_TEMPLATE_ID = 'template_h2dzhbh';
     // send the visible card names rather than the checkbox values
     const services = Array.from(form.querySelectorAll('input[name="service"]:checked'))
       .map((cb) => cb.closest('.cservice__card').querySelector('.cservice__name').textContent.trim());
+    // send the visible option text rather than the value
+    const size = form.elements.project_size;
+    const projectSize = size.value ? size.selectedOptions[0].textContent.trim() : 'Not specified';
     const first = data.get('first_name').trim();
     const last = data.get('last_name').trim();
 
@@ -126,6 +136,7 @@ const EMAILJS_TEMPLATE_ID = 'template_h2dzhbh';
       email: data.get('email').trim(),
       message: data.get('message').trim(),
       services: services.length ? services.join(', ') : 'Not specified',
+      project_size: projectSize,
     };
 
     try {

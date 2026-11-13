@@ -2122,31 +2122,6 @@ body {
   gap: 0.08rem;
   margin-bottom: 0.26rem;
 }
-/* Normal rate struck through + portfolio-discount label, on its own row */
-.plan__deal {
-  flex-basis: 100%;
-  display: flex;
-  align-items: center;
-  gap: 0.1rem;
-  margin-bottom: 0.04rem;
-}
-.plan__was {
-  font-family: var(--sub-font);
-  font-size: 0.15rem;
-  font-weight: 500;
-  color: var(--color-dim);
-  text-decoration-thickness: 1px;
-}
-.plan__badge {
-  font-family: var(--sub-font);
-  font-size: 0.11rem;
-  font-weight: 500;
-  line-height: 1;
-  padding: 0.05rem 0.09rem;
-  border-radius: 1rem;
-  color: var(--color-accent-text);
-  border: 1px solid currentColor;
-}
 .plan__amount {
   font-family: var(--main-font);
   font-size: 0.32rem;
@@ -2233,17 +2208,6 @@ body {
   }
   .plan__period {
     font-size: 0.44rem;
-  }
-  .plan__deal {
-    gap: 0.3rem;
-    margin-bottom: 0.1rem;
-  }
-  .plan__was {
-    font-size: 0.48rem;
-  }
-  .plan__badge {
-    font-size: 0.36rem;
-    padding: 0.16rem 0.3rem;
   }
   .plan__btn {
     height: 1.6rem;
@@ -2949,6 +2913,56 @@ body {
   border-bottom-color: var(--color-white);
 }
 
+/* project-size dropdown — underline style like the inputs, with a drawn
+   chevron in place of the native arrow */
+.cfield__select {
+  position: relative;
+  display: block;
+}
+.cfield__select::after {
+  content: '';
+  position: absolute;
+  right: 0.04rem;
+  top: 50%;
+  width: 0.07rem;
+  height: 0.07rem;
+  border-right: 1.5px solid var(--color-dim);
+  border-bottom: 1.5px solid var(--color-dim);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+.cform select {
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  width: 100%;
+  height: 0.44rem;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
+  padding: 0 0.24rem 0 0;
+  font-family: var(--sub-font);
+  font-size: 0.17rem;
+  line-height: 0.44rem !important;
+  font-weight: 400;
+  color: var(--color-body);
+  cursor: pointer;
+  transition: border-color 0.25s ease;
+}
+/* empty choice reads like a placeholder */
+.cform select:has(option[value=""]:checked) {
+  color: var(--color-dim);
+}
+.cform select option {
+  color: var(--color-body);
+  background: var(--color-surface);
+}
+.cform select:focus {
+  outline: none;
+  border-bottom-color: var(--color-white);
+}
+
 /* Validation — contact-form.js sets .is-invalid and fills the message */
 .cfield.is-invalid input,
 .cfield.is-invalid textarea {
@@ -3209,6 +3223,17 @@ body {
     font-size: 0.5rem;
     line-height: 1rem !important;
     padding: 0;
+  }
+  .cform select {
+    height: 1rem;
+    font-size: 0.5rem;
+    line-height: 1rem !important;
+    padding: 0 0.6rem 0 0;
+  }
+  .cfield__select::after {
+    right: 0.1rem;
+    width: 0.2rem;
+    height: 0.2rem;
   }
   .cform textarea {
     min-height: 2.6rem;
