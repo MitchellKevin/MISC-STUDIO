@@ -170,6 +170,40 @@ html {
   box-sizing: border-box;
 }
 
+/* Keyboard focus — one ring for anything that has no focus style of its own
+   (more specific rules below still win) */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* first Tab stop: jumps past the header straight into the page */
+.skip-link {
+  position: fixed;
+  z-index: 10000;
+  left: 0.16rem;
+  top: 0.16rem;
+  padding: 0.1rem 0.18rem;
+  border-radius: 0.3rem;
+  background: var(--color-accent);
+  color: #fff;
+  font-family: var(--sub-font);
+  font-size: 0.15rem;
+  font-weight: 500;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform 0.2s ease;
+}
+/* <main> only takes focus as the skip link's target; no ring round the page */
+main:focus {
+  outline: none;
+}
+.skip-link:focus-visible {
+  transform: none;
+  outline: 2px solid var(--color-white);
+  outline-offset: 2px;
+}
+
 img,
 svg,
 video {
@@ -628,7 +662,10 @@ body {
   width: 100vw;
   height: 100vh;
   background: var(--color-black);
+  /* clip, not hidden: a hidden box can still be scrolled, and tabbing to a
+     link in an off-centre step would scroll the whole wheel out of place */
   overflow: hidden;
+  overflow: clip;
 }
 .services__container {
   position: relative;
@@ -713,6 +750,7 @@ body {
   width: 5.6rem;
   height: 100%;
   overflow: hidden;
+  overflow: clip;         /* see .services */
   z-index: 2;             /* text sits above the faded morphing icon */
 }
 .stage-track {
@@ -727,6 +765,17 @@ body {
   justify-content: center;
   gap: 0.2rem;
   will-change: transform, filter, opacity;
+}
+/* each step is a Tab stop (nomi-studio.js scrolls it to the centre); the
+   ring goes round its title, not the full-height step box */
+.service:focus-visible {
+  outline: none;
+}
+.service:focus-visible .service__title {
+  width: fit-content;
+  outline: 2px solid var(--color-accent);
+  outline-offset: 0.08rem;
+  border-radius: 0.04rem;
 }
 /* "How it works" label above each step, styled like .focus__eyebrow */
 .service__eyebrow {
@@ -2326,6 +2375,12 @@ body {
   -webkit-appearance: none;
   appearance: none;
 }
+/* the outline: none above is for mouse clicks; keyboard focus gets a ring
+   set off from the button's own border */
+.blob-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
 .blob-btn::before {
   content: "";
   z-index: 1;
@@ -3029,6 +3084,11 @@ body {
   opacity: 0;
   width: 0;
   height: 0;
+}
+/* the checkbox itself is invisible, so the card shows its keyboard focus */
+.cservice__card:has(input:focus-visible) {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 .cservice__icon {
   flex: none;
@@ -3751,6 +3811,7 @@ html.curtain-in::after {
    there, so it stays put */
 .showcase__now:hover .showcase__arrow,
 .showcase__now:focus-visible .showcase__arrow,
+.showcase__stage:has(.showcase__tab:focus-visible) .showcase__now .showcase__arrow,
 .work-card:hover .showcase__arrow:not(.showcase__arrow--out),
 .work-card:focus-visible .showcase__arrow:not(.showcase__arrow--out) {
   transform: rotate(-45deg);
@@ -3791,7 +3852,17 @@ html.curtain-in::after {
   min-height: 4.2rem;
   outline: none;
 }
-.showcase__stage:focus-visible { outline: 1px solid var(--color-accent); outline-offset: -1px; }
+/* keyboard: the project links are hidden; while one has focus the stage
+   gets the ring and the title pill lights up as if hovered */
+.showcase__tab {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.showcase__stage:has(.showcase__tab:focus-visible) { outline: 1px solid var(--color-accent); outline-offset: -1px; }
 /* the row stays hidden until its shots have loaded, then fades in whole,
    together with the title pill (.is-ready is set by showcase-carousel.js) */
 .showcase__mount {
@@ -3834,7 +3905,8 @@ html.curtain-in::after {
 .showcase__stage.is-ready .showcase__now { opacity: 1; }
 .showcase__stage.is-focused .showcase__now { transform: translate(-50%, -0.1rem); }
 .showcase__now:hover,
-.showcase__now:focus-visible {
+.showcase__now:focus-visible,
+.showcase__stage:has(.showcase__tab:focus-visible) .showcase__now {
   color: var(--color-accent-text);
   border-color: var(--color-accent);
 }
@@ -3865,9 +3937,16 @@ html.curtain-in::after {
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  /* hidden, not just transparent, so Tab skips it until a shot is focused */
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
 }
-.showcase__stage.is-focused .showcase__close { opacity: 1; pointer-events: auto; }
+.showcase__stage.is-focused .showcase__close {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0s;
+}
 .showcase__live {
   position: absolute;
   width: 1px;

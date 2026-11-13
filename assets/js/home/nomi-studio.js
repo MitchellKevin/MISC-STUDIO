@@ -278,6 +278,23 @@ if (servicesSection && SERVICE_COUNT > 1) {
       carousel.to(svcIcon, { morphSVG: iconIds[i + 1], ease: 'none', duration: SCROLL_PER }, INTRO_SCROLL + i * SCROLL_PER);
     }
   }
+
+  // Keyboard: every step is a Tab stop. The steps only move with the page
+  // scroll, so focusing one (or the link in it) scrolls the page to where
+  // that step is centred. After a frame, so it overrides the browser's own
+  // scroll-to-focus; the clipped boxes are reset too, for browsers without
+  // overflow: clip, where that scroll lands inside them instead.
+  const clipped = [servicesSection, servicesSection.querySelector('.stage')].filter(Boolean);
+  services.forEach((service, i) => {
+    service.tabIndex = 0;
+    service.addEventListener('focusin', () => {
+      requestAnimationFrame(() => {
+        clipped.forEach((el) => { el.scrollTop = 0; el.scrollLeft = 0; });
+        const st = carousel.scrollTrigger;
+        window.scrollTo({ top: st.start + (st.end - st.start) * stops[i + 1], behavior: 'instant' });
+      });
+    });
+  });
 }
 
 // MARK: Process — pinned section; the step track slides horizontally on scroll.
@@ -321,14 +338,25 @@ if (window.initTimeline) window.initTimeline();
 (() => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+  // Runs fn once, when el scrolls into view or when keyboard focus lands
+  // inside it, whichever is first. Hidden-until-revealed content uses opacity
+  // (not autoAlpha/visibility) so Tab can still reach it; focusing it plays
+  // the reveal straight away.
   const onceInView = (el, threshold, fn) => {
     if (!el) return;
-    const io = new IntersectionObserver((entries) => {
-      if (!entries.some((entry) => entry.isIntersecting)) return;
+    let done = false;
+    const run = () => {
+      if (done) return;
+      done = true;
       io.disconnect();
+      el.removeEventListener('focusin', run);
       fn();
+    };
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) run();
     }, { threshold });
     io.observe(el);
+    el.addEventListener('focusin', run);
   };
 
   // Focus points: the tiles start as one pile and the scroll deals them out.
@@ -442,10 +470,12 @@ if (window.initTimeline) window.initTimeline();
         return desc.getBoundingClientRect().bottom - plan.getBoundingClientRect().top
           + parseFloat(getComputedStyle(plan).paddingBottom);
       }));
-      gsap.set(plans, { height, overflow: 'hidden' });
+      // clip, not hidden: a hidden box can still be scrolled, and focusing a
+      // button below the cut would scroll the card's contents up
+      gsap.set(plans, { height, overflow: 'clip' });
     };
     collapse();
-    gsap.set(details, { autoAlpha: 0 });
+    gsap.set(details, { opacity: 0 });
     // text rewraps on resize and once Poppins arrives; keep the cut under the
     // description until revealed
     let revealed = false;
@@ -467,14 +497,14 @@ if (window.initTimeline) window.initTimeline();
   // Blog posts and the contact form rise in from below.
   const posts = gsap.utils.toArray('.blog__track .bpost');
   if (posts.length) {
-    gsap.set(posts, { autoAlpha: 0, y: '0.6rem' });
+    gsap.set(posts, { opacity: 0, y: '0.6rem' });
     onceInView(document.querySelector('.blog__track'), 0.2, () => {
       gsap.to(posts, { autoAlpha: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.1 });
     });
   }
   const contactWindow = document.querySelector('.contact__window');
   if (contactWindow) {
-    gsap.set(contactWindow, { autoAlpha: 0, y: '0.8rem' });
+    gsap.set(contactWindow, { opacity: 0, y: '0.8rem' });
     onceInView(contactWindow, 0.15, () => {
       gsap.to(contactWindow, { autoAlpha: 1, y: 0, duration: 1, ease: 'power3.out' });
     });

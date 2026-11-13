@@ -903,6 +903,13 @@ function createCarousel(mount, cursorElement, options) {
     if (!focusState.active) return;
     if (focusState.anim) focusState.anim.kill();
 
+    // a dropped card can drift off-stage while focused (the row snaps to
+    // centre the focused shot); it was skipped here before, stayed dropped,
+    // and later scrolled back in as an empty slot. Lift it straight back.
+    pool.forEach((_, idx) => {
+      if (lastCenterX[idx] === undefined) drop[idx] = 0;
+    });
+
     const focusX = lastCenterX[focusState.poolIdx] || 0;
     const others = pool
       .map((_, idx) => ({ idx, x: lastCenterX[idx] }))
@@ -922,6 +929,8 @@ function createCarousel(mount, cursorElement, options) {
     const scaleProxy = { v: focusScale };
     const tl = gsap.timeline({
       onComplete: () => {
+        // every card is back in the row once the focus has fully closed
+        drop.fill(0);
         focusState.active = false;
         focusState.srcIndex = -1;
         updateCursor();
@@ -1003,6 +1012,22 @@ function createCarousel(mount, cursorElement, options) {
       updateCursor();
     }, [], growEnd);
     entryAnim = tl;
+  }
+
+  // slide to a project by its index in the list, the short way round the loop
+  function goTo(srcIndex) {
+    if (inputLocked()) return;
+    const N = sources.length;
+    const base = nearestIndex(target);
+    let diff = srcIndex - (((base % N) + N) % N);
+    if (diff > N / 2) diff -= N;
+    if (diff < -N / 2) diff += N;
+    userInteracted = true;
+    velocity = 0;
+    pendingFocus = null;
+    target = centerForIndex(base + diff);
+    snapped = true;
+    lastInput = performance.now();
   }
 
   function step(direction) {
@@ -1137,6 +1162,7 @@ function createCarousel(mount, cursorElement, options) {
     isFocused: () => focusState.active,
     next: () => step(1),
     previous: () => step(-1),
+    goTo,
     setColors(background, ring) {
       renderer.setClearColor(new THREE.Color(background), 1);
       lensUniforms.uBlueColor.value.set(ring);
@@ -1173,17 +1199,26 @@ if (deck) {
   const totalEl = section.querySelector('#work-total');
   if (totalEl) totalEl.textContent = pad(items.length);
 
-  // overlay: the current title (a real link, so keyboard and screen-reader
-  // users get the project too), the trailing "View" label and a close button
+  // overlay: one hidden link per project (the Tab stops; focusing one slides
+  // the row to it), the current title pill, the trailing "View" label and a
+  // close button. The pill is for the pointer and for the zoom-then-open
+  // hand-off; keyboard and screen-reader users reach projects via the tabs.
   const stage = document.createElement('div');
   stage.className = 'showcase__stage';
-  stage.tabIndex = 0;
   stage.setAttribute('role', 'region');
   stage.setAttribute('aria-roledescription', 'carousel');
-  stage.setAttribute('aria-label', 'Recent work. Use the arrow keys to browse, Enter to open.');
+  stage.setAttribute('aria-label', 'Recent work. Use Tab or the arrow keys to browse, Enter to open.');
+  const tabLinks = items.map((item, i) => {
+    const a = document.createElement('a');
+    a.className = 'showcase__tab';
+    a.href = item.href;
+    a.textContent = `${item.title}, ${pad(i + 1)} of ${pad(items.length)}, view case study`;
+    return a;
+  });
   stage.innerHTML = `
     <div class="showcase__mount"></div>
-    <a class="showcase__now"><span></span> <span class="showcase__arrow" aria-hidden="true">→</span></a>
+    <div class="showcase__tabs"></div>
+    <a class="showcase__now" tabindex="-1" aria-hidden="true"><span></span> <span class="showcase__arrow" aria-hidden="true">→</span></a>
     <div class="showcase__cursor" aria-hidden="true">View</div>
     <button class="showcase__close" type="button" aria-label="Close focused project">Close</button>
     <p class="showcase__live" aria-live="polite"></p>`;
@@ -1192,10 +1227,13 @@ if (deck) {
   const now = stage.querySelector('.showcase__now');
   const closeBtn = stage.querySelector('.showcase__close');
   const live = stage.querySelector('.showcase__live');
+  stage.querySelector('.showcase__tabs').append(...tabLinks);
   const mobile = window.matchMedia('(max-width: 700px)');
   let engine = null;
+  let current = 0;
 
   const show = (i) => {
+    current = i;
     const item = items[i];
     now.href = item.href;
     now.firstElementChild.textContent = item.title;
@@ -1203,8 +1241,43 @@ if (deck) {
     live.textContent = `${item.title}, ${pad(i + 1)} of ${pad(items.length)}`;
   };
 
+  // Keyboard handlers live outside build(): the stage and its Tab links are in
+  // the page from the start, so tabbing can reach the projects before the
+  // engine exists (focusing one builds it).
+  tabLinks.forEach((a, i) => {
+    a.addEventListener('focus', () => {
+      if (!engine) build();
+      if (engine) engine.goTo(i);
+    });
+  });
+  stage.addEventListener('keydown', (e) => {
+    const i = tabLinks.indexOf(e.target);
+    if (i === -1) return;
+    const n = tabLinks.length;
+    // arrows move between the projects too, round the loop
+    if (e.key === 'ArrowRight') { e.preventDefault(); tabLinks[(i + 1) % n].focus(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); tabLinks[(i - 1 + n) % n].focus(); }
+    else if (e.key === 'Escape') { if (engine) { e.preventDefault(); engine.closeFocus(); } }
+    else if (e.key === 'Enter') {
+      // open with the same zoom as a click when the shot is already centred;
+      // otherwise go straight to the project
+      e.preventDefault();
+      if (!engine || engine.isFocused() || current !== i) {
+        show(i);
+        now.click();
+        return;
+      }
+      engine.openFocus();
+      if (!engine.isFocused()) now.click();
+    }
+  });
+  closeBtn.addEventListener('click', () => { if (engine) engine.closeFocus(); });
+
+  let built = false;
   const build = () => {
-    deck.after(stage);
+    if (built) return;
+    built = true;
+    io.disconnect();
     engine = createCarousel(mount, stage.querySelector('.showcase__cursor'), {
       items,
       // share of the stage height a shot may fill; leaves room for the 1.18x
@@ -1224,29 +1297,25 @@ if (deck) {
         stage.classList.toggle('is-focused', open);
         if (open) now.click();
       },
-      onEntryDone: (done) => stage.classList.toggle('is-ready', done),
+      onEntryDone: (done) => {
+        stage.classList.toggle('is-ready', done);
+        // the row ignores input during its intro; catch up with a tab
+        // focused meanwhile
+        const focused = tabLinks.indexOf(document.activeElement);
+        if (done && engine && focused !== -1) engine.goTo(focused);
+      },
       onOpen: (i) => { show(i); now.click(); },
     });
     if (!engine) {
-      // no WebGL after all: put the plain cards back
+      // no WebGL after all: put the plain cards back, and keep keyboard focus
+      // on the matching card if it was inside the stage
+      const focused = tabLinks.indexOf(document.activeElement);
       stage.remove();
       section.classList.remove('showcase--carousel');
+      if (focused !== -1) cards[focused].focus();
       return;
     }
     show(0);
-
-    closeBtn.addEventListener('click', () => engine.closeFocus());
-    stage.addEventListener('keydown', (e) => {
-      if (e.target !== stage) return;
-      if (e.key === 'ArrowRight') { e.preventDefault(); engine.next(); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); engine.previous(); }
-      else if (e.key === 'Escape') { e.preventDefault(); engine.closeFocus(); }
-      else if (e.key === 'Enter') {
-        e.preventDefault();
-        if (engine.isFocused()) now.click();
-        else engine.openFocus();
-      }
-    });
 
     // coming back with the browser's back button can restore this page as it
     // was left, mid-zoom; drop the focus so the row is browsable again
@@ -1260,12 +1329,15 @@ if (deck) {
   };
 
   section.classList.add('showcase--carousel');
-  // build on first approach so the shots are not downloaded for visitors
-  // who never scroll this far
+  // the stage goes in now, so its height is part of the layout the pinned
+  // sections below measure and its links are in the Tab order; the engine
+  // (and the shots) only load on first approach, or on keyboard focus
+  deck.after(stage);
+  // the pins below were measured before this module ran; re-measure them
+  if (window.ScrollTrigger) ScrollTrigger.refresh();
+  show(0);
   const io = new IntersectionObserver(([entry]) => {
-    if (!entry.isIntersecting) return;
-    io.disconnect();
-    build();
+    if (entry.isIntersecting) build();
   }, { rootMargin: '0px 0px -25% 0px' });
   io.observe(section);
 }
