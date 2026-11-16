@@ -394,6 +394,13 @@ hr { border: 0; border-top: 1px solid var(--rule); }
   --fill: var(--brand-accent);
   --fill-copy: var(--brand-white);
 }
+/* grey like the small plan's tile, with a black disc and white arrow */
+.btn[data-variant="grey"] {
+  --base: var(--brand-graphite);
+  --copy: var(--brand-white);
+  --fill: var(--brand-ink);
+  --fill-copy: var(--brand-white);
+}
 [data-surface="accent"] .btn[data-variant="primary"],
 .btn[data-variant="white"] {
   --base: var(--brand-white);
@@ -1485,6 +1492,9 @@ hr { border: 0; border-top: 1px solid var(--rule); }
   background: var(--brand-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6.2l2 2L9 4'/%3E%3C/svg%3E") center / .75rem no-repeat;
   margin-top: -.0625rem;
 }
+/* each plan's checks take its tile's colour */
+.plan--small .checklist li::before { background-color: var(--brand-graphite); }
+.plan--custom .checklist li::before { background-color: var(--brand-ink); }
 .plan .btn { margin-top: auto; }
 .plans__note {
   display: flex;
