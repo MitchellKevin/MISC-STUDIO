@@ -729,6 +729,9 @@ hr { border: 0; border-top: 1px solid var(--rule); }
     radial-gradient(90% 80% at 10% 100%, #4a4a4a 0%, transparent 65%),
     radial-gradient(70% 60% at 70% 85%, #767676 0%, transparent 70%),
     #545454;
+  /* the colour along the hero's bottom edge, left to right, for the dotted
+     seam that carries it into the next section (hero-particles.js) */
+  --seam-stops: #4c4c4c 0%, #4c4c4c 25%, #515151 33%, #565656 42%, #5c5c5c 50%, #636363 58%, #6a6a6a 67%, #6a6a6a 75%, #686868 83%, #646464 92%, #626262 100%;
 }
 .hero__particles {
   position: absolute;
@@ -769,16 +772,6 @@ hr { border: 0; border-top: 1px solid var(--rule); }
   display: grid;
   gap: var(--space-md);
 }
-.hero__price { display: grid; gap: .25rem; }
-.hero__price-line {
-  display: flex;
-  align-items: baseline;
-  gap: .12em;
-  font-size: var(--text-display);
-  letter-spacing: var(--tracking-heading);
-  line-height: .9;
-}
-.hero__price-unit { font-size: var(--text-title); letter-spacing: -0.03em; }
 
 .wordmark {
   position: relative;
@@ -1504,6 +1497,72 @@ hr { border: 0; border-top: 1px solid var(--rule); }
   background: var(--field);
 }
 .post__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.1s var(--ease-out); }
+
+/* A journal cover: one word or number from the post, set in the logo's
+   dots on the hero's graphite (hero-particles.js). The plain text is the
+   no-JS version and steps aside once the dots are up. */
+.dotcover {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: clip;
+  color: var(--brand-white);
+  background:
+    radial-gradient(120% 90% at 85% 10%, #828282 0%, transparent 60%),
+    radial-gradient(90% 80% at 10% 100%, #4a4a4a 0%, transparent 65%),
+    #545454;
+  --dot-color: var(--brand-accent);
+}
+.dotcover__glyph {
+  font-size: clamp(4.5rem, 3rem + 6vw, 9rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  transition: opacity .5s var(--ease-out);
+}
+.dotcover.is-dotted .dotcover__glyph { opacity: 0; }
+.dotcover__dots { position: absolute; inset: 0; width: 100%; height: 100%; }
+.dotcover__note {
+  position: absolute;
+  left: var(--space-sm);
+  bottom: var(--space-sm);
+  z-index: 1;
+  font-size: var(--text-caption);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #ffffffb8;
+}
+
+/* Seam: where one surface gives way to the next, the one above breaks up
+   into dots across the top of the one below (hero-particles.js). */
+.seam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--seam-h);
+  z-index: 1;
+  pointer-events: none;
+}
+/* the seam gets its own room: the section starts that much lower, so the
+   dots never run under its content */
+:root { --seam-h: clamp(6rem, 18vh, 10rem); }
+@media (max-width: 47.99rem) { :root { --seam-h: clamp(4rem, 10vh, 5.5rem); } }
+.section[data-seam] { padding-top: calc(var(--space-2xl) + var(--seam-h)); }
+/* the work section's pinned stage starts below the seam; the room above it
+   is the stage's own base colour and grain, so the two meet without a line */
+.work-orbit[data-seam] { padding-top: var(--seam-h); background-color: #e9e9e9; }
+.work-orbit[data-seam]::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--seam-h);
+  background-image: var(--grain);
+  background-size: 160px;
+  opacity: .22;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
 @media (hover: hover) {
   .post:hover .post__media img { transform: scale(1.05); }
 }
@@ -1982,7 +2041,7 @@ html[data-intro] .loader {
   white-space: nowrap;
   transform: translateX(-100%);
 }
-html[data-intro] .hero__particles,
+/* (the logo's dots fly in on their own, out of the loader's icon) */
 html[data-intro] .hero__grid { animation: intro-zoom 1.5s cubic-bezier(.76, 0, .24, 1) both; animation-delay: .35s; }
 @keyframes intro-zoom { from { scale: 1.35; } }
 html[data-intro] .hero [data-enter] { animation-delay: calc(var(--intro-delay) + var(--d, 0) * 90ms); }

@@ -119,6 +119,12 @@
   background: var(--panel);
 }
 @media (min-width: 48rem) { .article__cover img { aspect-ratio: 21 / 9; } }
+.article__cover .dotcover {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-card);
+}
+.article__cover .dotcover__glyph { font-size: clamp(6rem, 4rem + 10vw, 16rem); }
+@media (min-width: 48rem) { .article__cover .dotcover { aspect-ratio: 21 / 9; } }
 
 .article__end {
   max-width: 42rem;

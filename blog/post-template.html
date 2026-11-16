@@ -82,8 +82,10 @@
         <h1 class="t-display article__title">Post title</h1>
         <p class="article__meta"><time datetime="2026-01-01">2026-01-01</time><span aria-hidden="true">·</span>5 min read</p>
       </header>
-      <!-- the same portrait cover as the card in blog.html; it is cropped wide here -->
-      <figure class="shell article__cover"><img src="../assets/img/blog/<slug>.jpg" alt="" decoding="async"></figure>
+      <!-- the same cover as the card in blog.html: one word or number from the
+           post (data-dotcover), set in dots by hero-particles.js, plus a short
+           note. The glyph text is what shows without JS. -->
+      <figure class="shell article__cover" aria-hidden="true"><span class="dotcover" data-dotcover="Aa"><span class="dotcover__glyph" aria-hidden="true">Aa</span><span class="dotcover__note" aria-hidden="true">Topic</span></span></figure>
 
       <div class="shell">
         <div class="article__body prose">

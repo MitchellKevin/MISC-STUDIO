@@ -118,8 +118,8 @@
         <a href="#work" style="--i:2"><span class="menu__index">03</span><span>Work</span></a>
         <a href="#pricing" style="--i:3"><span class="menu__index">04</span><span>Pricing</span></a>
         <a href="#faq" style="--i:4"><span class="menu__index">05</span><span>FAQ</span></a>
-        <a href="blog.html" style="--i:5"><span class="menu__index">06</span><span>Journal</span></a>
-        <a href="about.html" style="--i:6"><span class="menu__index">07</span><span>About</span></a>
+        <!-- Journal hidden for now: <a href="blog.html" style="--i:5"><span class="menu__index">06</span><span>Journal</span></a> -->
+        <a href="about.html" style="--i:5"><span class="menu__index">06</span><span>About</span></a>
       </nav>
       <div class="menu__foot">
         <span class="status">Available for new projects</span>
@@ -154,11 +154,7 @@
         </h1>
 
         <div class="hero__offer">
-          <div class="hero__price" data-enter style="--d:2">
-            <p class="t-body">From</p>
-            <p class="hero__price-line"><span class="num" data-ticker>€1,500</span> <span class="hero__price-unit">/project</span></p>
-          </div>
-          <div class="btn-pair" data-enter style="--d:3">
+          <div class="btn-pair" data-enter style="--d:2">
             <a class="btn" data-variant="primary" href="#contact">
               <span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span>
               <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span></span>
@@ -188,7 +184,7 @@
     </section>
 
     <!-- ── Approach ───────────────────────────────────────────────── -->
-    <section class="section" id="approach" data-surface="void" aria-labelledby="approach-title">
+    <section class="section" id="approach" data-surface="void" data-seam aria-labelledby="approach-title">
       <div class="grain" aria-hidden="true"></div>
       <div class="shell">
         <h2 class="sr-only" id="approach-title">Approach</h2>
@@ -322,7 +318,7 @@
     </section>
 
     <!-- ── Work ───────────────────────────────────────────────────── -->
-    <section class="work-orbit" id="work" data-surface="light" data-orbit aria-labelledby="work-title">
+    <section class="work-orbit" id="work" data-surface="light" data-orbit data-seam aria-labelledby="work-title">
       <span id="showcase" aria-hidden="true"></span>
       <!-- The ring of screens (work-orbit.js) is drawn into the canvas over
            the heading. Without WebGL the section is just the heading and the
@@ -513,7 +509,9 @@
       </div>
     </section>
 
-    <!-- ── Journal ────────────────────────────────────────────────── -->
+    <!-- ── Journal — hidden for now. To bring it back, remove this comment
+         wrapper and the "Journal hidden" comments around the menu and footer
+         links (on every page).
     <section class="section" id="journal" data-surface="paper" aria-labelledby="journal-title" style="padding-top:0">
       <span id="blog" aria-hidden="true"></span>
       <div class="shell">
@@ -531,21 +529,21 @@
 
         <div class="posts">
           <a class="post" href="blog/nextjs-course.html" data-reveal>
-            <span class="post__media"><img src="assets/img/blog/nextjs-course.jpg" alt="" loading="lazy" decoding="async"></span>
+            <span class="post__media dotcover" data-dotcover="15"><span class="dotcover__glyph" aria-hidden="true">15</span><span class="dotcover__note" aria-hidden="true">Chapters</span></span>
             <span class="post__body">
               <span class="post__meta"><span>Development</span><span><time datetime="2026-09-10">10 Sep 2026</time> · 16 min</span></span>
               <span class="post__title">Fifteen chapters of Next.js, and what actually stuck</span>
             </span>
           </a>
           <a class="post" href="blog/shopify-architecture.html" data-reveal style="--d:1">
-            <span class="post__media"><img src="assets/img/blog/shopify-architecture.jpg" alt="" loading="lazy" decoding="async"></span>
+            <span class="post__media dotcover" data-dotcover="{% %}"><span class="dotcover__glyph" aria-hidden="true">{% %}</span><span class="dotcover__note" aria-hidden="true">Liquid</span></span>
             <span class="post__body">
               <span class="post__meta"><span>Development</span><span><time datetime="2026-10-30">30 Oct 2026</time> · 8 min</span></span>
               <span class="post__title">How Shopify is built</span>
             </span>
           </a>
           <a class="post" href="blog/web-security.html" data-reveal style="--d:2">
-            <span class="post__media"><img src="assets/img/blog/web-security.jpg" alt="" loading="lazy" decoding="async"></span>
+            <span class="post__media dotcover" data-dotcover="403"><span class="dotcover__glyph" aria-hidden="true">403</span><span class="dotcover__note" aria-hidden="true">Forbidden</span></span>
             <span class="post__body">
               <span class="post__meta"><span>Security</span><span><time datetime="2026-10-30">30 Oct 2026</time> · 10 min</span></span>
               <span class="post__title">Pentesting and hardening a website</span>
@@ -554,6 +552,7 @@
         </div>
       </div>
     </section>
+    -->
 
     <!-- ── FAQ ────────────────────────────────────────────────────── -->
     <section class="section" id="faq" data-surface="paper" aria-labelledby="faq-title" style="padding-top:var(--space-lg)">
@@ -750,8 +749,8 @@
           <a href="#work"><span class="menu__index">02</span>Work</a>
           <a href="#pricing"><span class="menu__index">03</span>Pricing</a>
           <a href="#faq"><span class="menu__index">04</span>FAQ</a>
-          <a href="blog.html"><span class="menu__index">05</span>Journal</a>
-          <a href="about.html"><span class="menu__index">06</span>About</a>
+          <!-- Journal hidden for now: <a href="blog.html"><span class="menu__index">05</span>Journal</a> -->
+          <a href="about.html"><span class="menu__index">05</span>About</a>
         </nav>
         <nav class="footer__col" aria-label="Services">
           <h2 class="footer__heading">Services</h2>
