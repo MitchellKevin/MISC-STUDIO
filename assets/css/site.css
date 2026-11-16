@@ -772,16 +772,6 @@ hr { border: 0; border-top: 1px solid var(--rule); }
   display: grid;
   gap: var(--space-md);
 }
-.hero__price { display: grid; gap: .25rem; }
-.hero__price-line {
-  display: flex;
-  align-items: baseline;
-  gap: .12em;
-  font-size: var(--text-display);
-  letter-spacing: var(--tracking-heading);
-  line-height: .9;
-}
-.hero__price-unit { font-size: var(--text-title); letter-spacing: -0.03em; }
 
 .wordmark {
   position: relative;
