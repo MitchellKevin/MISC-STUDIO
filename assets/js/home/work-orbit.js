@@ -27,11 +27,14 @@ const RADIUS = 6;           // bottle radius (world units); the text sits on its
 const CAMERA_Z = 19;        // camera distance from the bottle's axis
 const CARD_W = 5.6;         // arc length of one screen round the bottle
 const CARD_H = CARD_W / 1.6;
-const STEP = 1.02;          // angle between neighbouring screens, radians
-// the bottle leans so the screens travel bottom-left to top-right
-const TILT = 0.2;           // lean of the bottle's axis, radians (towards the right)
+const STEP = 1.2;           // angle between neighbouring screens, radians (a screen spans ~0.93)
+// The ring leans, so the screens travel bottom-left to top-right. The
+// screens themselves stand upright on it at rest; while the ring turns they
+// tip over (one way going forward, the mirror way going back) and
+// straighten up again when it stops.
+const TILT = 0.2;           // lean of the ring's axis, radians (towards the right)
 const LEAN_BACK = 0.1;      // and tipped back a touch, so the path reads as a ring
-const LIFTS = [0.1, -0.12, 0.14, -0.06, 0.1, -0.14, 0.05]; // small stagger, in card heights
+const LEAN_SPEED = 0.02;    // ring speed (radians a frame) at which the screens lie fully along it
 const FADE_FROM = 1.15;     // radians round the bottle where a screen starts to fade…
 const FADE_TO = 1.62;       // …and where it is gone (so the back never covers the text)
 const SEG_X = 64;
@@ -97,8 +100,9 @@ void main() {
   if (gl_FragColor.a < 0.002) discard;
 }`;
 
-// a label: a strip of the bottle's surface, centred facing the camera,
-// curved left to right and straight top to bottom
+// a label: a strip of the bottle's surface, curved left to right and
+// straight top to bottom, with its origin at the middle of its front (so it
+// can be set on its spot on the ring and turned about itself)
 function screenGeometry() {
   const span = CARD_W / RADIUS;
   const g = new THREE.BufferGeometry();
@@ -109,7 +113,7 @@ function screenGeometry() {
     const u = i / SEG_X;
     const a = (u - 0.5) * span;
     const x = RADIUS * Math.sin(a);
-    const z = RADIUS * Math.cos(a);
+    const z = RADIUS * Math.cos(a) - RADIUS;
     pos.push(x, -CARD_H / 2, z, x, CARD_H / 2, z);
     uv.push(u, 0, u, 1);
   }
@@ -187,10 +191,20 @@ function init() {
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
   camera.position.set(0, 0, CAMERA_Z);
   const bottle = new THREE.Group();
+  // the ring's frame: it carries no meshes, it is where each screen's spot
+  // on the ring is worked out (and hits are measured against)
   bottle.rotation.order = 'ZXY';
   bottle.rotation.z = -TILT;
   bottle.rotation.x = LEAN_BACK;
   scene.add(bottle);
+  bottle.updateMatrixWorld();
+  // -1 tipped back … 0 upright … 1 tipped forward (lying along the ring)
+  let lean = 0;
+  const yAxis = new THREE.Vector3(0, 1, 0);
+  const qUpright = new THREE.Quaternion();
+  const qTipped = new THREE.Quaternion();
+  const qForward = bottle.quaternion.clone();
+  const qBack = new THREE.Quaternion().setFromEuler(new THREE.Euler(LEAN_BACK, 0, TILT, 'ZXY'));
 
   section.classList.add('is-orbit');
 
@@ -220,10 +234,9 @@ function init() {
       },
     });
     const mesh = new THREE.Mesh(geometry, mat);
-    // roll in place, then pitch up the diagonal, then swing round the ring
-    mesh.position.y = LIFTS[i % LIFTS.length] * CARD_H;
+    // every screen at the same height on the ring, so they run on one line
     mesh.userData = { index: i, hover: 0, ready: 0 };
-    bottle.add(mesh);
+    scene.add(mesh);
     const done = (tex) => {
       tex.colorSpace = THREE.SRGBColorSpace;
       tex.anisotropy = maxAniso;
@@ -329,11 +342,21 @@ function init() {
     readScroll();
     drag += (dragTarget - drag) * 0.12;
     const goal = scrollRot + drag;
+    const before = rot;
     rot += (goal - rot) * 0.14;
+    // lean in quickly as the ring picks up speed (the way it turns), and
+    // straighten up slowly
+    const want = Math.max(-1, Math.min(1, (rot - before) / LEAN_SPEED));
+    lean += (want - lean) * (Math.abs(want) > Math.abs(lean) ? 0.12 : 0.045);
+    if (Math.abs(lean) < 0.0005 && want === 0) lean = 0;
 
     meshes.forEach((m, i) => {
       const along = i * STEP - rot;
-      m.rotation.y = along;
+      // its spot on the (leaning) ring, then upright or lying along it
+      m.position.set(RADIUS * Math.sin(along), 0, RADIUS * Math.cos(along)).applyQuaternion(bottle.quaternion);
+      qUpright.setFromAxisAngle(yAxis, along);
+      qTipped.copy(lean < 0 ? qBack : qForward).multiply(qUpright);
+      m.quaternion.copy(qUpright).slerp(qTipped, Math.abs(lean));
       m.material.uniforms.uAlong.value = along;
       // nearer screens draw last, so the front one covers its neighbours
       m.renderOrder = Math.round(Math.cos(along) * 100);
@@ -357,7 +380,7 @@ function init() {
     renderer.render(scene, camera);
 
     // stop the loop once everything has settled; any input wakes it again
-    const settled = Math.abs(goal - rot) < 0.0005 && Math.abs(dragTarget - drag) < 0.0005
+    const settled = Math.abs(goal - rot) < 0.0005 && Math.abs(dragTarget - drag) < 0.0005 && Math.abs(lean) < 0.001
       && meshes.every((m) => (!m.userData.loaded || m.userData.ready > 0.995) && Math.abs(m.userData.hover - (m === hovered ? 1 : 0)) < 0.005)
       && meshes.every((m) => m.userData.loaded);
     if (settled || !visible) { running = false; return; }
