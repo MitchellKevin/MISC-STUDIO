@@ -30,14 +30,15 @@ const EMAILJS_TEMPLATE_ID = 'template_h2dzhbh';
   const status = form.querySelector('.cform__status');
   const idleLabel = label.textContent;
 
-  // the button shows "Sent" for a moment (.is-sent in nomi-studio.css), then
-  // settles back; it stays disabled until then
-  const SENT_HOLD = 2600;
+  // The button animates through its states with classes (site.css, "Send
+  // button"): .is-sending while EmailJS works, .is-sent for a moment after,
+  // .is-error for a short shake. It stays disabled until it has settled.
+  const SENT_HOLD = 3200;
   const flashSent = () => {
+    button.classList.remove('is-sending');
     button.classList.add('is-sent');
     setTimeout(() => {
       button.classList.remove('is-sent');
-      label.textContent = idleLabel;
       button.disabled = false;
     }, SENT_HOLD);
   };
@@ -125,7 +126,8 @@ const EMAILJS_TEMPLATE_ID = 'template_h2dzhbh';
     const last = data.get('last_name').trim();
 
     button.disabled = true;
-    label.textContent = 'Sending…';
+    button.classList.remove('is-error');
+    button.classList.add('is-sending');
     setStatus('', null);
 
     const params = {
@@ -153,8 +155,10 @@ const EMAILJS_TEMPLATE_ID = 'template_h2dzhbh';
         ? 'Your message was just sent. Please wait a few seconds before sending another.'
         : 'Something went wrong sending your message. Please try again in a moment.', 'error');
       // on success flashSent() restores these once "Sent" has shown
+      button.classList.remove('is-sending');
+      button.classList.add('is-error');
+      setTimeout(() => button.classList.remove('is-error'), 600);
       button.disabled = false;
-      label.textContent = idleLabel;
     }
   });
 })();

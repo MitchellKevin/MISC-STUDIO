@@ -1,17 +1,11 @@
 // ------------------------------------------------------------------
-// About page. Builds every section from about-data.js, then hands the
-// timeline and the project deck to the same components the homepage
-// uses (timeline.js / showcase.js).
+// About page. Builds every section from about-data.js: the timeline
+// rows, the switch panels, the hobby cards and the goals.
 //
 // The page's structure lives in the markup; this file only fills it:
 //   · chapter numbers, counted off the sections that survive
 //   · the section index rail down the right-hand side
 //   · every section's copy, straight out of about-data.js
-//
-// Order matters at the bottom of this file: ScrollTrigger has to build
-// pinned triggers top-to-bottom, and on this page the timeline sits
-// ABOVE the showcase — the opposite of the homepage. So initTimeline()
-// goes first here and second there.
 // ------------------------------------------------------------------
 (function () {
   const D = window.ABOUT || {};
@@ -92,21 +86,22 @@
     copy(node, (D.copy || {})[node.dataset.copy]);
   });
 
-  // ---- roadmap — homepage timeline markup --------------------------
+  // ---- roadmap — numbered rows ---------------------------------------
+  // One row per stop: number, year, what, where, and the kind of stop as a
+  // pill. Rows fade up as they scroll in (data-reveal, handled by site.js).
   const road = q('[data-road]');
   if (road && D.road) {
     D.road.forEach((r, i) => {
-      // events alternate above and below the road, same as the homepage
-      const li = el('li', 'tlev tlev--' + (i % 2 === 0 ? 'above' : 'below'));
-      li.dataset.i = i;
-      const dot = el('span', 'tlev__dot'); dot.setAttribute('aria-hidden', 'true');
-      const stem = el('span', 'tlev__stem'); stem.setAttribute('aria-hidden', 'true');
-      const card = el('div', 'tlev__card');
-      card.appendChild(el('span', 'tlev__year', r.year));
-      card.appendChild(el('span', 'tlev__type', r.kind));
-      card.appendChild(el('span', 'tlev__what', r.title));
-      card.appendChild(el('span', 'tlev__where', r.where));
-      li.appendChild(dot); li.appendChild(stem); li.appendChild(card);
+      const li = el('li', 'road__row');
+      li.setAttribute('data-reveal', '');
+      li.style.setProperty('--d', String(i % 3));
+      li.appendChild(el('span', 'road__num', String(i + 1).padStart(2, '0')));
+      li.appendChild(el('span', 'road__year', r.year));
+      const what = el('span', 'road__what');
+      what.appendChild(el('span', 'road__title', r.title));
+      what.appendChild(el('span', 'road__where', r.where));
+      li.appendChild(what);
+      li.appendChild(el('span', 'road__kind pill', (r.kind || '').trim()));
       road.appendChild(li);
     });
   }
@@ -143,7 +138,7 @@
     const host = q('[data-panel="' + side + '"]');
     const c = panels[side];
     if (!host || !c) return;
-    host.appendChild(el('h2', 'abs__heading', c.heading));
+    host.appendChild(el('h3', 'abs__heading t-narrative', c.heading));
     host.appendChild(copy(el('p', 'abs__body'), c));
   });
 
@@ -164,6 +159,7 @@
   if (goals && D.goals) {
     D.goals.forEach((g, i) => {
       const li = el('li', 'ab__goal');
+      li.setAttribute('data-reveal', '');
       li.appendChild(el('span', 'ab__goal-num', String(i + 1).padStart(2, '0')));
       const b = el('div');
       b.appendChild(el('h3', 'ab__goal-title', g.title));
@@ -176,23 +172,25 @@
   // ---- hobbies — homepage focus tiles ------------------------------
   // Same viewBox and stroke weights as the focus illustrations, so these
   // sit next to them without looking like a different set.
+  // Drawn in currentColor, so each card sets the ink (see .hobby__art in
+  // about.css) and the set follows whatever surface it sits on.
   const ART = {
     sport: `<svg class="focus-illustration" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet">
-        <g fill="none" stroke="#9a9a9a" stroke-width="1.8" stroke-linecap="round">
+        <g fill="none" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.8" stroke-linecap="round">
           <path d="M92 22h16"/><path d="M100 22v8"/>
           <circle cx="100" cy="72" r="34"/>
         </g>
-        <circle cx="100" cy="72" r="30" fill="#9a9a9a" fill-opacity="0.05"/>
-        <g stroke="#7a7a7a" stroke-width="1.3" stroke-linecap="round">
+        <circle cx="100" cy="72" r="30" fill="currentColor" fill-opacity="0.06"/>
+        <g stroke="currentColor" stroke-opacity="0.4" stroke-width="1.3" stroke-linecap="round">
           <path d="M100 44v5"/><path d="M128 72h-5"/><path d="M100 100v-5"/><path d="M72 72h5"/>
         </g>
         <line class="sw-hand" x1="100" y1="72" x2="100" y2="48"
-              stroke="#e8e8e8" stroke-width="2.2" stroke-linecap="round"/>
-        <circle cx="100" cy="72" r="3" fill="#c8c8c8"/>
+              stroke="var(--brand-accent)" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="100" cy="72" r="3" fill="var(--brand-accent)"/>
       </svg>`,
     photo: `<svg class="focus-illustration" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet">
-        <circle cx="100" cy="65" r="36" fill="none" stroke="#9a9a9a" stroke-width="1.8"/>
-        <g class="iris" stroke="#7a7a7a" stroke-width="1.4" fill="#9a9a9a" fill-opacity="0.07">
+        <circle cx="100" cy="65" r="36" fill="none" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.8"/>
+        <g class="iris" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.4" fill="currentColor" fill-opacity="0.06">
           <path d="M100 33 L128 49 L114 57 L86 57 Z"/>
           <path d="M128 49 L128 81 L114 73 L114 57 Z"/>
           <path d="M128 81 L100 97 L100 81 L114 73 Z"/>
@@ -200,49 +198,41 @@
           <path d="M72 81 L72 49 L86 57 L86 73 Z"/>
           <path d="M72 49 L100 33 L100 49 L86 57 Z"/>
         </g>
-        <circle class="iris-core" cx="100" cy="65" r="9" fill="#e8e8e8" fill-opacity="0.85"/>
+        <circle class="iris-core" cx="100" cy="65" r="9" fill="var(--brand-accent)"/>
       </svg>`,
     web: `<svg class="focus-illustration" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet">
-        <rect x="44" y="26" width="112" height="78" rx="7" fill="#9a9a9a" fill-opacity="0.05"
-              stroke="#9a9a9a" stroke-width="1.8"/>
-        <path d="M44 44 H156" stroke="#9a9a9a" stroke-width="1.4"/>
-        <g fill="#7a7a7a"><circle cx="54" cy="35" r="2.6"/><circle cx="63" cy="35" r="2.6"/><circle cx="72" cy="35" r="2.6"/></g>
-        <g stroke="#c8c8c8" stroke-width="3.4" stroke-linecap="round">
+        <rect x="44" y="26" width="112" height="78" rx="7" fill="currentColor" fill-opacity="0.05"
+              stroke="currentColor" stroke-opacity="0.55" stroke-width="1.8"/>
+        <path d="M44 44 H156" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.4"/>
+        <g fill="currentColor" fill-opacity="0.4"><circle cx="54" cy="35" r="2.6"/><circle cx="63" cy="35" r="2.6"/><circle cx="72" cy="35" r="2.6"/></g>
+        <g stroke="currentColor" stroke-opacity="0.7" stroke-width="3.4" stroke-linecap="round">
           <line class="wl wl1" x1="58" y1="58" x2="104" y2="58"/>
           <line class="wl wl2" x1="58" y1="70" x2="128" y2="70"/>
           <line class="wl wl3" x1="58" y1="82" x2="92"  y2="82"/>
         </g>
-        <g fill="none" stroke="#e8e8e8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <g fill="none" stroke="var(--brand-accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M124 86 l8 6 -8 6"/><path d="M138 98 h8"/>
         </g>
       </svg>`
   };
 
+
   const hobby = q('[data-hobby]');
   if (hobby && D.hobbies) {
-    D.hobbies.forEach(h => {
-      const tile = el('div', 'focusPoint_tile focus-' + h.art);
-      const art = el('div', 'focus-art');
+    D.hobbies.forEach((h, i) => {
+      // focusPoint_tile / focus-<art> stay on as hooks for about-camera.js
+      const tile = el('article', 'card hobby focusPoint_tile focus-' + h.art);
+      tile.setAttribute('data-reveal', '');
+      tile.style.setProperty('--d', String(i));
+      tile.appendChild(el('span', 'card__num', String(i + 1).padStart(2, '0')));
+      const art = el('div', 'hobby__art focus-art');
       art.setAttribute('aria-hidden', 'true');
       art.innerHTML = ART[h.art] || '';
       tile.appendChild(art);
-      tile.appendChild(el('h3', null, h.title));
+      tile.appendChild(el('h3', 't-title', h.title));
       tile.appendChild(copy(el('p', null), h.body));
       hobby.appendChild(tile);
     });
-    // the homepage observer only watches #focusPoints, so this page needs
-    // its own to trigger the same reveal
-    const tiles = hobby.querySelectorAll('.focusPoint_tile');
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries, obs) => {
-        if (!entries[0].isIntersecting) return;
-        tiles.forEach(t => t.classList.add('animate'));
-        obs.disconnect();
-      }, { threshold: 0.2 });
-      io.observe(hobby);
-    } else {
-      tiles.forEach(t => t.classList.add('animate'));
-    }
   }
 
   // ---- the home globe -----------------------------------------------
@@ -281,14 +271,9 @@
     io.observe(node);
   }
 
-  // ---- hand the built markup to the shared components ---------------
-  // Pinned triggers have to be created top-to-bottom, so this follows the
-  // page's own order: timeline, then showcase.
-  if (window.initTimeline) window.initTimeline();
-  if (window.initShowcase) window.initShowcase();
-
-  // project thumbnails settle after layout; without this the pins measure
-  // against the wrong page height
+  // ---- pins measure the page once everything has settled -------------
+  // the AirPods pin is the only one left on this page; images settling
+  // after layout would otherwise leave it measuring the wrong height
   window.addEventListener('load', () => {
     if (window.ScrollTrigger) ScrollTrigger.refresh();
   });

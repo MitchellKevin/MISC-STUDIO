@@ -2,27 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"></noscript>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#545454">
+    <script>
+      document.documentElement.classList.add('js');
+      /* The intro (glass loader, then the shutters) plays once per visit.
+         Decided before first paint, otherwise the hero would flash first.
+         "loading" holds every hero animation on its first frame until
+         site.js says "go"; if that never happens, let go after 12s. */
+      (function(){try{if(!sessionStorage.getItem('misc-intro-seen')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){var h=document.documentElement;h.setAttribute('data-intro','loading');setTimeout(function(){if(h.getAttribute('data-intro')==='loading'){h.setAttribute('data-intro','go');var l=document.getElementById('loader');if(l)l.remove();}},12000);}}catch(e){}})();
+    </script>
+    <link rel="preload" href="assets/fonts/OverusedGrotesk-Medium.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="assets/img/brand/favicon.png">
     <link rel="apple-touch-icon" href="assets/img/brand/apple-touch-icon.png">
-    <script>
-      /* read the saved theme before first paint — otherwise a light-mode
-         reload flashes the black page for a frame */
-      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
-      /* arriving through a page transition: start in the curtain colour so the
-         page never flashes before page-transition.js lifts the curtain */
-      (function(){try{if(sessionStorage.getItem('nomi-wave-enter'))document.documentElement.classList.add('curtain-in');}catch(e){}})();
-      /* the MISC intro plays once per visit; after that the page opens
-         straight onto the hero. Decided here for the same reason — later
-         and the loader would flash up before the script could hide it */
-      (function(){try{if(sessionStorage.getItem('misc-intro-seen'))document.documentElement.classList.add('intro-seen');}catch(e){}})();
-    </script>
-    <link rel="stylesheet" href="assets/css/nomi-studio.css">
+    <link rel="stylesheet" href="assets/css/site.css">
 
     <!-- ── Findability ────────────────────────────────────────────────
          The title and description are what Google actually prints in the
@@ -69,1109 +63,729 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <!-- Loading screen: a drop of glass lands, spreads into the logo's tile and
-       settles into the icon (glass-reveal.js draws it into a canvas here).
-       The plain icon is only shown when the browser has no WebGL2. -->
+       settles into the icon (glass-reveal.js draws it into a canvas here),
+       then MISC / STUDIO slides out from behind it. The plain icon is only
+       shown when the browser has no WebGL2. Hands over to the shutters. -->
   <div class="loader" id="loader" role="img" aria-label="MISC Studio">
-    <!-- the icon and its name move as one; MISC / STUDIO is clipped at the
-         icon's right edge so it slides out from behind it, as in the header -->
     <div class="loader__stage">
-      <img class="loader__fallback" src="assets/img/brand/logo-640.webp" alt="" loading="lazy" hidden>
+      <img class="loader__fallback" src="assets/img/brand/logo-640.webp" alt="" hidden>
       <div class="loader__lockup" aria-hidden="true">
         <div class="loader__words"><span>MISC</span><span>STUDIO</span></div>
       </div>
     </div>
   </div>
+  <div class="intro" aria-hidden="true">
+    <span class="intro__shutter" data-s="top"></span><span class="intro__shutter" data-s="bottom"></span><span class="intro__shutter" data-s="left"></span><span class="intro__shutter" data-s="right"></span>
+  </div>
 
-  <!-- Gooey filter used by every .blob-btn (referenced via filter: url(#goo)) -->
-  <svg class="goo-defs" xmlns="http://www.w3.org/2000/svg" version="1.1" aria-hidden="true">
-    <defs>
-      <filter id="goo">
-        <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
-        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
-        <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
-      </filter>
-    </defs>
-  </svg>
-  <header class="header">
-    <div class="flex-wrapper">
-      <div class="logo-wrap">
-        <img class="logo-img" src="assets/img/brand/logo-192.webp" alt="">
-        <div class="logo-text">
-          <span class="btn-2">MISC</span>
-          <span class="btn-2">STUDIO</span>
-        </div>
-      </div>
-      <ul class="header-menu">
-        <li class="header-menu__item header-icon-item"><a class="header-btn" href="about.html" aria-label="About me" title="About me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></a></li>
-      </ul>
-    </div>
-  </header>
-  <main id="main" tabindex="-1">
-  <section class="hero">
-    <!-- the logo, sampled into dots that scatter under the cursor. Purely
-         decorative: hero-particles.js paints it, nothing here depends on it. -->
-    <canvas class="hero__particles" aria-hidden="true"></canvas>
-    <div class="container">
-      <div class="title-block">
-        <!-- The page's <h1>, and the only place the sentence exists in one
-             piece. The animated version below is split into "Go/od/des/ign"
-             for the slide-in masks — fine to look at, useless to read: a
-             crawler or a screen reader gets four fragments, not a sentence.
-             So it is marked aria-hidden and the same words are stated once
-             here. Same text as the page shows, said properly.
-
-             It sits outside .title-h1 rather than wrapping it, because the
-             animated block is made of <div>s and an <h1> may not contain
-             them — and this way the hero's CSS and the GSAP timeline are
-             not touched at all. -->
-        <h1 class="sr-only">Good design earns trust</h1>
-        <div class="title-h1" aria-hidden="true">
-          <!-- the chunks are paired into words so mobile can stack one word per
-               line; the ids and their overflow masks are untouched, so the
-               slide-in timeline in nomi-studio.js still targets the same spans -->
-          <div class="title-row title-row-1">
-            <div class="title-word">
-              <div class="title-charts-cont" id="go"><span>Go</span></div>
-              <div class="title-charts-cont" id="od"><span>od</span></div>
-            </div>
-            <div class="title-word">
-              <div class="title-charts-cont" id="des"><span>des</span></div>
-              <div class="title-charts-cont" id="ign"><span>ign</span></div>
-            </div>
-          </div>
-          <div class="title-row title-row-2">
-            <div class="title-word">
-              <div class="title-charts-cont" id="ear"><span>ear</span></div>
-              <div class="title-charts-cont" id="ns"><span>ns</span></div>
-            </div>
-            <div class="title-word">
-              <div class="title-charts-cont" id="tru"><span>tru</span></div>
-              <div class="title-charts-cont" id="st"><span>st</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="first-desc">
-          <span class="desc-1">Creative Developer</span>
-        </div>
-      </div>
-
-      <div class="copyright">
-          <span class="desc-1" id="local-time">Netherlands</span>
-      </div>
-
-      <!-- Tools I build with — the same set and icons as the techstack section
-           further down. The row holds the list twice and slides left by exactly
-           half its width, so the loop is seamless; the second group is
-           aria-hidden so screen readers only hear each tool once. -->
-      <div class="hero-tools" aria-label="Tools I use">
-        <div class="hero-tools__row">
-          <div class="hero-tools__group"><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 16V8l7.2 10M15 8v5"/></svg></span><span class="hero-tool__name">Next.js</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 15c4.5 0 6.5-7 11-7 2.2 0 3.5 1.4 3.5 3.2"/><circle cx="18.3" cy="11.4" r="1.7" fill="currentColor" stroke="none"/></svg></span><span class="hero-tool__name">GSAP</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 4.5L4.5 19h15z"/></svg></span><span class="hero-tool__name">Three.js</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">D3</text></svg></span><span class="hero-tool__name">D3</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">5</text></svg></span><span class="hero-tool__name">HTML</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">3</text></svg></span><span class="hero-tool__name">CSS</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16.2" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">JS</text></svg></span><span class="hero-tool__name">JavaScript</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><path d="M12 3l7.4 4.2v8.6L12 20l-7.4-4.2V7.2z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="15.3" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">N</text></svg></span><span class="hero-tool__name">Node.js</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 3H9a3 3 0 0 0 0 6h3z"/><path d="M12 3h3a3 3 0 0 1 0 6h-3z"/><path d="M12 9H9a3 3 0 0 0 0 6h3z"/><circle cx="15" cy="12" r="3"/><path d="M12 15H9a3 3 0 1 0 3 3z"/></svg></span><span class="hero-tool__name">Figma</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.4-4-2.4-6-3m12 5v-3.6c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.7 4.7 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a11.9 11.9 0 0 0-6.2 0C6.5 2.7 5.4 3 5.4 3a4.3 4.3 0 0 0-.1 3.2A4.7 4.7 0 0 0 4 9.4c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></span><span class="hero-tool__name">GitHub</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><path d="M4.5 3.5h15v14h-9.5l-4 3.5v-3.5h-1.5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><text x="12" y="13.8" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">S</text></svg></span><span class="hero-tool__name">Storyblok</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7.8V6a2.6 2.6 0 0 0-5.2 0v1.2"/><path d="M19.4 8.2L9 7l-1.4 13.8 10.8-.6z"/><path d="M9 7l-3.6 1-1 11.9 3.2.9z" fill="currentColor" fill-opacity=".25"/><text x="13.6" y="17.4" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor" stroke="none">S</text></svg></span><span class="hero-tool__name">Shopify</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c3.6 4 5.2 7.4 5.2 10.4 0 3.6-2.4 6-5.2 7-2.8-1-5.2-3.4-5.2-7 0-3 1.6-6.4 5.2-10.4z"/><path d="M12 6.5v15"/></svg></span><span class="hero-tool__name">MongoDB</span></span></div>
-          <div class="hero-tools__group" aria-hidden="true"><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 16V8l7.2 10M15 8v5"/></svg></span><span class="hero-tool__name">Next.js</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 15c4.5 0 6.5-7 11-7 2.2 0 3.5 1.4 3.5 3.2"/><circle cx="18.3" cy="11.4" r="1.7" fill="currentColor" stroke="none"/></svg></span><span class="hero-tool__name">GSAP</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 4.5L4.5 19h15z"/></svg></span><span class="hero-tool__name">Three.js</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">D3</text></svg></span><span class="hero-tool__name">D3</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">5</text></svg></span><span class="hero-tool__name">HTML</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">3</text></svg></span><span class="hero-tool__name">CSS</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16.2" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">JS</text></svg></span><span class="hero-tool__name">JavaScript</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><path d="M12 3l7.4 4.2v8.6L12 20l-7.4-4.2V7.2z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="15.3" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">N</text></svg></span><span class="hero-tool__name">Node.js</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 3H9a3 3 0 0 0 0 6h3z"/><path d="M12 3h3a3 3 0 0 1 0 6h-3z"/><path d="M12 9H9a3 3 0 0 0 0 6h3z"/><circle cx="15" cy="12" r="3"/><path d="M12 15H9a3 3 0 1 0 3 3z"/></svg></span><span class="hero-tool__name">Figma</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.4-4-2.4-6-3m12 5v-3.6c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.7 4.7 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a11.9 11.9 0 0 0-6.2 0C6.5 2.7 5.4 3 5.4 3a4.3 4.3 0 0 0-.1 3.2A4.7 4.7 0 0 0 4 9.4c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></span><span class="hero-tool__name">GitHub</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24"><path d="M4.5 3.5h15v14h-9.5l-4 3.5v-3.5h-1.5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><text x="12" y="13.8" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">S</text></svg></span><span class="hero-tool__name">Storyblok</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7.8V6a2.6 2.6 0 0 0-5.2 0v1.2"/><path d="M19.4 8.2L9 7l-1.4 13.8 10.8-.6z"/><path d="M9 7l-3.6 1-1 11.9 3.2.9z" fill="currentColor" fill-opacity=".25"/><text x="13.6" y="17.4" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor" stroke="none">S</text></svg></span><span class="hero-tool__name">Shopify</span></span><span class="hero-tool"><span class="hero-tool__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c3.6 4 5.2 7.4 5.2 10.4 0 3.6-2.4 6-5.2 7-2.8-1-5.2-3.4-5.2-7 0-3 1.6-6.4 5.2-10.4z"/><path d="M12 6.5v15"/></svg></span><span class="hero-tool__name">MongoDB</span></span></div>
-        </div>
-      </div>
-      <!-- The words run round the rim and turn slowly; the arrow in the middle
-           is what the intro slides in (.btn-text span). The ring path starts
-           at 9 o'clock and runs clockwise, and textLength stretches the
-           phrase to exactly one lap so the loop has no seam. -->
-      <!-- named by real (visually hidden) text rather than aria-label: the ring
-           visibly reads "Get in touch • Get in touch •", and a label that does
-           not contain the visible words fails label-content-name-mismatch -->
-      <a class="book-btn" href="#contact">
-        <span class="sr-only">Get in touch</span>
-        <div class="book-btn__circle">
-          <svg class="book-btn__ring" viewBox="0 0 100 100" aria-hidden="true">
-            <defs><path id="book-ring" d="M13,50 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"/></defs>
-            <text><textPath href="#book-ring" textLength="232" lengthAdjust="spacing">Get in touch • Get in touch • </textPath></text>
-          </svg>
-        </div>
-        <div class="btn-text">
-          <span class="btn-1" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 8v9H8"/></svg>
-          </span>
-        </div>
+  <!-- ── Header ───────────────────────────────────────────────────── -->
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="MISC STUDIO, back to top">
+      <img src="assets/img/brand/logo-192.webp" alt="" width="38" height="38">
+      <span class="brand__word">MISC STUDIO</span>
+    </a>
+    <nav class="header-actions" aria-label="Quick links">
+      <a class="header-control header-control--cta" aria-label="Contact" href="#contact">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2"/><path d="M3 5.5l7 5 7-5"/></svg>
+        <span class="header-control__label--desktop">Contact</span>
       </a>
+      <button class="header-control header-control--hide-sm" type="button" data-sound-toggle data-src="assets/audio/bensound-moonlightdrive.mp3" aria-pressed="false" aria-label="Play ambient music">
+        <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="header-control__label--desktop">Sound</span>
+      </button>
+      <a class="header-control header-control--hide-sm" href="about.html">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="7" r="3"/><path d="M4 17c.7-3 3-4.7 6-4.7s5.3 1.7 6 4.7"/></svg>
+        <span class="header-control__label--desktop">About</span>
+      </a>
+      <button class="header-control" type="button" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-menu">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M3.5 7.5h13M3.5 12.5h13"/></svg>
+        <span>Menu</span>
+      </button>
+    </nav>
+  </header>
+
+  <dialog class="menu" id="site-menu" data-menu aria-label="Main navigation">
+    <div class="menu__panel">
+      <div class="menu__top">
+        <span class="menu__title">Menu</span>
+        <button class="menu__close" type="button" data-menu-close aria-label="Close navigation">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>
+        </button>
+      </div>
+      <nav class="menu__links" aria-label="Main navigation">
+        <a href="#top" style="--i:0"><span class="menu__index">01</span><span>Studio</span></a>
+        <a href="#process" style="--i:1"><span class="menu__index">02</span><span>How it works</span></a>
+        <a href="#work" style="--i:2"><span class="menu__index">03</span><span>Work</span></a>
+        <a href="#pricing" style="--i:3"><span class="menu__index">04</span><span>Pricing</span></a>
+        <a href="#faq" style="--i:4"><span class="menu__index">05</span><span>FAQ</span></a>
+        <a href="blog.html" style="--i:5"><span class="menu__index">06</span><span>Journal</span></a>
+        <a href="about.html" style="--i:6"><span class="menu__index">07</span><span>About</span></a>
+      </nav>
+      <div class="menu__foot">
+        <span class="status">Available for new projects</span>
+        <span class="menu__social">
+          <a href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
+          <a href="https://github.com/MitchellKevin">GitHub</a>
+          <button type="button" class="header-control--sound-mobile" data-sound-toggle aria-pressed="false" aria-label="Play ambient music"><span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
+        </span>
+      </div>
     </div>
-  </section>
+  </dialog>
 
-  <!-- <section class="Horizontal">
-    <h3 class="Horizontal__text heading-xl">I prototype in Figma, design the interface, then build the thing and ship it.</h3>
-  </section> -->
+  <main id="main" tabindex="-1">
 
-  <!-- <section class="testimonials">
-    <div class="container testimonials__container">
-    <h2 class="testimonials__title">Different expertise, <br>builds a <span class="focus__title-accent">strong team</span></h2>
+    <!-- ── Hero ───────────────────────────────────────────────────── -->
+    <section class="hero" id="top" data-surface="graphite">
+      <!-- the logo, sampled into dots that scatter under the cursor.
+           Decorative only: hero-particles.js paints it. -->
+      <canvas class="hero__particles" data-align="right" aria-hidden="true"></canvas>
+      <div class="grain" aria-hidden="true"></div>
 
-      <div class="tcards">
-        <article class="tcard tcard--left">
-          <div class="tcard__photo tcard__photo--1" role="img" aria-label="Mitchell Scholte"></div>
-          <div class="tcard__body">
-            <p class="tcard__quote">&ldquo;Crafting digital experiences that leave a lasting impression.&rdquo;</p>
-            <span class="tcard__divider"></span>
-            <div class="tcard__person">
-              <span class="tcard__name">Mitchell Scholte</span>
-              <span class="tcard__role">Co-Founder &amp; Full-Stack Developer</span>
-            </div>
+      <div class="shell grid-page hero__grid">
+        <p class="hero__meta" data-enter style="--d:0">
+          <span class="status">Available for new projects</span>
+          <span>Hoofddorp, NL</span>
+          <span><time data-local-time>--:--</time> in Amsterdam</span>
+        </p>
+
+        <h1 class="hero__title t-title" data-enter style="--d:1">
+          Good design earns trust.
+          <span class="sheen">A creative developer who designs, builds and secures your website.</span>
+        </h1>
+
+        <div class="hero__offer">
+          <div class="hero__price" data-enter style="--d:2">
+            <p class="t-body">From</p>
+            <p class="hero__price-line"><span class="num" data-ticker>€1,500</span> <span class="hero__price-unit">/project</span></p>
           </div>
-        </article>
-
-        <article class="tcard tcard--right">
-          <div class="tcard__photo tcard__photo--2" role="img" aria-label="Noah Ruiters"></div>
-          <div class="tcard__body">
-            <p class="tcard__quote">&ldquo;Crafting digital experiences that leave a lasting impression.&rdquo;</p>
-            <span class="tcard__divider"></span>
-            <div class="tcard__person">
-              <span class="tcard__name">Noah Ruiters</span>
-              <span class="tcard__role">Co-Founder &amp; Security Expert</span>
-            </div>
+          <div class="btn-pair" data-enter style="--d:3">
+            <a class="btn" data-variant="primary" href="#contact">
+              <span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span>
+              <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span></span>
+              <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+            </a>
+            <a class="btn" data-variant="secondary" href="#work">
+              <span class="btn__copy"><span class="btn__label">See the work</span></span>
+              <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">See the work</span></span></span>
+              <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+            </a>
           </div>
-        </article>
-      </div>
-      <div class="tcards-hint" aria-hidden="true">
-        <span class="tcards-hint__arrow">‹</span>
-        <span>Swipe the cards</span>
-        <span class="tcards-hint__arrow">›</span>
-      </div>
-    </div>
-  </section> -->
-
-  <section class="showcase" id="showcase">
-    <div class="showcase__bg" aria-hidden="true">
-      <span class="showcase__bgtext">Recent work</span>
-    </div>
-    <div class="container showcase__container">
-      <div class="showcase__head">
-        <span class="showcase__label">Projects</span>
-        <h2 class="showcase__title">Recent work</h2>
-      </div>
-      <!-- The project list. showcase-carousel.js reads these cards (image, title,
-           link) and replaces them with the liquid-glass WebGL carousel; without
-           WebGL they stay as the scroll-driven deck. Add a project by dropping
-           in another .work-card — both versions read however many are here.
-           Each links to its case study; the ?project= slug must match an entry
-           in assets/js/work/case-studies.js, which also holds the live URL. -->
-      <div class="showcase__deck" data-carousel>
-        <a class="work-card" href="detail-pages/work/case-study.html?project=scholtes-klusbedrijf" aria-label="Scholtes Klusbedrijf, view case study">
-          <img src="assets/img/projects/scholtes-klusbedrijf.webp" alt="Scholtes Klusbedrijf" loading="lazy" decoding="async">
-          <span class="work-card__meta">Scholtes Klusbedrijf <span class="showcase__arrow">→</span></span>
-        </a>
-        <a class="work-card" href="detail-pages/work/case-study.html?project=day-to-day-secure" aria-label="day-to-day secure, view case study">
-          <img src="assets/img/projects/day-to-day-secure.webp" alt="day-to-day secure" loading="lazy" decoding="async">
-          <span class="work-card__meta">day-to-day secure <span class="showcase__arrow">→</span></span>
-        </a>
-        <a class="work-card" href="detail-pages/work/case-study.html?project=visdeurbel" aria-label="Visdeurbel, view case study">
-          <img src="assets/img/projects/visdeurbel.webp" alt="Visdeurbel" loading="lazy" decoding="async">
-          <span class="work-card__meta">Visdeurbel Datavis. <span class="showcase__arrow">→</span></span>
-        </a>
-        <a class="work-card" href="detail-pages/work/case-study.html?project=ai-academy" aria-label="AI Academy, view case study">
-          <img src="assets/img/projects/ai-academy-salessite.webp" alt="AI Academy" loading="lazy" decoding="async">
-          <span class="work-card__meta">AI Academy <span class="showcase__arrow">→</span></span>
-        </a>
-        <a class="work-card" href="detail-pages/work/case-study.html?project=sron" aria-label="SRON, view case study">
-          <img src="assets/img/projects/sron.webp" alt="SRON" loading="lazy" decoding="async">
-          <span class="work-card__meta">SRON <span class="showcase__arrow">→</span></span>
-        </a>
-      </div>
-
-      <div class="showcase__counter"><b id="work-index">01</b> / <span id="work-total">04</span></div>
-    </div>
-  </section>
-
-  <section class="focus" id="focusPoints">
-    <span class="focus__eyebrow">What I focus on</span>
-    <h2 class="focus__title">These key points are what makes me <span class="focus__title-accent">unique</span></h2>
-    <div class="focusPoint_container">
-
-      <div class="focusPoint_tile focus-architecture">
-        <div class="focus-art" aria-hidden="true">
-          <svg class="focus-illustration" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet">
-            <defs>
-              <radialGradient id="coreGrad" cx="0.5" cy="0.5" r="0.5">
-                <stop offset="0"  stop-color="currentColor"/>
-                <stop offset="1"  stop-color="currentColor"/>
-              </radialGradient>
-            </defs>
-            <g class="spokes" stroke="currentColor" stroke-width="1" opacity="0.45">
-              <line x1="100" y1="65" x2="30"  y2="20"/>
-              <line x1="100" y1="65" x2="170" y2="20"/>
-              <line x1="100" y1="65" x2="20"  y2="65"/>
-              <line x1="100" y1="65" x2="180" y2="65"/>
-              <line x1="100" y1="65" x2="30"  y2="110"/>
-              <line x1="100" y1="65" x2="170" y2="110"/>
-            </g>
-            <circle class="ring r1" cx="100" cy="65" r="22" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.6"/>
-            <circle class="ring r2" cx="100" cy="65" r="34" fill="none" stroke="currentColor" stroke-width="1"   opacity="0.35"/>
-            <circle class="ring r3" cx="100" cy="65" r="46" fill="none" stroke="currentColor" stroke-width="1"   opacity="0.18"/>
-            <circle class="node n1" cx="30"  cy="20"  r="4" fill="currentColor"/>
-            <circle class="node n2" cx="170" cy="20"  r="4" fill="currentColor"/>
-            <circle class="node n3" cx="20"  cy="65"  r="4" fill="currentColor"/>
-            <circle class="node n4" cx="180" cy="65"  r="4" fill="currentColor"/>
-            <circle class="node n5" cx="30"  cy="110" r="4" fill="currentColor"/>
-            <circle class="node n6" cx="170" cy="110" r="4" fill="currentColor"/>
-            <circle cx="100" cy="65" r="11" fill="url(#coreGrad)"/>
-          </svg>
-        </div>
-        <div class="focus-text">
-          <h3>System Architecture</h3>
-          <p>I plan the structure before writing the code. Clear boundaries and simple data flow keep a project easy to grow and easy to hand over.</p>
         </div>
       </div>
 
-      <div class="focusPoint_tile focus-security">
-        <div class="focus-art" aria-hidden="true">
-          <svg class="focus-illustration" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet">
-            <defs>
-              <radialGradient id="shieldGrad" cx="0.5" cy="0.4" r="0.6">
-                <stop offset="0" stop-color="currentColor" stop-opacity="0.14"/>
-                <stop offset="1" stop-color="currentColor" stop-opacity="0.02"/>
-              </radialGradient>
-              <clipPath id="shieldClip">
-                <path d="M100,14 L140,28 V60 C140,86 122,104 100,116 C78,104 60,86 60,60 V28 Z"/>
-              </clipPath>
-            </defs>
-            <!-- code brackets either side -->
-            <g class="brackets" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.4">
-              <path d="M38,48 L24,65 L38,82"/>
-              <path d="M162,48 L176,65 L162,82"/>
-            </g>
-            <!-- shield -->
-            <path class="shield"
-                  d="M100,14 L140,28 V60 C140,86 122,104 100,116 C78,104 60,86 60,60 V28 Z"
-                  fill="url(#shieldGrad)" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-            <!-- scan line sweeping down the shield -->
-            <g clip-path="url(#shieldClip)">
-              <rect class="scan" x="56" y="14" width="88" height="2" fill="currentColor" opacity="0.5"/>
-            </g>
-            <!-- lock -->
-            <g class="lock">
-              <path d="M91,60 V52 a9,9 0 0 1 18,0 V60" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              <rect x="85" y="60" width="30" height="24" rx="3" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1.6"/>
-              <circle cx="100" cy="70" r="2.8" fill="currentColor"/>
-              <line x1="100" y1="72" x2="100" y2="78" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </g>
-          </svg>
-        </div>
-        <div class="focus-text">
-          <h3>Secure Software</h3>
-          <p>Security is built in, not bolted on. Inputs get validated, data stays protected and dependencies stay up to date.</p>
-        </div>
-      </div>
-
-      <div class="focusPoint_tile focus-ux">
-        <div class="focus-art" aria-hidden="true">
-          <svg class="focus-illustration" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet">
-            <g class="device device-monitor">
-              <rect x="14" y="25" width="80" height="58" rx="4" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-width="1.6"/>
-              <line x1="42" y1="93" x2="66" y2="93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="22" y1="34" x2="56" y2="34" stroke="currentColor" stroke-width="1.4" opacity="0.7"/>
-              <line x1="22" y1="42" x2="40" y2="42" stroke="currentColor" stroke-width="1.4" opacity="0.4"/>
-              <rect x="22" y="54" width="28" height="20" rx="2" fill="currentColor" opacity="0.2"/>
-              <rect x="54" y="54" width="28" height="20" rx="2" fill="currentColor" opacity="0.2"/>
-            </g>
-            <g class="device device-tablet">
-              <rect x="106" y="32" width="42" height="58" rx="4" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-width="1.6"/>
-              <line x1="112" y1="40" x2="138" y2="40" stroke="currentColor" stroke-width="1.4" opacity="0.7"/>
-              <line x1="112" y1="46" x2="128" y2="46" stroke="currentColor" stroke-width="1.4" opacity="0.4"/>
-              <rect x="112" y="58" width="26" height="22" rx="2" fill="currentColor" opacity="0.2"/>
-              <circle cx="127" cy="86" r="1.4" fill="currentColor"/>
-            </g>
-            <g class="device device-phone">
-              <rect x="160" y="40" width="26" height="50" rx="4" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-width="1.6"/>
-              <line x1="166" y1="48" x2="180" y2="48" stroke="currentColor" stroke-width="1.4" opacity="0.7"/>
-              <rect x="166" y="55" width="14" height="22" rx="2" fill="currentColor" opacity="0.2"/>
-              <circle cx="173" cy="86" r="1.2" fill="currentColor"/>
-            </g>
-          </svg>
-        </div>
-        <div class="focus-text">
-          <h3>UX Design</h3>
-          <p>Every screen starts with the person using it. Clear flows and fewer clicks, on phone, tablet and desktop.</p>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-
-    <!-- <section class="techstack" id="techstack">
-    <div class="container techstack__head">
-      <span class="techstack__eyebrow">My toolkit</span>
-      <h2 class="techstack__title">The <span class="focus__title-accent">tech</span> I build with</h2>
-    </div>
-    <div class="marquee">
-      <div class="marquee__row marquee__row--left">
-        <div class="marquee__group"><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 16V8l7.2 10M15 8v5"/></svg></span><span class="tech__name">Next.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 15c4.5 0 6.5-7 11-7 2.2 0 3.5 1.4 3.5 3.2"/><circle cx="18.3" cy="11.4" r="1.7" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">GSAP</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 4.5L4.5 19h15z"/></svg></span><span class="tech__name">Three.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">D3</text></svg></span><span class="tech__name">D3</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">5</text></svg></span><span class="tech__name">HTML</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">3</text></svg></span><span class="tech__name">CSS</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16.2" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">JS</text></svg></span><span class="tech__name">JavaScript</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M12 3l7.4 4.2v8.6L12 20l-7.4-4.2V7.2z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="15.3" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">N</text></svg></span><span class="tech__name">Node.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 3H9a3 3 0 0 0 0 6h3z"/><path d="M12 3h3a3 3 0 0 1 0 6h-3z"/><path d="M12 9H9a3 3 0 0 0 0 6h3z"/><circle cx="15" cy="12" r="3"/><path d="M12 15H9a3 3 0 1 0 3 3z"/></svg></span><span class="tech__name">Figma</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.4-4-2.4-6-3m12 5v-3.6c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.7 4.7 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a11.9 11.9 0 0 0-6.2 0C6.5 2.7 5.4 3 5.4 3a4.3 4.3 0 0 0-.1 3.2A4.7 4.7 0 0 0 4 9.4c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></span><span class="tech__name">GitHub</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M4.5 3.5h15v14h-9.5l-4 3.5v-3.5h-1.5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><text x="12" y="13.8" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">S</text></svg></span><span class="tech__name">Storyblok</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c3.6 4 5.2 7.4 5.2 10.4 0 3.6-2.4 6-5.2 7-2.8-1-5.2-3.4-5.2-7 0-3 1.6-6.4 5.2-10.4z"/><path d="M12 6.5v15"/></svg></span><span class="tech__name">MongoDB</span></span></div>
-        <div class="marquee__group" aria-hidden="true"><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 16V8l7.2 10M15 8v5"/></svg></span><span class="tech__name">Next.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 15c4.5 0 6.5-7 11-7 2.2 0 3.5 1.4 3.5 3.2"/><circle cx="18.3" cy="11.4" r="1.7" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">GSAP</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 4.5L4.5 19h15z"/></svg></span><span class="tech__name">Three.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">D3</text></svg></span><span class="tech__name">D3</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">5</text></svg></span><span class="tech__name">HTML</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">3</text></svg></span><span class="tech__name">CSS</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16.2" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">JS</text></svg></span><span class="tech__name">JavaScript</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M12 3l7.4 4.2v8.6L12 20l-7.4-4.2V7.2z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="15.3" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">N</text></svg></span><span class="tech__name">Node.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 3H9a3 3 0 0 0 0 6h3z"/><path d="M12 3h3a3 3 0 0 1 0 6h-3z"/><path d="M12 9H9a3 3 0 0 0 0 6h3z"/><circle cx="15" cy="12" r="3"/><path d="M12 15H9a3 3 0 1 0 3 3z"/></svg></span><span class="tech__name">Figma</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.4-4-2.4-6-3m12 5v-3.6c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.7 4.7 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a11.9 11.9 0 0 0-6.2 0C6.5 2.7 5.4 3 5.4 3a4.3 4.3 0 0 0-.1 3.2A4.7 4.7 0 0 0 4 9.4c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></span><span class="tech__name">GitHub</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M4.5 3.5h15v14h-9.5l-4 3.5v-3.5h-1.5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><text x="12" y="13.8" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">S</text></svg></span><span class="tech__name">Storyblok</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c3.6 4 5.2 7.4 5.2 10.4 0 3.6-2.4 6-5.2 7-2.8-1-5.2-3.4-5.2-7 0-3 1.6-6.4 5.2-10.4z"/><path d="M12 6.5v15"/></svg></span><span class="tech__name">MongoDB</span></span></div>
-      </div>
-      <div class="marquee__row marquee__row--right">
-        <div class="marquee__group"><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c3.6 4 5.2 7.4 5.2 10.4 0 3.6-2.4 6-5.2 7-2.8-1-5.2-3.4-5.2-7 0-3 1.6-6.4 5.2-10.4z"/><path d="M12 6.5v15"/></svg></span><span class="tech__name">MongoDB</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M4.5 3.5h15v14h-9.5l-4 3.5v-3.5h-1.5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><text x="12" y="13.8" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">S</text></svg></span><span class="tech__name">Storyblok</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.4-4-2.4-6-3m12 5v-3.6c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.7 4.7 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a11.9 11.9 0 0 0-6.2 0C6.5 2.7 5.4 3 5.4 3a4.3 4.3 0 0 0-.1 3.2A4.7 4.7 0 0 0 4 9.4c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></span><span class="tech__name">GitHub</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 3H9a3 3 0 0 0 0 6h3z"/><path d="M12 3h3a3 3 0 0 1 0 6h-3z"/><path d="M12 9H9a3 3 0 0 0 0 6h3z"/><circle cx="15" cy="12" r="3"/><path d="M12 15H9a3 3 0 1 0 3 3z"/></svg></span><span class="tech__name">Figma</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M12 3l7.4 4.2v8.6L12 20l-7.4-4.2V7.2z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="15.3" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">N</text></svg></span><span class="tech__name">Node.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16.2" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">JS</text></svg></span><span class="tech__name">JavaScript</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">3</text></svg></span><span class="tech__name">CSS</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">5</text></svg></span><span class="tech__name">HTML</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">D3</text></svg></span><span class="tech__name">D3</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 4.5L4.5 19h15z"/></svg></span><span class="tech__name">Three.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 15c4.5 0 6.5-7 11-7 2.2 0 3.5 1.4 3.5 3.2"/><circle cx="18.3" cy="11.4" r="1.7" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">GSAP</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 16V8l7.2 10M15 8v5"/></svg></span><span class="tech__name">Next.js</span></span></div>
-        <div class="marquee__group" aria-hidden="true"><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c3.6 4 5.2 7.4 5.2 10.4 0 3.6-2.4 6-5.2 7-2.8-1-5.2-3.4-5.2-7 0-3 1.6-6.4 5.2-10.4z"/><path d="M12 6.5v15"/></svg></span><span class="tech__name">MongoDB</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M4.5 3.5h15v14h-9.5l-4 3.5v-3.5h-1.5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><text x="12" y="13.8" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">S</text></svg></span><span class="tech__name">Storyblok</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.4-4-2.4-6-3m12 5v-3.6c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.7 4.7 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a11.9 11.9 0 0 0-6.2 0C6.5 2.7 5.4 3 5.4 3a4.3 4.3 0 0 0-.1 3.2A4.7 4.7 0 0 0 4 9.4c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></span><span class="tech__name">GitHub</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 3H9a3 3 0 0 0 0 6h3z"/><path d="M12 3h3a3 3 0 0 1 0 6h-3z"/><path d="M12 9H9a3 3 0 0 0 0 6h3z"/><circle cx="15" cy="12" r="3"/><path d="M12 15H9a3 3 0 1 0 3 3z"/></svg></span><span class="tech__name">Figma</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M12 3l7.4 4.2v8.6L12 20l-7.4-4.2V7.2z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="15.3" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">N</text></svg></span><span class="tech__name">Node.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16.2" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="currentColor">JS</text></svg></span><span class="tech__name">JavaScript</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">3</text></svg></span><span class="tech__name">CSS</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><path d="M5 3.5l1.15 14.2L12 19.5l5.85-1.8L19 3.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><text x="12" y="14.6" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="700" fill="currentColor">5</text></svg></span><span class="tech__name">HTML</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="12" y="16" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7.5" font-weight="700" fill="currentColor">D3</text></svg></span><span class="tech__name">D3</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 4.5L4.5 19h15z"/></svg></span><span class="tech__name">Three.js</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 15c4.5 0 6.5-7 11-7 2.2 0 3.5 1.4 3.5 3.2"/><circle cx="18.3" cy="11.4" r="1.7" fill="currentColor" stroke="none"/></svg></span><span class="tech__name">GSAP</span></span><span class="tech"><span class="tech__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 16V8l7.2 10M15 8v5"/></svg></span><span class="tech__name">Next.js</span></span></div>
-      </div>
-    </div>
-  </section> -->
-
-    <!-- <section class="process" id="process">
-    <div class="process__header">
-      <h2 class="process__heading">How we <span class="focus__title-accent">work</span></h2>
-    </div>
-    <div class="process__track">
-        <article class="process__step">
-          <span class="process__bignum" aria-hidden="true">01</span>
-          <div class="process__content">
-            <span class="process__step-label">Step 01</span>
-            <h3 class="process__title">Discover</h3>
-            <p class="process__desc">I start with your goals, your users and whatever you are stuck with. Research, plus a workshop to kick it off.</p>
+      <div class="shell wordmark">
+        <hr>
+        <div class="wordmark__inner" aria-hidden="true">
+          <div class="wordmark__word" data-turn="out">
+            <span style="--i:0">M</span><span style="--i:1">I</span><span style="--i:2">S</span><span style="--i:3">C</span><span style="--i:4">&nbsp;</span><span style="--i:5">S</span><span style="--i:6">T</span><span style="--i:7">U</span><span style="--i:8">D</span><span style="--i:9">I</span><span style="--i:10">O</span>
           </div>
-        </article>
-        <article class="process__step">
-          <span class="process__bignum" aria-hidden="true">02</span>
-          <div class="process__content">
-            <span class="process__step-label">Step 02</span>
-            <h3 class="process__title">Design</h3>
-            <p class="process__desc">I shape it into wireframes and a polished UI, backed by a scalable design system.</p>
+          <div class="wordmark__word" data-turn="in">
+            <span style="--i:0">M</span><span style="--i:1">I</span><span style="--i:2">S</span><span style="--i:3">C</span><span style="--i:4">&nbsp;</span><span style="--i:5">S</span><span style="--i:6">T</span><span style="--i:7">U</span><span style="--i:8">D</span><span style="--i:9">I</span><span style="--i:10">O</span>
           </div>
-        </article>
-        <article class="process__step">
-          <span class="process__bignum" aria-hidden="true">03</span>
-          <div class="process__content">
-            <span class="process__step-label">Step 03</span>
-            <h3 class="process__title">Build</h3>
-            <p class="process__desc">I turn the designs into code that still makes sense a year from now.</p>
-          </div>
-        </article>
-        <article class="process__step">
-          <span class="process__bignum" aria-hidden="true">04</span>
-          <div class="process__content">
-            <span class="process__step-label">Step 04</span>
-            <h3 class="process__title">Launch</h3>
-            <p class="process__desc">I ship it, monitor it, and stay on for ongoing support and improvements.</p>
-          </div>
-        </article>
-    </div>
-    <div class="process__dots"><span class="process__dot"></span><span class="process__dot"></span><span class="process__dot"></span><span class="process__dot"></span><span class="process__dot"></span></div>
-    <div class="process__hint" aria-hidden="true">Scroll</div>
-  </section> -->
-
-  <!-- About. The wave from the logo becomes a waterline: scrolling through the
-       section raises it across the portrait, so the mark that opens every page
-       is also what introduces the person behind it. Both wave paths are
-       generated from one sine function in nomi-studio.js — the mask that lights
-       the photo and the visible crest are literally the same curve. -->
-
-
-  <!-- Timeline. The arrow travels a winding path past each event; the curve,
-       the arrow and every event position are generated from one sine function
-       in nomi-studio.js, so they cannot drift apart. -->
-  <!-- <section class="tlpath" id="timeline">
-    <div class="tlpath__head">
-      <span class="tlpath__eyebrow">Timeline</span>
-      <h2 class="tlpath__title">The road so far</h2>
-    </div>
-    <div class="tlpath__viewport">
-      <div class="tlpath__track">
-        <svg class="tlpath__svg" aria-hidden="true">
-          <path class="tlpath__line"></path>
-          <path class="tlpath__trail"></path>
-        </svg>
-        <div class="tlpath__arrow" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10" fill="var(--color-black)"></circle>
-            <path d="M9 7l6 5-6 5"></path>
-          </svg>
         </div>
-        <ol class="tlpath__events">
-          <li class="tlev tlev--above" data-i="0">
-            <span class="tlev__dot" aria-hidden="true"></span>
-            <span class="tlev__stem" aria-hidden="true"></span>
-            <div class="tlev__card">
-              <span class="tlev__year">2021</span>
-              <span class="tlev__type">Education</span>
-              <span class="tlev__what">Technical Computer Science</span>
-              <span class="tlev__where">AUAS</span>
+        <hr>
+      </div>
+    </section>
+
+    <!-- ── Approach ───────────────────────────────────────────────── -->
+    <section class="section" id="approach" data-surface="void" aria-labelledby="approach-title">
+      <div class="grain" aria-hidden="true"></div>
+      <div class="shell">
+        <h2 class="sr-only" id="approach-title">Approach</h2>
+        <p class="statement" data-sweep style="margin-bottom:var(--space-2xl)">Good design earns trust. I design in Figma, build what I design and check the security along the way. <span class="accent">One person from first sketch to launch,</span> so nothing gets lost in a handover.</p>
+        <div class="bento">
+          <article class="card bento__lead" data-reveal>
+            <div class="avatars" role="img" aria-label="Mitchell Scholte, MISC STUDIO">
+              <span class="avatar"><img src="assets/img/people/MS-avatar.jpg" alt="" width="128" height="128" loading="lazy"></span>
+              <span class="avatar avatar--logo"><img src="assets/img/brand/logo-192.webp" alt="" width="128" height="128" loading="lazy"></span>
             </div>
+            <div style="display:grid;gap:var(--space-sm)">
+              <h3 class="t-narrative balance">One person.<br><span class="soft">From first sketch to launch.</span></h3>
+              <p>I’m Mitchell Scholte, a creative developer in Hoofddorp, near Amsterdam. You talk to the person who designs and builds your site, from the intro call to the handover.</p>
+            </div>
+            <div class="bento__foot">
+              <a class="btn btn--compact" data-variant="secondary" href="about.html">
+                <span class="btn__copy"><span class="btn__label">More about me</span></span>
+                <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">More about me</span></span></span>
+                <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </a>
+            </div>
+          </article>
+
+          <article class="card" data-reveal style="--d:1">
+            <span class="card__num">01</span>
+            <h3 class="t-heading">System architecture.<br><span class="soft">Planned before it’s coded.</span></h3>
+            <p>I plan the structure before writing the code. Clear boundaries and simple data flow keep a project easy to grow and easy to hand over.</p>
+            <svg class="card__art" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="18" y="4" width="12" height="10" rx="2"/><rect x="4" y="34" width="12" height="10" rx="2"/><rect x="32" y="34" width="12" height="10" rx="2"/><path d="M24 14v8M10 34v-6h28v6M24 22v6"/></svg>
+          </article>
+
+          <article class="card" data-reveal style="--d:2">
+            <span class="card__num">02</span>
+            <h3 class="t-heading">Secure software.<br><span class="soft">Built in, not bolted on.</span></h3>
+            <p>Inputs get validated, data stays protected and dependencies stay up to date.</p>
+            <svg class="card__art" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M24 4l16 6v12c0 10-7 18-16 22C15 40 8 32 8 22V10z"/><path d="M17 24l5 5 9-10"/></svg>
+          </article>
+
+          <article class="card" data-reveal style="--d:3">
+            <span class="card__num">03</span>
+            <h3 class="t-heading">UX design.<br><span class="soft">Starts with the person.</span></h3>
+            <p>Every screen starts with the person using it. Clear flows and fewer clicks, on phone, tablet and desktop.</p>
+            <svg class="card__art" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="4" y="8" width="30" height="22" rx="3"/><rect x="30" y="18" width="14" height="24" rx="3"/><path d="M12 38h14M19 30v8"/></svg>
+          </article>
+
+          <article class="card" data-reveal style="--d:4">
+            <span class="card__num">04</span>
+            <h3 class="t-heading">Fixed price.<br><span class="soft">Agreed before work starts.</span></h3>
+            <p>You get the scope, the planning and one fixed quote up front. No hourly surprises along the way.</p>
+            <svg class="card__art" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="4" width="32" height="40" rx="3"/><path d="M15 14h18M15 21h18M15 28h10"/><circle cx="32" cy="35" r="4"/></svg>
+          </article>
+
+          <article class="card bento__full" data-reveal>
+            <div class="section__head" style="margin:0">
+              <h3 class="t-heading">The tools.<br><span class="soft">Picked for the job, not the trend.</span></h3>
+            </div>
+            <div class="marquee" aria-label="Tools I use">
+              <ul class="marquee__track">
+                <li class="chip">Next.js</li><li class="chip">GSAP</li><li class="chip">Three.js</li><li class="chip">D3</li><li class="chip">HTML</li><li class="chip">CSS</li><li class="chip">JavaScript</li><li class="chip">Node.js</li><li class="chip">Figma</li><li class="chip">GitHub</li><li class="chip">Storyblok</li><li class="chip">Shopify</li><li class="chip">MongoDB</li>
+              </ul>
+              <ul class="marquee__track" aria-hidden="true">
+                <li class="chip">Next.js</li><li class="chip">GSAP</li><li class="chip">Three.js</li><li class="chip">D3</li><li class="chip">HTML</li><li class="chip">CSS</li><li class="chip">JavaScript</li><li class="chip">Node.js</li><li class="chip">Figma</li><li class="chip">GitHub</li><li class="chip">Storyblok</li><li class="chip">Shopify</li><li class="chip">MongoDB</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Process ────────────────────────────────────────────────
+         Pinned while you scroll (process-dial.js): the dial on the left
+         turns, the steps rise through the middle and the dots on the right
+         reform into each step's icon. Without JS it is a plain list. -->
+    <section class="pdial" id="process" data-surface="void" data-pdial aria-labelledby="process-title">
+      <span id="services" aria-hidden="true"></span>
+      <div class="pdial__stage">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="shell pdial__top">
+          <span class="eyebrow">How it works</span>
+          <h2 class="pdial__heading" id="process-title">From first call to launch.</h2>
+          <span class="counter pdial__counter"><b data-pdial-index>01</b> / 05</span>
+        </div>
+
+        <div class="pdial__dial" aria-hidden="true">
+          <div class="pdial__ring"></div>
+          <div class="pdial__wheel">
+            <span class="pdial__num is-active" style="--i:0"><span><i></i>01</span></span>
+            <span class="pdial__num" style="--i:1"><span><i></i>02</span></span>
+            <span class="pdial__num" style="--i:2"><span><i></i>03</span></span>
+            <span class="pdial__num" style="--i:3"><span><i></i>04</span></span>
+            <span class="pdial__num" style="--i:4"><span><i></i>05</span></span>
+          </div>
+        </div>
+
+        <canvas class="pdial__particles" aria-hidden="true"></canvas>
+
+        <ol class="pdial__steps">
+          <li class="pdial__step" data-icon="M4.5 5.5h15v10h-8l-4 3.5v-3.5h-3z">
+            <span class="pdial__label">Step 01</span>
+            <h3 class="t-display">Intro call</h3>
+            <p>A free, no-obligation call about what you need, who it is for, and your budget and timeline.</p>
+            <ul class="pills"><li class="pill">Free call</li><li class="pill">Goals</li><li class="pill">Budget</li></ul>
           </li>
-          <li class="tlev tlev--below" data-i="1">
-            <span class="tlev__dot" aria-hidden="true"></span>
-            <span class="tlev__stem" aria-hidden="true"></span>
-            <div class="tlev__card">
-              <span class="tlev__year">2023</span>
-              <span class="tlev__type">Education</span>
-              <span class="tlev__what">Communication &amp; Multimedia Design</span>
-              <span class="tlev__where">AUAS</span>
-            </div>
+          <li class="pdial__step" data-icon="M5 3.5H19V20.5H5Z M8.5 10l1.4 1.4L13 8.5 M8 15h8 M8 17.5h5">
+            <span class="pdial__label">Step 02</span>
+            <h3 class="t-display">Scope &amp; quote</h3>
+            <p>I write down what gets built, when, and for how much. You get a fixed quote before any work starts.</p>
+            <ul class="pills"><li class="pill">Scope</li><li class="pill">Planning</li><li class="pill">Fixed quote</li></ul>
           </li>
-          <li class="tlev tlev--above" data-i="2">
-            <span class="tlev__dot" aria-hidden="true"></span>
-            <span class="tlev__stem" aria-hidden="true"></span>
-            <div class="tlev__card">
-              <span class="tlev__year">2025</span>
-              <span class="tlev__type">Work</span>
-              <span class="tlev__what">First UX/UI Internship</span>
-              <span class="tlev__where">Ecocharting</span>
-            </div>
+          <li class="pdial__step" data-icon="M3.5 4.5H10.5V11.5H3.5Z M3.5 14H10.5V19.5H3.5Z M13.5 4.5H20.5V19.5H13.5Z">
+            <span class="pdial__label">Step 03</span>
+            <h3 class="t-display">Design</h3>
+            <p>Flows and wireframes first, then the full design in Figma. You get two rounds of feedback before anything is built.</p>
+            <ul class="pills"><li class="pill">Wireframes</li><li class="pill">Figma</li><li class="pill">Feedback</li></ul>
+            <a class="link-arrow" href="detail-pages/services/ux-design.html">More on UX design <span aria-hidden="true">→</span></a>
           </li>
-          <li class="tlev tlev--below" data-i="3">
-            <span class="tlev__dot" aria-hidden="true"></span>
-            <span class="tlev__stem" aria-hidden="true"></span>
-            <div class="tlev__card">
-              <span class="tlev__year">2025</span>
-              <span class="tlev__type">Venture</span>
-              <span class="tlev__what">Founded a Software Company</span>
-              <span class="tlev__where">Day-to-Day</span>
-            </div>
+          <li class="pdial__step" data-icon="M9 8l-4 4 4 4M15 8l4 4-4 4">
+            <span class="pdial__label">Step 04</span>
+            <h3 class="t-display">Build</h3>
+            <p>I build the design to match. It is tested on phone, tablet and desktop, with accessibility and security checked along the way.</p>
+            <ul class="pills"><li class="pill">Frontend</li><li class="pill">Backend</li><li class="pill">Testing</li></ul>
+            <a class="link-arrow" href="detail-pages/services/web-development.html">More on development <span aria-hidden="true">→</span></a>
           </li>
-          <li class="tlev tlev--above" data-i="4">
-            <span class="tlev__dot" aria-hidden="true"></span>
-            <span class="tlev__stem" aria-hidden="true"></span>
-            <div class="tlev__card">
-              <span class="tlev__year">2025</span>
-              <span class="tlev__type">Certification</span>
-              <span class="tlev__what">Junior Software Developer Certification</span>
-              <span class="tlev__where">Amazon</span>
-            </div>
-          </li>
-          <li class="tlev tlev--below" data-i="5">
-            <span class="tlev__dot" aria-hidden="true"></span>
-            <span class="tlev__stem" aria-hidden="true"></span>
-            <div class="tlev__card">
-              <span class="tlev__year">2025</span>
-              <span class="tlev__type">Work</span>
-              <span class="tlev__what">Teaching Assistant, Front-end Development</span>
-              <span class="tlev__where">AUAS</span>
-            </div>
-          </li>
-          <li class="tlev tlev--above" data-i="6">
-            <span class="tlev__dot" aria-hidden="true"></span>
-            <span class="tlev__stem" aria-hidden="true"></span>
-            <div class="tlev__card">
-              <span class="tlev__year">2025</span>
-              <span class="tlev__type">Certification</span>
-              <span class="tlev__what">Ethical Hacking with Open Source Tools</span>
-              <span class="tlev__where">IBM Specialization</span>
-            </div>
-          </li>
-          <li class="tlev tlev--below" data-i="7">
-            <span class="tlev__dot" aria-hidden="true"></span>
-            <span class="tlev__stem" aria-hidden="true"></span>
-            <div class="tlev__card">
-              <span class="tlev__year">2025</span>
-              <span class="tlev__type">Education</span>
-              <span class="tlev__what">Minor Business Law</span>
-              <span class="tlev__where">AUAS</span>
-            </div>
-          </li>
-          <li class="tlev tlev--above" data-i="8">
-            <span class="tlev__dot" aria-hidden="true"></span>
-            <span class="tlev__stem" aria-hidden="true"></span>
-            <div class="tlev__card">
-              <span class="tlev__year">2026</span>
-              <span class="tlev__type">Education</span>
-              <span class="tlev__what">Minor Web Design &amp; Development</span>
-              <span class="tlev__where">AUAS</span>
-            </div>
-          </li>
-          <li class="tlev tlev--below" data-i="9">
-            <span class="tlev__dot" aria-hidden="true"></span>
-            <span class="tlev__stem" aria-hidden="true"></span>
-            <div class="tlev__card">
-              <span class="tlev__year">2026</span>
-              <span class="tlev__type">Work</span>
-              <span class="tlev__what">Front-end Development Internship</span>
-              <span class="tlev__where">Build in Amsterdam</span>
-            </div>
+          <li class="pdial__step" data-icon="M12 2.5c3.2 2.6 4.8 6 4.8 10.2l-2.3 3.8h-5l-2.3-3.8C7.2 8.5 8.8 5.1 12 2.5Z M10.5 9.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0-3 0 M9.5 16.5L7 20 M14.5 16.5L17 20 M12 18v3.5">
+            <span class="pdial__label">Step 05</span>
+            <h3 class="t-display">Launch &amp; support</h3>
+            <p>The site goes live and you get the keys, including CMS training if needed. I stay available after launch.</p>
+            <ul class="pills"><li class="pill">Launch</li><li class="pill">Handover</li><li class="pill">Support</li></ul>
           </li>
         </ol>
       </div>
-    </div>
-    <span class="tlpath__hint">Scroll</span>
-  </section> -->
+    </section>
 
-  <!-- Credentials. Every field below was read off the actual certificate scan
-       in assets/img/certificates/ — issuer, date and verification code all match the
-       document each row links to. Newest first. -->
-  <!-- <section class="certs" id="certificates">
-    <div class="container certs__container">
-      <div class="certs__head">
-        <span class="certs__eyebrow">Credentials</span>
-        <h2 class="certs__title">Certified, and <span class="focus__title-accent">verifiable</span></h2>
-      </div>
-
-      <div class="creds">
-        <div class="creds__stage">
-          <article class="cred is-active" data-cred="0">
-            <a class="cred__doc" href="assets/img/certificates/londen_fullstack.png" target="_blank" rel="noopener" aria-label="Open the Full-Stack Web Development certificate">
-              <img src="assets/img/certificates/londen_fullstack.png" alt="" loading="lazy">
-            </a>
-            <p class="cred__cap"><span>University of London · <time datetime="2026-01-28">2026-01-28</time> · Specialization · 3 courses</span><a class="cred__verify" href="https://coursera.org/verify/specialization/RQP2ETQYTPQ6" target="_blank" rel="noopener">Verify ↗</a></p>
-          </article>
-          <article class="cred" data-cred="1" aria-hidden="true">
-            <a class="cred__doc" href="assets/img/certificates/ethicalHacking.png" target="_blank" rel="noopener" aria-label="Open the Ethical Hacking with Open Source Tools certificate">
-              <img src="assets/img/certificates/ethicalHacking.png" alt="" loading="lazy">
-            </a>
-            <p class="cred__cap"><span>IBM · SkillUp · <time datetime="2025-10-08">2025-10-08</time> · Professional Certificate · 5 courses</span><a class="cred__verify" href="https://coursera.org/verify/professional-cert/RI1MHCBYI3V0" target="_blank" rel="noopener">Verify ↗</a></p>
-          </article>
-          <article class="cred" data-cred="2" aria-hidden="true">
-            <a class="cred__doc" href="assets/img/certificates/amazon_Junior_software_developer.png" target="_blank" rel="noopener" aria-label="Open the Amazon Junior Software Developer certificate">
-              <img src="assets/img/certificates/amazon_Junior_software_developer.png" alt="" loading="lazy">
-            </a>
-            <p class="cred__cap"><span>Amazon · <time datetime="2025-08-17">2025-08-17</time> · Professional Certificate · 7 courses</span><a class="cred__verify" href="https://coursera.org/verify/professional-cert/5GOJ9UKHLDHX" target="_blank" rel="noopener">Verify ↗</a></p>
-          </article>
-          <article class="cred" data-cred="3" aria-hidden="true">
-            <a class="cred__doc" href="assets/img/certificates/Amazon_Introduction.png" target="_blank" rel="noopener" aria-label="Open the Introduction to Software Development certificate">
-              <img src="assets/img/certificates/Amazon_Introduction.png" alt="" loading="lazy">
-            </a>
-            <p class="cred__cap"><span>Amazon · <time datetime="2025-07-04">2025-07-04</time> · Course</span><a class="cred__verify" href="https://coursera.org/verify/V01V12UOGJPJ" target="_blank" rel="noopener">Verify ↗</a></p>
-          </article>
-          <article class="cred" data-cred="4" aria-hidden="true">
-            <a class="cred__doc" href="assets/img/certificates/Jr_Penetration_Tester.png" target="_blank" rel="noopener" aria-label="Open the Jr Penetration Tester certificate">
-              <img src="assets/img/certificates/Jr_Penetration_Tester.png" alt="" loading="lazy">
-            </a>
-            <p class="cred__cap"><span>TryHackMe · <time datetime="2025-06-08">2025-06-08</time> · Learning Path · 30h 40m</span><span class="cred__verify" style="border:none;color:var(--color-dim)">Ref THM-V8OEOCDDEO</span></p>
-          </article>
-          <article class="cred" data-cred="5" aria-hidden="true">
-            <a class="cred__doc" href="assets/img/certificates/Web_Fundamentals.png" target="_blank" rel="noopener" aria-label="Open the Web Fundamentals certificate">
-              <img src="assets/img/certificates/Web_Fundamentals.png" alt="" loading="lazy">
-            </a>
-            <p class="cred__cap"><span>TryHackMe · <time datetime="2025-05-29">2025-05-29</time> · Learning Path · 17h 20m</span><span class="cred__verify" style="border:none;color:var(--color-dim)">Ref THM-UUDLEMAULA</span></p>
-          </article>
-          <article class="cred" data-cred="6" aria-hidden="true">
-            <a class="cred__doc" href="assets/img/certificates/Cybersecurity_101.png" target="_blank" rel="noopener" aria-label="Open the Cyber Security 101 certificate">
-              <img src="assets/img/certificates/Cybersecurity_101.png" alt="" loading="lazy">
-            </a>
-            <p class="cred__cap"><span>TryHackMe · <time datetime="2025-05-19">2025-05-19</time> · Learning Path · 45h 53m</span><span class="cred__verify" style="border:none;color:var(--color-dim)">Ref THM-JFFACCUDPL</span></p>
-          </article>
+    <!-- ── Work ───────────────────────────────────────────────────── -->
+    <section class="work-orbit" id="work" data-surface="light" data-orbit aria-labelledby="work-title">
+      <span id="showcase" aria-hidden="true"></span>
+      <!-- The ring of screens (work-orbit.js) is drawn into the canvas over
+           the heading. Without WebGL the section is just the heading and the
+           grid below it, which is also where the ring reads its projects. -->
+      <div class="work-orbit__stage" tabindex="-1">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="shell work-orbit__top">
+          <span class="eyebrow">Selected work</span>
+          <span class="counter work-orbit__counter"><b data-orbit-index>01</b> / <span data-orbit-total>06</span></span>
         </div>
-
-        <ol class="creds__list">
-          <li>
-            <button type="button" class="cred__row is-active" data-cred="0" aria-pressed="true">
-              <span class="cred__idx">01</span>
-              <span class="cred__name">Full-Stack Web Development</span>
-              <span class="cred__sub">University of London · 2026</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="cred__row" data-cred="1" aria-pressed="false">
-              <span class="cred__idx">02</span>
-              <span class="cred__name">Ethical Hacking with Open Source Tools</span>
-              <span class="cred__sub">IBM · SkillUp · 2025</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="cred__row" data-cred="2" aria-pressed="false">
-              <span class="cred__idx">03</span>
-              <span class="cred__name">Amazon Junior Software Developer</span>
-              <span class="cred__sub">Amazon · 2025</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="cred__row" data-cred="3" aria-pressed="false">
-              <span class="cred__idx">04</span>
-              <span class="cred__name">Introduction to Software Development</span>
-              <span class="cred__sub">Amazon · 2025</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="cred__row" data-cred="4" aria-pressed="false">
-              <span class="cred__idx">05</span>
-              <span class="cred__name">Jr Penetration Tester</span>
-              <span class="cred__sub">TryHackMe · 2025</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="cred__row" data-cred="5" aria-pressed="false">
-              <span class="cred__idx">06</span>
-              <span class="cred__name">Web Fundamentals</span>
-              <span class="cred__sub">TryHackMe · 2025</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="cred__row" data-cred="6" aria-pressed="false">
-              <span class="cred__idx">07</span>
-              <span class="cred__name">Cyber Security 101</span>
-              <span class="cred__sub">TryHackMe · 2025</span>
-            </button>
-          </li>
-        </ol>
-      </div>
-    </div>
-  </section> -->
-
-
-  <section class="services" id="services">
-    <div class="container services__container">
-      <!-- Left dial: a big faint ring with 01–05 markers that rotate on scroll -->
-      <div class="dial" aria-hidden="true">
-        <div class="dial-ring"></div>
-        <div class="dial-wheel">
-          <div class="dial-num is-active" style="--i:0">
-            <div class="dial-num__inner">
-              <span class="dial-dot"></span>
-              <span class="dial-label">01</span>
-            </div>
-          </div>
-          <div class="dial-num" style="--i:1">
-            <div class="dial-num__inner">
-              <span class="dial-dot"></span>
-              <span class="dial-label">02</span>
-            </div>
-          </div>
-          <div class="dial-num" style="--i:2">
-            <div class="dial-num__inner">
-              <span class="dial-dot"></span>
-              <span class="dial-label">03</span>
-            </div>
-          </div>
-          <div class="dial-num" style="--i:3">
-            <div class="dial-num__inner">
-              <span class="dial-dot"></span>
-              <span class="dial-label">04</span>
-            </div>
-          </div>
-          <div class="dial-num" style="--i:4">
-            <div class="dial-num__inner">
-              <span class="dial-dot"></span>
-              <span class="dial-label">05</span>
-            </div>
+        <h2 class="work-orbit__title t-mega lines" id="work-title" data-reveal><span><span>Made with care.</span></span><span><span class="soft">Built to last.</span></span></h2>
+        <canvas class="work-orbit__canvas" aria-hidden="true"></canvas>
+        <span class="work-orbit__cursor" aria-hidden="true"><span>View</span></span>
+        <div class="shell work-orbit__caption">
+          <p class="work-orbit__now" aria-live="polite"><span class="work__title" data-orbit-title></span><span class="work__tag" data-orbit-tag></span></p>
+          <div class="work-orbit__nav">
+            <button class="work-orbit__arrow" type="button" data-orbit-step="-1" aria-label="Previous project"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4"/></svg></button>
+            <button class="work-orbit__arrow" type="button" data-orbit-step="1" aria-label="Next project"><svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+            <a class="btn btn--compact" data-variant="primary" href="#contact" data-orbit-link>
+              <span class="btn__copy"><span class="btn__label">View case study</span></span>
+              <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">View case study</span></span></span>
+              <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+            </a>
           </div>
         </div>
       </div>
 
-      <!-- Center: vertical carousel of the steps a project goes through -->
-      <div class="stage">
-        <div class="stage-track">
-          <article class="service">
-            <span class="service__eyebrow">How it works</span>
-            <h2 class="service__title">Intro call</h2>
-            <p class="service__desc">A free, no-obligation call about what you need, who it is for, and your budget and timeline.</p>
-            <ul class="service__pills">
-              <li class="pill">Free call</li>
-              <li class="pill">Goals</li>
-              <li class="pill">Budget</li>
-            </ul>
+      <div class="shell work-orbit__list">
+        <p class="section__aside" style="margin-bottom:var(--space-lg)">Client sites, sales sites, a data story and a hackathon build. Every one has a case study behind it.</p>
+        <ul class="work-grid">
+          <li data-reveal>
+            <a class="work" href="detail-pages/work/case-study.html?project=scholtes-klusbedrijf">
+              <span class="work__media">
+                <img data-parallax src="assets/img/projects/scholtes-klusbedrijf.webp" alt="" width="1920" height="1200" loading="lazy" decoding="async">
+                <span class="work__go" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </span>
+              <span class="work__meta"><span class="work__title">Scholtes Klusbedrijf</span><span class="work__tag">Client website · 2026</span></span>
+            </a>
+          </li>
+          <li data-reveal style="--d:1">
+            <a class="work" href="detail-pages/work/case-study.html?project=day-to-day-secure">
+              <span class="work__media">
+                <img data-parallax src="assets/img/projects/day-to-day-secure.webp" alt="" width="1920" height="1200" loading="lazy" decoding="async">
+                <span class="work__go" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </span>
+              <span class="work__meta"><span class="work__title">day-to-day secure</span><span class="work__tag">Sales site · 2026</span></span>
+            </a>
+          </li>
+          <li data-reveal>
+            <a class="work" href="detail-pages/work/case-study.html?project=visdeurbel">
+              <span class="work__media">
+                <img data-parallax src="assets/img/projects/visdeurbel.webp" alt="" width="1920" height="1200" loading="lazy" decoding="async">
+                <span class="work__go" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </span>
+              <span class="work__meta"><span class="work__title">Visdeurbel Datavis.</span><span class="work__tag">Data visualisation · 2026</span></span>
+            </a>
+          </li>
+          <li data-reveal style="--d:1">
+            <a class="work" href="detail-pages/work/case-study.html?project=ai-academy">
+              <span class="work__media">
+                <img data-parallax src="assets/img/projects/ai-academy-salessite.webp" alt="" width="1920" height="1200" loading="lazy" decoding="async">
+                <span class="work__go" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </span>
+              <span class="work__meta"><span class="work__title">AI Academy</span><span class="work__tag">Sales site · 2026</span></span>
+            </a>
+          </li>
+          <li data-reveal>
+            <a class="work" href="detail-pages/work/case-study.html?project=sron">
+              <span class="work__media">
+                <img data-parallax src="assets/img/projects/sron.webp" alt="" width="1920" height="1200" loading="lazy" decoding="async">
+                <span class="work__go" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </span>
+              <span class="work__meta"><span class="work__title">SRON</span><span class="work__tag">Hackathon · 2026</span></span>
+            </a>
+          </li>
+          <li data-reveal style="--d:1">
+            <a class="work work--slot" href="#contact">
+              <span class="work__media">
+                <span class="work__plus" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg></span>
+                <span class="t-heading">Your project.<br><span class="soft">Could be next.</span></span>
+              </span>
+              <span class="work__meta"><span class="work__title">Start a project</span><span class="work__tag">Free intro call</span></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── Pricing ────────────────────────────────────────────────── -->
+    <section class="section" id="pricing" data-surface="paper" aria-labelledby="pricing-title">
+      <div class="shell">
+        <div class="section__head">
+          <div class="section__intro">
+            <span class="eyebrow">Pricing</span>
+            <h2 class="t-display lines" id="pricing-title" data-reveal><span><span>Choose.</span></span><span><span class="soft">Your project.</span></span></h2>
+          </div>
+          <p class="section__aside" data-reveal>One fixed price per project, agreed before any work starts. Pick the size that fits, or let’s work it out together.</p>
+        </div>
+
+        <div class="plans">
+          <article class="plan plan--small" data-reveal>
+            <div class="plan__tile">
+              <div class="grain" aria-hidden="true"></div>
+              <div class="plan__name-row"><h3 class="t-title">Small project</h3></div>
+              <div class="plan__price">
+                <span class="plan__from">From</span>
+                <span class="plan__amount"><span class="num" data-ticker>€1,500</span><span class="plan__unit">/project</span></span>
+              </div>
+            </div>
+            <div class="plan__body">
+              <p class="plan__desc">A landing page or small site, designed and built by one person. One fixed price for the whole project.</p>
+              <ul class="checklist">
+                <li>Design in Figma, built to match</li>
+                <li>Up to 5 pages, fully responsive</li>
+                <li>Fast, accessible and SEO-ready</li>
+                <li>Two rounds of feedback</li>
+                <li>Launch and handover</li>
+              </ul>
+              <a class="btn btn--block" data-variant="ink" href="#contact" data-project-size="small">
+                <span class="btn__copy"><span class="btn__label">Start a small project</span></span>
+                <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Start a small project</span></span></span>
+                <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </a>
+            </div>
           </article>
-          <article class="service">
-            <span class="service__eyebrow">How it works</span>
-            <h2 class="service__title">Scope &amp; quote</h2>
-            <p class="service__desc">I write down what gets built, when, and for how much. You get a fixed quote before any work starts.</p>
-            <ul class="service__pills">
-              <li class="pill">Scope</li>
-              <li class="pill">Planning</li>
-              <li class="pill">Fixed quote</li>
-            </ul>
+
+          <article class="plan plan--large" data-reveal style="--d:1">
+            <div class="plan__tile">
+              <div class="grain" aria-hidden="true"></div>
+              <div class="plan__name-row"><h3 class="t-title">Larger project</h3><span class="plan__badge">Research to launch</span></div>
+              <div class="plan__price">
+                <span class="plan__from">From</span>
+                <span class="plan__amount"><span class="num" data-ticker>€5,000</span><span class="plan__unit">/project</span></span>
+              </div>
+            </div>
+            <div class="plan__body">
+              <p class="plan__desc">A full website or web app, from research to launch. Everything in the small project, plus:</p>
+              <ul class="checklist">
+                <li>User research &amp; flows</li>
+                <li>Visual design &amp; design system</li>
+                <li>CMS (Storyblok), backend &amp; APIs</li>
+                <li>GSAP &amp; 3D animation</li>
+                <li>Support after launch</li>
+              </ul>
+              <a class="btn btn--block" data-variant="primary" href="#contact" data-project-size="larger">
+                <span class="btn__copy"><span class="btn__label">Start a larger project</span></span>
+                <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Start a larger project</span></span></span>
+                <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </a>
+            </div>
           </article>
-          <article class="service">
-            <span class="service__eyebrow">How it works</span>
-            <h2 class="service__title">Design</h2>
-            <p class="service__desc">Flows and wireframes first, then the full design in Figma. You get two rounds of feedback before anything is built.</p>
-            <ul class="service__pills">
-              <li class="pill">Wireframes</li>
-              <li class="pill">Figma</li>
-              <li class="pill">Feedback</li>
-            </ul>
-            <a class="service__link" href="detail-pages/services/ux-design.html">More on UX design <span class="service__arrow">→</span></a>
-          </article>
-          <article class="service">
-            <span class="service__eyebrow">How it works</span>
-            <h2 class="service__title">Build</h2>
-            <p class="service__desc">I build the design to match. It is tested on phone, tablet and desktop, with accessibility and security checked along the way.</p>
-            <ul class="service__pills">
-              <li class="pill">Frontend</li>
-              <li class="pill">Backend</li>
-              <li class="pill">Testing</li>
-            </ul>
-            <a class="service__link" href="detail-pages/services/web-development.html">More on development <span class="service__arrow">→</span></a>
-          </article>
-          <article class="service">
-            <span class="service__eyebrow">How it works</span>
-            <h2 class="service__title">Launch &amp; support</h2>
-            <p class="service__desc">The site goes live and you get the keys, including CMS training if needed. I stay available after launch.</p>
-            <ul class="service__pills">
-              <li class="pill">Launch</li>
-              <li class="pill">Handover</li>
-              <li class="pill">Support</li>
-            </ul>
-            <a class="service__link" href="#contact">Start a project <span class="service__arrow">→</span></a>
+
+          <article class="plan plan--custom" data-reveal style="--d:2">
+            <div class="plan__tile">
+              <div class="grain" aria-hidden="true"></div>
+              <div class="plan__name-row"><h3 class="t-title">Custom project</h3></div>
+              <div class="plan__price">
+                <span class="plan__from">Price</span>
+                <span class="plan__amount plan__amount--text">On request</span>
+              </div>
+            </div>
+            <div class="plan__body">
+              <p class="plan__desc">Not sure what you need yet, or it does not fit a package? We work out the scope together first, then you get a price.</p>
+              <ul class="checklist">
+                <li>Free intro call</li>
+                <li>Scope &amp; plan worked out together</li>
+                <li>Fixed quote before anything starts</li>
+                <li>Any mix of design and build</li>
+                <li>No obligation</li>
+              </ul>
+              <a class="btn btn--block" data-variant="ink" href="#contact" data-project-size="unknown">
+                <span class="btn__copy"><span class="btn__label">Ask for a quote</span></span>
+                <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Ask for a quote</span></span></span>
+                <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </a>
+            </div>
           </article>
         </div>
-      </div>
 
-      <!-- Right: a line icon that morphs from one step to the next on scroll -->
-      <div class="svc-visual">
-        <svg class="svc-visual__svg" viewBox="0 0 24 24" aria-hidden="true">
-          <defs>
-            <path id="icon-intro" d="M4.5 5.5h15v10h-8l-4 3.5v-3.5h-3z"></path>
-            <path id="icon-scope" d="M5 3.5H19V20.5H5Z M8.5 10l1.4 1.4L13 8.5 M8 15h8 M8 17.5h5"></path>
-            <path id="icon-ux" d="M3.5 4.5H10.5V11.5H3.5Z M3.5 14H10.5V19.5H3.5Z M13.5 4.5H20.5V19.5H13.5Z"></path>
-            <path id="icon-web" d="M9 8l-4 4 4 4M15 8l4 4-4 4"></path>
-            <path id="icon-launch" d="M12 2.5c3.2 2.6 4.8 6 4.8 10.2l-2.3 3.8h-5l-2.3-3.8C7.2 8.5 8.8 5.1 12 2.5Z M10.5 9.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0-3 0 M9.5 16.5L7 20 M14.5 16.5L17 20 M12 18v3.5"></path>
-          </defs>
-          <path id="svc-icon" class="svc-icon" d="M4.5 5.5h15v10h-8l-4 3.5v-3.5h-3z"></path>
-        </svg>
+        <div class="plans__note" data-reveal>
+          <p class="t-heading">Something else in mind?<br><span class="soft">Let’s work out the scope together.</span></p>
+          <a class="btn" data-variant="secondary" href="#contact" data-project-size="unknown">
+            <span class="btn__copy"><span class="btn__label">Book a free intro call</span></span>
+            <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Book a free intro call</span></span></span>
+            <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </a>
+        </div>
       </div>
-    </div>
-  </section>
-  <section class="pricing" id="pricing">
-    <div class="container pricing__container">
-      <h2 class="pricing__title">Pick the <span class="focus__title-accent">project</span><br>that fits yours</h2>
+    </section>
 
-      <div class="pricing__grid">
-        <!-- Small project — design + build, one fixed price -->
-        <article class="plan">
-          <div class="plan__head">
-            <span class="plan__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 4.5H10.5V11.5H3.5Z M3.5 14H10.5V19.5H3.5Z M13.5 4.5H20.5V19.5H13.5Z"/></svg>
+    <!-- ── Journal ────────────────────────────────────────────────── -->
+    <section class="section" id="journal" data-surface="paper" aria-labelledby="journal-title" style="padding-top:0">
+      <span id="blog" aria-hidden="true"></span>
+      <div class="shell">
+        <div class="section__head">
+          <div class="section__intro">
+            <span class="eyebrow">Journal</span>
+            <h2 class="t-display lines" id="journal-title" data-reveal><span><span>Notes.</span></span><span><span class="soft">From the work.</span></span></h2>
+          </div>
+          <a class="btn" data-variant="secondary" href="blog.html">
+            <span class="btn__copy"><span class="btn__label">All posts</span></span>
+            <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">All posts</span></span></span>
+            <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </a>
+        </div>
+
+        <div class="posts">
+          <a class="post" href="blog/nextjs-course.html" data-reveal>
+            <span class="post__media"><img src="assets/img/blog/nextjs-course.jpg" alt="" loading="lazy" decoding="async"></span>
+            <span class="post__body">
+              <span class="post__meta"><span>Development</span><span><time datetime="2026-09-10">10 Sep 2026</time> · 16 min</span></span>
+              <span class="post__title">Fifteen chapters of Next.js, and what actually stuck</span>
             </span>
-            <h3 class="plan__name">Small project</h3>
-          </div>
-          <p class="plan__desc">A landing page or small site, designed and built by one person. One fixed price for the whole project.</p>
-          <span class="plan__divider"></span>
-          <ul class="plan__features">
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="12" height="9" rx="1.3"/><path d="M5.5 17.5h6M8.5 14v3.5"/><rect x="16" y="8.5" width="5.5" height="10" rx="1.2"/><path d="M18 16.5h1.5"/></svg></span>Design in Figma, built to match</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg></span>Up to 5 pages, fully responsive</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 18a8 8 0 1 1 15 0"/><path d="M12 18l3.6-4.2"/><path d="M12 18h.01"/></svg></span>Fast, accessible and SEO-ready</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="1.5"/><path d="M8.5 10l1.4 1.4L13 8.5M8 15h8M8 17.5h5"/></svg></span>Two rounds of feedback</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13v-1a7 7 0 0 1 14 0v1"/><rect x="3.5" y="13" width="3.5" height="6" rx="1.2"/><rect x="17" y="13" width="3.5" height="6" rx="1.2"/><path d="M19 19a3 3 0 0 1-3 3h-2.5"/></svg></span>Launch and handover</li>
-          </ul>
-          <span class="plan__divider"></span>
-          <div class="plan__price"><span class="plan__period">From</span><span class="plan__amount">€1,500</span><span class="plan__period">/ project</span></div>
-          <a href="#contact" class="plan__btn blob-btn" data-project-size="small">Start a small project<span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></a>
-        </article>
-
-        <!-- Larger project — everything in small, plus more -->
-        <article class="plan">
-          <div class="plan__head">
-            <span class="plan__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg>
+          </a>
+          <a class="post" href="blog/shopify-architecture.html" data-reveal style="--d:1">
+            <span class="post__media"><img src="assets/img/blog/shopify-architecture.jpg" alt="" loading="lazy" decoding="async"></span>
+            <span class="post__body">
+              <span class="post__meta"><span>Development</span><span><time datetime="2026-10-30">30 Oct 2026</time> · 8 min</span></span>
+              <span class="post__title">How Shopify is built</span>
             </span>
-            <h3 class="plan__name">Larger project</h3>
-          </div>
-          <p class="plan__desc">A full website or web app, from research to launch. Everything in the small project, plus:</p>
-          <span class="plan__divider"></span>
-          <ul class="plan__features">
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></span>User research &amp; flows</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 9.3c2.1 0 3 2.7 3.5 2.7s1.4-2.7 3.5-2.7a2.7 2.7 0 0 1 0 5.4c-2.1 0-3-2.7-3.5-2.7s-1.4 2.7-3.5 2.7a2.7 2.7 0 0 1 0-5.4z"/></svg></span>Visual design &amp; design system</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="6.5" rx="1.4"/><rect x="3.5" y="13.5" width="17" height="6.5" rx="1.4"/><path d="M7 7.2h.01M7 16.8h.01"/></svg></span>CMS (Storyblok), backend &amp; APIs</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/><path d="M3.5 4.5h2.2l2.1 10.2h10L19.5 8H7"/></svg></span>GSAP &amp; 3D animation</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13v-1a7 7 0 0 1 14 0v1"/><rect x="3.5" y="13" width="3.5" height="6" rx="1.2"/><rect x="17" y="13" width="3.5" height="6" rx="1.2"/><path d="M19 19a3 3 0 0 1-3 3h-2.5"/></svg></span>Support after launch</li>
-          </ul>
-          <span class="plan__divider"></span>
-          <div class="plan__price"><span class="plan__period">From</span><span class="plan__amount">€5,000</span><span class="plan__period">/ project</span></div>
-          <a href="#contact" class="plan__btn blob-btn" data-project-size="larger">Start a larger project<span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></a>
-        </article>
-
-        <!-- Custom project — scope (and so price) not known yet -->
-        <article class="plan">
-          <div class="plan__head">
-            <span class="plan__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.2 9a3 3 0 1 1 4.3 2.7c-.9.4-1.5 1.2-1.5 2.2v.6"/><path d="M12 18h.01"/></svg>
+          </a>
+          <a class="post" href="blog/web-security.html" data-reveal style="--d:2">
+            <span class="post__media"><img src="assets/img/blog/web-security.jpg" alt="" loading="lazy" decoding="async"></span>
+            <span class="post__body">
+              <span class="post__meta"><span>Security</span><span><time datetime="2026-10-30">30 Oct 2026</time> · 10 min</span></span>
+              <span class="post__title">Pentesting and hardening a website</span>
             </span>
-            <h3 class="plan__name">Custom project</h3>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FAQ ────────────────────────────────────────────────────── -->
+    <section class="section" id="faq" data-surface="paper" aria-labelledby="faq-title" style="padding-top:var(--space-lg)">
+      <div class="shell">
+        <hr style="margin-bottom:var(--space-2xl)">
+        <div class="faq">
+          <div class="faq__head">
+            <span class="eyebrow">FAQ</span>
+            <h2 class="t-display lines" id="faq-title" data-reveal><span><span>Your questions.</span></span><span><span class="soft">My answers.</span></span></h2>
+            <p class="section__aside">Not in the list? Ask it in the form below. I reply the same day.</p>
           </div>
-          <p class="plan__desc">Not sure what you need yet, or it does not fit a package? We work out the scope together first, then you get a price.</p>
-          <span class="plan__divider"></span>
-          <ul class="plan__features">
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 5.5h15v10h-8l-4 3.5v-3.5h-3z"/></svg></span>Free intro call</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="1.5"/><path d="M8.5 10l1.4 1.4L13 8.5M8 15h8M8 17.5h5"/></svg></span>Scope &amp; plan worked out together</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.3"/></svg></span>Fixed quote before anything starts</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/></svg></span>Any mix of design and build</li>
-            <li class="plan__feature"><span class="plan__ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12.2l2.3 2.3 4.7-4.7"/></svg></span>No obligation</li>
+
+          <div class="faq__list">
+            <div class="faq__group">
+              <h3 class="faq__group-title">How it works</h3>
+              <details class="qa">
+                <summary>How does a project start?<span class="qa__icon" aria-hidden="true"></span></summary>
+                <p class="qa__answer">With a <strong>free, no-obligation intro call</strong>. We talk about what you need, who it is for, and your budget and timeline. After that I write down the scope and send a fixed quote.</p>
+              </details>
+              <details class="qa">
+                <summary>Who will I be working with?<span class="qa__icon" aria-hidden="true"></span></summary>
+                <p class="qa__answer">With me, Mitchell. I design and build every project myself, so the person you brief is the person who makes it.</p>
+              </details>
+              <details class="qa">
+                <summary>How much say do I have in the design?<span class="qa__icon" aria-hidden="true"></span></summary>
+                <p class="qa__answer">A lot. Flows and wireframes come first, then the full design in Figma. You get <strong>two rounds of feedback</strong> before anything is built.</p>
+              </details>
+            </div>
+
+            <div class="faq__group">
+              <h3 class="faq__group-title">Pricing</h3>
+              <details class="qa">
+                <summary>What does a website cost?<span class="qa__icon" aria-hidden="true"></span></summary>
+                <p class="qa__answer">A small project starts at <strong>€1,500</strong> and a larger one at <strong>€5,000</strong>. If it doesn’t fit either, we work out the scope together and you get a price on request.</p>
+              </details>
+              <details class="qa">
+                <summary>Is the price fixed?<span class="qa__icon" aria-hidden="true"></span></summary>
+                <p class="qa__answer">Yes. I write down what gets built, when, and for how much. You get <strong>a fixed quote before any work starts</strong>.</p>
+              </details>
+            </div>
+
+            <div class="faq__group">
+              <h3 class="faq__group-title">Launch &amp; after</h3>
+              <details class="qa">
+                <summary>Can I edit the site myself?<span class="qa__icon" aria-hidden="true"></span></summary>
+                <p class="qa__answer">Larger projects can come with a CMS (Storyblok), so you can change text and images yourself. At handover I include <strong>CMS training</strong> if you need it.</p>
+              </details>
+              <details class="qa">
+                <summary>What happens after launch?<span class="qa__icon" aria-hidden="true"></span></summary>
+                <p class="qa__answer">The site goes live and you get the keys. I stay available after launch, and larger projects include support after launch.</p>
+              </details>
+              <details class="qa">
+                <summary>Will it work on phones and be secure?<span class="qa__icon" aria-hidden="true"></span></summary>
+                <p class="qa__answer">Every build is tested on phone, tablet and desktop, with <strong>accessibility and security checked along the way</strong>. Inputs get validated and dependencies stay up to date.</p>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Contact ────────────────────────────────────────────────── -->
+    <section class="section" id="contact" data-surface="light" aria-labelledby="contact-title">
+      <div class="shell contact">
+        <div class="contact__head">
+          <span class="eyebrow">Contact</span>
+          <h2 class="t-display lines" id="contact-title" data-reveal><span><span>Another question?</span></span><span><span class="soft">Let’s talk.</span></span></h2>
+          <p class="section__aside">Got a project, or just a question about one? Send it over and I’ll get back to you the same day.</p>
+          <div class="avatars" role="img" aria-label="Mitchell Scholte">
+            <span class="avatar"><img src="assets/img/people/MS-avatar.jpg" alt="" width="128" height="128" loading="lazy"></span>
+          </div>
+          <ul class="contact__facts">
+            <li class="status">Available for new projects</li>
+            <li>Reply the same day</li>
+            <li>Hoofddorp, near Amsterdam</li>
           </ul>
-          <span class="plan__divider"></span>
-          <div class="plan__price"><span class="plan__amount">On request</span><span class="plan__period">/ project</span></div>
-          <a href="#contact" class="plan__btn blob-btn" data-project-size="unknown">Ask for a quote<span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></a>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Blog highlights: the newest posts, with the full archive and its
-       filter on blog.html. -->
-  <section class="blog" id="blog">
-    <div class="container">
-      <div class="blog__head">
-        <div>
-          <span class="blog__eyebrow">Blog</span>
-          <h2 class="blog__title">What I <span class="focus__title-accent">dig into</span></h2>
-        </div>
-        <a class="blog__cta" href="blog.html">All posts <span aria-hidden="true">→</span></a>
-      </div>
-      <!-- blog-cards.js drives the arrows and hides them while every card fits -->
-      <div class="blog__track" data-blog-track>
-        <a class="bpost" href="blog/nextjs-course.html">
-          <span class="bpost__media"><img src="assets/img/blog/nextjs-course.jpg" alt="" loading="lazy"></span>
-          <span class="bpost__tag">Development</span>
-          <span class="bpost__title">Fifteen chapters of Next.js, and what actually stuck</span>
-          <span class="bpost__foot">
-            <span class="bpost__meta"><time datetime="2026-09-10">2026-09-10</time> · 16 min</span>
-            <span class="bpost__btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-          </span>
-        </a>
-        <a class="bpost" href="blog/shopify-architecture.html">
-          <span class="bpost__media"><img src="assets/img/blog/shopify-architecture.jpg" alt="" loading="lazy"></span>
-          <span class="bpost__tag">Development</span>
-          <span class="bpost__title">How Shopify is built</span>
-          <span class="bpost__foot">
-            <span class="bpost__meta"><time datetime="2026-10-30">2026-10-30</time> · 8 min</span>
-            <span class="bpost__btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-          </span>
-        </a>
-        <a class="bpost" href="blog/web-security.html">
-          <span class="bpost__media"><img src="assets/img/blog/web-security.jpg" alt="" loading="lazy"></span>
-          <span class="bpost__tag">Security</span>
-          <span class="bpost__title">Pentesting and hardening a website</span>
-          <span class="bpost__foot">
-            <span class="bpost__meta"><time datetime="2026-10-30">2026-10-30</time> · 10 min</span>
-            <span class="bpost__btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-          </span>
-        </a>
-      </div>
-      <div class="blog__nav" data-blog-nav hidden>
-        <button class="blog__arrow" type="button" data-blog-prev aria-label="Previous posts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
-        <button class="blog__arrow" type="button" data-blog-next aria-label="Next posts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-      </div>
-    </div>
-  </section>
-  
-  <!-- Rates. One card per service rather than three invented tiers, so this
-       section and the services carousel can never tell a different story. The
-       deliverables match what each service detail page lists. -->
-
-  <!-- <section class="faq" id="faq">
-    <div class="container faq__container">
-      <div class="faq__intro">
-        <h2 class="faq__title"><span class="focus__title-accent">Questions?</span><br>I am here to help</h2>
-      </div>
-
-      <div class="faq__list">
-        <div class="faq__item">
-          <button class="faq__q" aria-expanded="false">
-            <span class="faq__num">1</span>
-            <span class="faq__question">What services does MISC Studio provide?</span>
-            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
-          </button>
-          <div class="faq__a"><div class="faq__a-inner"><p>Brand identity and strategy, UX design, web development and photography. Enough to design, build and ship a product, plus the images you show it with.</p></div></div>
         </div>
 
-        <div class="faq__item">
-          <button class="faq__q" aria-expanded="false">
-            <span class="faq__num">2</span>
-            <span class="faq__question">How long does a typical project take?</span>
-            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
-          </button>
-          <div class="faq__a"><div class="faq__a-inner"><p>Most run 4 to 12 weeks, depending on how big it is. You get a real timeline after the first call, not a hopeful one.</p></div></div>
-        </div>
-
-        <div class="faq__item">
-          <button class="faq__q" aria-expanded="false">
-            <span class="faq__num">3</span>
-            <span class="faq__question">Do you work with startups or established companies?</span>
-            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
-          </button>
-          <div class="faq__a"><div class="faq__a-inner"><p>Both. A startup finding its footing needs something different from a company with fifteen years of legacy, so the process bends to fit.</p></div></div>
-        </div>
-
-        <div class="faq__item">
-          <button class="faq__q" aria-expanded="false">
-            <span class="faq__num">4</span>
-            <span class="faq__question">What is your design and development process?</span>
-            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
-          </button>
-          <div class="faq__a"><div class="faq__a-inner"><p>Discovery, strategy, design, build, launch. I check in along the way, so the end result is never a surprise.</p></div></div>
-        </div>
-
-        <div class="faq__item">
-          <button class="faq__q" aria-expanded="false">
-            <span class="faq__num">5</span>
-            <span class="faq__question">Can MISC Studio redesign an existing brand or website?</span>
-            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
-          </button>
-          <div class="faq__a"><div class="faq__a-inner"><p>Yes. That can be a refresh or a full rebuild, keeping whatever already works instead of throwing it out on principle.</p></div></div>
-        </div>
-
-        <div class="faq__item">
-          <button class="faq__q" aria-expanded="false">
-            <span class="faq__num">6</span>
-            <span class="faq__question">Do you provide ongoing support after launch?</span>
-            <span class="faq__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
-          </button>
-          <div class="faq__a"><div class="faq__a-inner"><p>Yes. Every project can carry a maintenance and support retainer, and some clients keep me on for the ongoing design work too.</p></div></div>
-        </div>
-      </div>
-    </div>
-  </section> -->
-
-  <section class="contact" id="contact">
-    <div class="contact__window">
-      <div class="contact__form-col">
-        <h2 class="contact__title">Get in touch</h2>
-        <p class="contact__subtitle">Got a project, or just a question about one? Send it over and I&rsquo;ll get back to you the same day.</p>
-
-        <form class="cform" id="contact-form" novalidate>
-          <div class="cform__row">
-            <div class="cfield">
-              <label class="cfield__label" for="cf-first">First name</label>
-              <input id="cf-first" name="first_name" type="text" placeholder="First name" autocomplete="given-name" required aria-describedby="cf-first-error">
-              <p class="cfield__error" id="cf-first-error"></p>
+        <div class="contact__form" data-reveal>
+          <form class="cform" id="contact-form" novalidate>
+            <div class="cform__row">
+              <div class="cfield">
+                <label class="cfield__label" for="cf-first">First name</label>
+                <input id="cf-first" name="first_name" type="text" placeholder="First name" autocomplete="given-name" required aria-describedby="cf-first-error">
+                <p class="cfield__error" id="cf-first-error"></p>
+              </div>
+              <div class="cfield">
+                <label class="cfield__label" for="cf-last">Last name</label>
+                <input id="cf-last" name="last_name" type="text" placeholder="Last name" autocomplete="family-name">
+              </div>
+            </div>
+            <div class="cform__row">
+              <div class="cfield">
+                <label class="cfield__label" for="cf-email">Work email</label>
+                <input id="cf-email" name="email" type="email" placeholder="you@company.com" autocomplete="email" required aria-describedby="cf-email-error">
+                <p class="cfield__error" id="cf-email-error"></p>
+              </div>
+              <div class="cfield">
+                <label class="cfield__label" for="cf-company">Company name</label>
+                <input id="cf-company" name="company" type="text" placeholder="Company name" autocomplete="organization">
+              </div>
             </div>
             <div class="cfield">
-              <label class="cfield__label" for="cf-last">Last name</label>
-              <input id="cf-last" name="last_name" type="text" placeholder="Last name" autocomplete="family-name">
+              <label class="cfield__label" for="cf-size">Project size</label>
+              <span class="cfield__select">
+                <select id="cf-size" name="project_size">
+                  <option value="" selected>Choose a project size</option>
+                  <option value="small">Small project (from €1,500)</option>
+                  <option value="larger">Larger project (from €5,000)</option>
+                  <option value="unknown">Not sure yet</option>
+                </select>
+              </span>
             </div>
-          </div>
-
-          <div class="cfield">
-            <label class="cfield__label" for="cf-company">Company name</label>
-            <input id="cf-company" name="company" type="text" placeholder="Company name" autocomplete="organization">
-          </div>
-
-          <div class="cfield">
-            <label class="cfield__label" for="cf-email">Work email</label>
-            <input id="cf-email" name="email" type="email" placeholder="you@company.com" autocomplete="email" required aria-describedby="cf-email-error">
-            <p class="cfield__error" id="cf-email-error"></p>
-          </div>
-
-          <div class="cfield">
-            <label class="cfield__label" for="cf-size">Project size</label>
-            <span class="cfield__select">
-              <select id="cf-size" name="project_size">
-                <option value="" selected>Choose a project size</option>
-                <option value="small">Small project (from €1,500)</option>
-                <option value="larger">Larger project (from €5,000)</option>
-                <option value="unknown">Not sure yet</option>
-              </select>
-            </span>
-          </div>
-
-          <div class="cfield">
-            <label class="cfield__label" for="cf-message">Message</label>
-            <textarea id="cf-message" name="message" class="cform__textarea" rows="3" placeholder="Tell us a bit about your project…" required aria-describedby="cf-message-error"></textarea>
-            <p class="cfield__error" id="cf-message-error"></p>
-          </div>
-
-          <fieldset class="cservice">
-            <legend class="cservice__legend">What services do you need? <span class="cservice__hint">(select all that apply)</span></legend>
-            <div class="cservice__grid">
-              <label class="cservice__card">
-                <input type="checkbox" name="service" value="ux-design">
-                <span class="cservice__icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="4.5" width="7" height="7" rx="1"/><rect x="3.5" y="14" width="7" height="5.5" rx="1"/><rect x="13.5" y="4.5" width="7" height="15" rx="1"/></svg>
-                </span>
-                <span class="cservice__text">
+            <div class="cfield">
+              <label class="cfield__label" for="cf-message">Message</label>
+              <textarea id="cf-message" name="message" rows="4" placeholder="Tell me a bit about your project…" required aria-describedby="cf-message-error"></textarea>
+              <p class="cfield__error" id="cf-message-error"></p>
+            </div>
+            <fieldset class="cservice">
+              <legend class="cservice__legend">What services do you need? <span class="cservice__hint">(select all that apply)</span></legend>
+              <div class="cservice__grid">
+                <label class="cservice__card">
+                  <input type="checkbox" name="service" value="ux-design">
                   <span class="cservice__name">UX Design</span>
                   <span class="cservice__desc">Research-led flows and interfaces.</span>
-                </span>
-              </label>
-
-              <label class="cservice__card">
-                <input type="checkbox" name="service" value="web-development">
-                <span class="cservice__icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg>
-                </span>
-                <span class="cservice__text">
+                </label>
+                <label class="cservice__card">
+                  <input type="checkbox" name="service" value="web-development">
                   <span class="cservice__name">Web Development</span>
                   <span class="cservice__desc">Fast, resilient sites and web apps.</span>
-                </span>
-              </label>
-
-
-              <label class="cservice__card">
-                <input type="checkbox" name="service" value="not-sure">
-                <span class="cservice__icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.5a2.5 2.5 0 013.9-1.9c1.4 1 1 2.9-.9 3.4-.6.2-1 .7-1 1.3v.4"/><circle cx="12" cy="16.6" r="0.6" fill="currentColor" stroke="none"/></svg>
-                </span>
-                <span class="cservice__text">
+                </label>
+                <label class="cservice__card">
+                  <input type="checkbox" name="service" value="not-sure">
                   <span class="cservice__name">Not sure yet</span>
                   <span class="cservice__desc">Help me figure out what I need.</span>
+                </label>
+              </div>
+            </fieldset>
+            <div class="cform__foot">
+              <!-- The send animation (all CSS, driven by .is-sending / .is-sent /
+                   .is-error from contact-form.js): the arrow flies off and a
+                   spinner turns while it sends, then the button goes dark, a ring
+                   pulses out and a check draws in. The three labels are stacked
+                   so the button never changes width. -->
+              <button type="submit" class="btn cform__submit" data-variant="primary">
+                <span class="btn__copy cform__labels">
+                  <span class="btn__label cform__submit-label">Send message</span>
+                  <span class="btn__label cform__state cform__state--sending" aria-hidden="true">Sending<i>.</i><i>.</i><i>.</i></span>
+                  <span class="btn__label cform__state cform__state--sent" aria-hidden="true">Message sent</span>
                 </span>
-              </label>
+                <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Send message</span></span></span>
+                <span class="btn__arrow" aria-hidden="true">
+                  <svg class="cform__icon cform__icon--arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+                  <svg class="cform__icon cform__icon--spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-opacity=".2" stroke-width="2.2"/><path d="M12 3.5a8.5 8.5 0 0 1 8.5 8.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                  <svg class="cform__icon cform__icon--check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.4l2.9 2.9 6.1-6.6"/></svg>
+                </span>
+              </button>
+              <p class="cform__status" role="status" aria-live="polite"></p>
             </div>
-          </fieldset>
-
-          <button type="submit" class="cform__submit blob-btn"><span class="cform__submit-label">Get in touch</span><span class="cform__submit-sent" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" pathLength="1"/></svg>Sent</span><span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></button>
-          <p class="cform__status" role="status" aria-live="polite"></p>
-        </form>
+          </form>
+        </div>
       </div>
-
-    </div>
-  </section>
-
+    </section>
   </main>
 
-  <footer class="footer">
-    <div class="footer__inner">
-      <div class="footer__top">
-        <div class="footer__brand">
-          <div class="footer__logo-row">
-            <img class="footer__logo-img" src="assets/img/brand/logo-192.webp" alt="">
-            <div class="footer__logo"><span>MISC</span><span>STUDIO</span></div>
-          </div>
-          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
-          <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
+  <!-- ── Footer ───────────────────────────────────────────────────── -->
+  <footer class="site-footer" data-surface="paper">
+    <div class="shell">
+      <div class="footer__close">
+        <p class="t-display lines" data-reveal><span><span>This is where the page ends.</span></span><span><span class="soft">Your project starts here.</span></span></p>
+        <div class="btn-pair">
+          <a class="btn" data-variant="primary" href="#contact">
+            <span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span>
+            <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span></span>
+            <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </a>
+          <a class="btn" data-variant="secondary" href="#pricing">
+            <span class="btn__copy"><span class="btn__label">See pricing</span></span>
+            <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">See pricing</span></span></span>
+            <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </a>
         </div>
+      </div>
 
-        <nav class="footer__nav">
-          <div class="footer__col">
-            <h2 class="footer__heading">Services</h2>
-            <a class="footer__link" href="detail-pages/services/ux-design.html">UX Design</a>
-            <a class="footer__link" href="detail-pages/services/web-development.html">Web Development</a>
-          </div>
-          <div class="footer__col">
-            <h2 class="footer__heading">Company</h2>
-            <a class="footer__link" href="#services">Process</a>
-            <a class="footer__link" href="#showcase">Work</a>
-            <!-- <a class="footer__link" href="detail-pages/career.html">Careers</a> -->
-            <a class="footer__link" href="#contact">Contact</a>
-          </div>
-          <div class="footer__col">
-            <h2 class="footer__heading">Elsewhere</h2>
-            <a class="footer__link" href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
-            <a class="footer__link" href="https://github.com/MitchellKevin">Github</a>
-            <a class="footer__link" href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>
-          </div>
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a class="brand" href="#top" style="width:fit-content"><img src="assets/img/brand/logo-192.webp" alt="" width="38" height="38" loading="lazy"><span class="brand__word" style="display:inline">MISC STUDIO</span></a>
+          <p>Design, build and secure. A small studio in the Netherlands.</p>
+          <span class="status">Available for new projects</span>
+        </div>
+        <nav class="footer__col" aria-label="Explore">
+          <h2 class="footer__heading">Explore</h2>
+          <a href="#process"><span class="menu__index">01</span>How it works</a>
+          <a href="#work"><span class="menu__index">02</span>Work</a>
+          <a href="#pricing"><span class="menu__index">03</span>Pricing</a>
+          <a href="#faq"><span class="menu__index">04</span>FAQ</a>
+          <a href="blog.html"><span class="menu__index">05</span>Journal</a>
+          <a href="about.html"><span class="menu__index">06</span>About</a>
+        </nav>
+        <nav class="footer__col" aria-label="Services">
+          <h2 class="footer__heading">Services</h2>
+          <a href="detail-pages/services/ux-design.html">UX Design</a>
+          <a href="detail-pages/services/web-development.html">Web Development</a>
+          <a href="detail-pages/career.html">Career</a>
+        </nav>
+        <nav class="footer__col" aria-label="Elsewhere">
+          <h2 class="footer__heading">Elsewhere</h2>
+          <a href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
+          <a href="https://github.com/MitchellKevin">GitHub</a>
+          <a href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>
         </nav>
       </div>
 
       <div class="footer__bottom">
-        <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
-        <span class="footer__made">Made in Amsterdam</span>
+        <span>© <span data-year>2026</span> Mitchell Scholte — All rights reserved. Made in Amsterdam.</span>
+        <span>Music: <a href="https://www.bensound.com" target="_blank" rel="noopener">Bensound.com</a> · Artist: Yunior Arronte · License code: TTAJRAXT3KMQMEPT</span>
       </div>
-      <p class="footer__credit">
-        Royalty Free Music: <a href="https://www.bensound.com" target="_blank" rel="noopener">Bensound.com</a><br>
-        License code: TTAJRAXT3KMQMEPT<br>
-        Artist: Yunior Arronte
-      </p>
     </div>
-    <!-- MISC drawn in dots that scatter under the cursor (hero-particles.js);
-         it runs edge to edge and off the bottom of the page -->
     <div class="footer__mark" aria-hidden="true"><canvas class="footer__particles" data-src="assets/img/brand/misc-wordmark.svg"></canvas></div>
   </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/CustomEase.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/MorphSVGPlugin.min.js"></script>
-    <script src="assets/js/shared/page-transition.js"></script>
-    <!-- shared with about.html; must load before nomi-studio.js, which calls
-         them at the right point in ScrollTrigger's pin order -->
-    <script src="assets/js/shared/showcase.js"></script>
-    <script src="assets/js/shared/timeline.js"></script>
-    <script src="assets/js/home/glass-reveal.js"></script>
-    <script src="assets/js/home/nomi-studio.js"></script>
-    <!-- contact form -> email, via EmailJS (keys in contact-form.js) -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
-    <script src="assets/js/home/contact-form.js"></script>
-    <!-- arrow buttons for the blog row -->
-    <script src="assets/js/home/blog-cards.js"></script>
-    <script src="assets/js/shared/hero-particles.js"></script>
-    <script src="assets/js/shared/header-scroll.js"></script>
-    <script src="assets/js/shared/theme-toggle.js"></script>
-    <script src="assets/js/home/sound-toggle.js"></script>
-    <!-- same pinned three.js build as about.html -->
-    <script type="importmap">
-    { "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
-    }}
-    </script>
-    <script type="module" src="assets/js/home/showcase-carousel.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js" defer></script>
+  <script src="assets/js/home/glass-reveal.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/home/process-dial.js" defer></script>
+  <script src="assets/js/shared/hero-particles.js" defer></script>
+  <script src="assets/js/home/sound-toggle.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js" defer></script>
+  <script src="assets/js/home/contact-form.js" defer></script>
+  <script type="importmap">
+  { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js" } }
+  </script>
+  <script type="module" src="assets/js/home/work-orbit.js"></script>
 </body>
 </html>

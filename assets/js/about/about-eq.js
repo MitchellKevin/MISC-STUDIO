@@ -105,18 +105,16 @@
     return a;
   }
 
-  // Taken from the theme token, not hard-coded: --color-heading is white
-  // on the black page and black on the white one, so the meter inverts
-  // with the rest of the site instead of disappearing into it.
+  // Taken from the surface token on the word itself, not hard-coded, so
+  // the meter inks itself for whatever surface the section sits on.
   let ink = '#ffffff';
-  // the peak caps take the site's blue accent, from its token for the same
-  // reason (the accent shifts a little between the themes)
+  // the peak caps take the site's blue accent, from its token
   let peak = '#0022ff';
   function readInk() {
-    const root = getComputedStyle(document.documentElement);
-    const v = root.getPropertyValue('--color-heading').trim();
+    const cs = getComputedStyle(word);
+    const v = cs.getPropertyValue('--ink').trim();
     if (v) ink = v;
-    const a = root.getPropertyValue('--color-accent').trim();
+    const a = cs.getPropertyValue('--brand-accent').trim();
     if (a) peak = a;
   }
 
@@ -239,13 +237,6 @@
     : Promise.resolve();
   readInk();
   ready.then(apply);
-
-  // theme-toggle.js flips data-theme on <html>; the meter has to repaint
-  // in the other ink, and when it is paused that will not happen on its own
-  new MutationObserver(() => {
-    readInk();
-    if (!raf) requestAnimationFrame(draw);
-  }).observe(document.documentElement, { attributeFilter: ['data-theme'] });
 
   window.addEventListener('resize', () => { if (measure()) requestAnimationFrame(draw); });
   small.addEventListener('change', apply);

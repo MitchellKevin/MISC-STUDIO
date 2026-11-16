@@ -1,252 +1,118 @@
-/* ------------------------------------------------------------------ */
-/* About page. Loaded after nomi-studio.css, so every colour comes from */
-/* the same tokens and the black/white switch works untouched.          */
-/*                                                                      */
-/* The page scrolls normally — no snap container. The timeline and the  */
-/* project deck are scroll-scrubbed pins borrowed from the homepage, and */
-/* those need real scroll distance to play out.                          */
-/*                                                                      */
-/* LAYOUT                                                                */
-/* Every section is one full viewport tall and hangs its content off the */
-/* same column, so the page has one left edge from the hero all the way  */
-/* down — including the sections whose artwork bleeds off the right.     */
-/*                                                                      */
-/*   .ab            the section shell (full height, clipped, padded)     */
-/*   .ab__inner       the shared column — same width, same x, everywhere */
-/*   .ab__col           one text measure inside that column              */
-/*   .ab__head            eyebrow + heading, one rhythm for every section */
-/*                                                                      */
-/* Nothing positions itself against the viewport edge any more; if a     */
-/* block needs to sit further left or right it does it inside .ab__inner. */
-/* ------------------------------------------------------------------ */
+/* ==================================================================
+   About page — on top of site.css. Only what this page adds: the hero
+   with the Polaroid, the globe, the timeline rows, the IT → CMD switch,
+   the hobby cards and their camera, and the AirPods outro.
+   Every colour comes from the surface tokens in site.css.
+   ================================================================== */
 
-.about-page {
-  /* outer margin, and the column everything lines up against */
-  --ab-gutter: 0.6rem;
-  --ab-col: min(11.6rem, 100% - var(--ab-gutter) * 2);
-  /* one comfortable line length — capped so body copy never runs under
-     the globes, cars and watches that sit on the right */
-  --ab-measure: 5.4rem;
-  /* the gap between a section's own top padding and its first line */
-  --ab-pad-y: 1.6rem;
-}
+.ab { position: relative; overflow: clip; }
 
-.ab {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: var(--ab-pad-y) var(--ab-gutter) 1.2rem;
-  overflow: hidden;
-  background: var(--color-black);
-}
-/* the one column. Centred, so the left edge is identical in every
-   section whatever that section puts inside it */
-.ab__inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: var(--ab-col);
-  margin-inline: auto;
-}
-.ab__col { max-width: var(--ab-measure); }
-.ab__col--wide { max-width: 8.2rem; }
-
-/* --- section head — the same three-part rhythm everywhere ------------ */
-.ab__head { margin-bottom: 0.3rem; }
-.ab__eyebrow {
-  font-family: var(--sub-font);
-  font-size: 0.14rem;
-  font-weight: 600;
-  letter-spacing: 0.045rem;
-  text-transform: uppercase;
-  color: var(--color-accent);
-  margin-bottom: 0.12rem;
-}
-/* the same leading rule the timeline label uses, so both read as one
-   family of section labels. Inline rather than a flex child: a label long
-   enough to wrap should wrap like text, not leave the rule on its own. */
-.ab__eyebrow::before {
-  content: "";
-  display: inline-block;
-  vertical-align: middle;
-  width: 0.2rem;
-  height: 1px;
-  margin: 0 0.12rem 0.03rem 0;
-  background: var(--color-accent);
-}
-/* filled in by about.js so the chapters stay numbered in source order —
-   including when the ?intro section is dropped */
-.ab__num {
-  font-family: var(--mono-font);
-  font-size: 0.13rem;
-  letter-spacing: 0.02rem;
-  color: var(--color-dim);
-}
+/* chapter number inside an eyebrow: "01 · Where I'm from" */
+.ab__num { font-variant-numeric: tabular-nums; }
 .ab__num:empty { display: none; }
 .ab__num::after { content: " · "; white-space: pre; }
 
-.ab__heading {
-  font-family: var(--main-font);
-  font-size: 0.78rem;
-  line-height: 0.86rem;
-  font-weight: 700;
-  color: var(--color-heading);
+.ab__body {
+  max-width: 34rem;
+  color: var(--ink-soft);
+  font-size: 1.125rem;
+  text-wrap: pretty;
 }
-.ab__heading-accent { color: var(--color-accent); }
 
-.ab__body,
-.ab__lead {
-  font-family: var(--sub-font);
-  font-size: 0.19rem;
-  line-height: 0.31rem;
-  color: var(--color-muted);
-}
-.ab__lead {
-  font-size: 0.24rem;
-  line-height: 0.37rem;
-  color: var(--color-body);
-}
-/* the notes I left behind — deliberately loud so they cannot ship by
-   accident. about.js gives every unfinished string in about-data.js this
-   treatment, so a placeholder looks the same wherever it turns up. */
+/* about.js renders unfinished copy (TODO / "Vul aan") with this */
 .ab__todo {
   display: block;
-  margin-top: 0.12rem;
+  margin-top: .75rem;
+  padding-left: .875rem;
+  border-left: 2px solid var(--brand-accent);
   font-style: normal;
-  font-size: 0.15rem;
-  line-height: 0.24rem;
-  color: var(--color-dim);
-  border-left: 2px solid var(--color-accent);
-  padding-left: 0.14rem;
+  font-size: .9375rem;
+  color: var(--ink-soft);
 }
 
-/* --- section index rail ---------------------------------------------- */
-/* A fixed list of every [data-chapter] section. It is the page's table of
-   contents: where you are, what is left, and a way to jump. */
-.abnav {
-  position: fixed;
-  right: var(--ab-gutter);
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 40;
-  pointer-events: none;
-}
-.abnav__list { list-style: none; display: grid; gap: 0.02rem; }
-.abnav__link {
-  pointer-events: auto;
+/* ── Hero ───────────────────────────────────────────────────────── */
+.ab--hero {
+  min-height: 100svh;
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.12rem;
-  padding: 0.05rem 0;
-  text-decoration: none;
-  font-family: var(--sub-font);
-  font-size: 0.12rem;
-  font-weight: 600;
-  letter-spacing: 0.02rem;
-  text-transform: uppercase;
-  color: var(--color-dim);
-  transition: color 0.3s ease;
+  flex-direction: column;
+  padding-top: var(--header-h);
+  background:
+    radial-gradient(120% 90% at 85% 10%, #828282 0%, transparent 60%),
+    radial-gradient(90% 80% at 10% 100%, #4a4a4a 0%, transparent 65%),
+    radial-gradient(70% 60% at 70% 85%, #767676 0%, transparent 70%),
+    #545454;
 }
-/* the label is held at zero width so the rail is only ever a column of
-   dashes until you reach for it */
-.abnav__label {
-  max-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  opacity: 0;
-  transition: max-width 0.45s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.3s ease;
-}
-.abnav__tick {
-  flex: none;
-  width: 0.16rem;
-  height: 2px;
-  border-radius: 1px;
-  background: var(--color-border);
-  transition: width 0.35s cubic-bezier(0.76, 0, 0.24, 1), background 0.3s ease;
-}
-.abnav__link.is-on { color: var(--color-white); }
-.abnav__link.is-on .abnav__tick { width: 0.3rem; background: var(--color-white); }
-.abnav:hover .abnav__label,
-.abnav__link:focus-visible .abnav__label { max-width: 2.4rem; opacity: 1; }
-.abnav__link:hover { color: var(--color-white); }
-.abnav__link:hover .abnav__tick { background: var(--color-white); }
-.abnav__link:focus-visible { outline: 1px solid var(--color-white); outline-offset: 0.04rem; }
-
-/* --- 1 · hero -------------------------------------------------------- */
-.ab__display {
-  font-family: var(--main-font);
-  font-size: 1rem;
-  line-height: 0.94rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--color-white);
-  margin: 0.16rem 0 0.3rem;
-}
-.ab__display span { display: block; }
-/* copy left, Polaroid right. The copy column is minmax(0,1fr) so the
-   headline gives way to the photo rather than pushing it off the grid. */
-.ab__inner--hero {
+.ab--hero [data-enter] { animation: enter 1s var(--ease-out) both; animation-delay: calc(150ms + var(--d, 0) * 90ms); }
+.ab-hero {
+  position: relative;
+  z-index: 1;
+  flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.8rem;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: var(--space-lg) var(--gutter);
+  padding-block: var(--space-sm) var(--space-xl);
 }
-.ab__hint {
+.ab-hero__meta {
+  grid-column: 1 / -1;
   display: flex;
-  margin-top: 0.8rem;
-  align-items: center;
-  gap: 0.16rem;
-  font-family: var(--sub-font);
-  font-size: 0.13rem;
-  font-weight: 500;
-  letter-spacing: 0.03rem;
-  text-transform: uppercase;
-  color: var(--color-dim);
+  flex-wrap: wrap;
+  gap: .5rem 1.5rem;
+  font-size: .875rem;
+  color: var(--ink-soft);
 }
-.ab__hint-line { width: 0.7rem; height: 1px; background: var(--color-border); }
+.ab-hero__copy {
+  align-self: end;
+  display: grid;
+  gap: var(--space-md);
+  justify-items: start;
+}
+.ab-hero__title span { display: block; }
+.ab-hero__lead { max-width: 26ch; color: var(--ink-soft); text-wrap: balance; }
+.ab-hero__hint {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: var(--text-caption);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.ab-hero__hint span { width: 4rem; height: 1px; background: var(--rule); }
+@media (min-width: 64rem) {
+  .ab-hero { grid-template-columns: minmax(0, 1fr) auto; }
+  .polaroid-stage { align-self: center; grid-row: 2; grid-column: 2; }
+}
+@media (max-width: 63.99rem) {
+  .ab-hero__hint { display: none; }
+  .polaroid-stage { justify-self: center; }
+}
 
-/* --- the Polaroid ----------------------------------------------------- */
-/* A physical object rather than a piece of the interface, so it does not
-   follow the theme: photo paper stays warm white on a black page and on a
-   white one. Everything but the photograph is CSS — swap the <img> src in
-   about.html and the frame, tilt and 3D come along unchanged.
-                                                                        */
-/* The card turns towards the cursor. about-polaroid.js only writes the
-   --pol-* angles; the transform is composed here, so the resting tilt and
-   the responsive sizing stay in one place. Every --pol-* value has a
-   resting default, so the card looks right with the script disabled. */
+/* ── Polaroid ───────────────────────────────────────────────────────
+   about-polaroid.js writes the --pol-* values from the pointer; every
+   one has a resting default, so the card looks right without the script. */
 .polaroid-stage {
-  /* the perspective lives on the parent — putting it on the card itself
-     would rotate the vanishing point along with the card */
-  perspective: 9rem;
+  perspective: 900px;
   perspective-origin: 50% 45%;
 }
 .polaroid {
-  --pol-w: 3.8rem;
-  --pol-tilt: -3.5deg;   /* hangs crooked even at rest */
-  --pol-rx: 0deg;        /* pitch, from the pointer */
-  --pol-ry: 0deg;        /* yaw, from the pointer */
-  --pol-lift: 0rem;
-  --pol-px: 0rem;        /* photo parallax inside the frame */
-  --pol-py: 0rem;
-  --pol-sx: 0rem;        /* the shadow falls away from the light */
-  --pol-sy: 0.28rem;
+  --pol-w: clamp(15rem, 24vw, 23rem);
+  --pol-tilt: -3.5deg;
+  --pol-rx: 0deg;
+  --pol-ry: 0deg;
+  --pol-lift: 0px;
+  --pol-px: 0px;
+  --pol-py: 0px;
+  --pol-sx: 0px;
+  --pol-sy: 28px;
   position: relative;
   width: var(--pol-w);
-  /* the deep bottom border is the whole tell — a square frame reads as a
-     print, this reads as a Polaroid */
-  padding: 0.13rem 0.13rem 0.52rem;
+  padding: calc(var(--pol-w) * .034) calc(var(--pol-w) * .034) calc(var(--pol-w) * .137);
   background: #f6f3ec;
-  box-shadow: var(--pol-sx) var(--pol-sy) 0.62rem -0.1rem rgba(0, 0, 0, 0.62),
-              0 0.02rem 0.05rem rgba(0, 0, 0, 0.45);
-  /* pitch and yaw in world space, then the resting tilt in the card's own
-     plane, so the two never fight each other */
+  box-shadow: var(--pol-sx) var(--pol-sy) 62px -10px rgba(0, 0, 0, .55),
+              0 2px 5px rgba(0, 0, 0, .35);
   transform: rotateX(var(--pol-rx)) rotateY(var(--pol-ry))
              rotate(var(--pol-tilt)) translateY(var(--pol-lift));
-  /* no transition: the script eases the angles itself, and a CSS
-     transition on top of that lags a frame behind the cursor */
 }
 .polaroid__shot {
   position: relative;
@@ -257,14 +123,9 @@
 .polaroid__img {
   width: 100%;
   height: 100%;
-  display: block;
-  /* whatever gets dropped in is centre-cropped, so a portrait or a
-     landscape shot both sit correctly in the square */
   object-fit: cover;
-  /* slightly oversized so the parallax slide never exposes an edge */
   transform: scale(1.06) translate(var(--pol-px), var(--pol-py));
 }
-/* the light the card catches as it turns */
 .polaroid__sheen {
   position: absolute;
   inset: 0;
@@ -272,398 +133,260 @@
   opacity: var(--pol-sheen-o, 0);
   background: linear-gradient(105deg,
     transparent calc(var(--pol-sheen-x, 50%) - 34%),
-    rgba(255, 255, 255, 0.16) calc(var(--pol-sheen-x, 50%) - 9%),
-    rgba(255, 255, 255, 0.3)  var(--pol-sheen-x, 50%),
-    rgba(255, 255, 255, 0.16) calc(var(--pol-sheen-x, 50%) + 9%),
+    rgba(255, 255, 255, .16) calc(var(--pol-sheen-x, 50%) - 9%),
+    rgba(255, 255, 255, .3) var(--pol-sheen-x, 50%),
+    rgba(255, 255, 255, .16) calc(var(--pol-sheen-x, 50%) + 9%),
     transparent calc(var(--pol-sheen-x, 50%) + 34%));
   mix-blend-mode: screen;
 }
 .polaroid__caption {
-  margin-top: 0.17rem;
+  margin-top: calc(var(--pol-w) * .045);
   text-align: center;
-  font-family: var(--sub-font);
-  font-size: 0.125rem;
-  font-weight: 600;
-  letter-spacing: 0.05rem;
+  font-size: .8125rem;
+  letter-spacing: .12em;
   text-transform: uppercase;
   color: #57534c;
 }
 
-/* on a white page the paper needs an edge, and the drop shadow has to come
-   right down or the photo looks like it is floating in fog */
-:root[data-theme="light"] .polaroid {
-  box-shadow: var(--pol-sx) var(--pol-sy) 0.6rem -0.12rem rgba(0, 0, 0, 0.24),
-              0 0 0 1px rgba(0, 0, 0, 0.07);
-}
-
-/* --- globes ---------------------------------------------------------- */
+/* ── 01 Where I'm from ──────────────────────────────────────────── */
+.ab--globe { min-height: 100svh; display: flex; align-items: center; }
 .ab__globe {
   position: absolute;
-  inset: 0;
-  width: 100%;
+  top: 0;
+  right: 0;
+  width: 60%;
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.85;
+  opacity: .9;
+}
+.ab-split { position: relative; z-index: 1; }
+.ab-split__copy { display: grid; gap: var(--space-md); max-width: 36rem; }
+@media (max-width: 63.99rem) {
+  .ab--globe { flex-direction: column; align-items: stretch; padding-bottom: 0; }
+  .ab__globe { position: relative; width: 100%; height: auto; aspect-ratio: 1; opacity: .7; margin-top: var(--space-md); order: 2; }
 }
 
-/* a small spec table rather than a wrapping row — three facts of very
-   different lengths line up as label / value instead of reflowing into an
-   uneven block */
-.ab__facts {
-  display: grid;
-  margin-top: 0.42rem;
-  border-top: 1px solid var(--color-border);
-}
+.ab__facts { display: grid; border-top: 1px solid var(--rule); }
 .ab__facts > div {
   display: flex;
-  align-items: baseline;
   justify-content: space-between;
-  gap: 0.3rem;
-  padding: 0.13rem 0;
-  border-bottom: 1px solid var(--color-border);
+  align-items: baseline;
+  gap: var(--space-sm);
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--rule);
 }
 .ab__facts dt {
-  font-family: var(--sub-font);
-  font-size: 0.115rem;
-  font-weight: 600;
-  letter-spacing: 0.03rem;
+  font-size: var(--text-caption);
+  letter-spacing: 0;
   text-transform: uppercase;
-  color: var(--color-dim);
+  color: var(--ink-soft);
 }
-.ab__facts dd {
-  font-family: var(--sub-font);
-  font-size: 0.155rem;
-  font-weight: 500;
-  color: var(--color-body);
+.ab__facts dd { text-align: right; }
+
+/* ── Timeline rows ──────────────────────────────────────────────── */
+.road { border-top: 1px solid var(--rule); counter-reset: none; }
+.road__row {
+  display: grid;
+  grid-template-columns: 2.5rem 4.5rem minmax(0, 1fr);
+  grid-template-areas: "num year what" ". . kind";
+  align-items: baseline;
+  gap: .5rem var(--space-sm);
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--rule);
+  transition: background var(--dur-base) var(--ease-out);
+}
+@media (min-width: 48rem) {
+  .road__row {
+    grid-template-columns: 3rem 6rem minmax(0, 1fr) 10rem;
+    grid-template-areas: "num year what kind";
+    padding: 1.5rem 0;
+  }
+}
+.road__num { grid-area: num; font-size: var(--text-caption); color: var(--ink-soft); font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.road__year { grid-area: year; font-size: var(--text-heading); letter-spacing: var(--tracking-heading); font-variant-numeric: tabular-nums; }
+.road__what { grid-area: what; display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; }
+.road__title { font-size: var(--text-title); letter-spacing: var(--tracking-heading); line-height: 1.05; }
+.road__where { color: var(--ink-soft); }
+.road__kind { grid-area: kind; justify-self: start; }
+@media (min-width: 48rem) { .road__kind { justify-self: end; } }
+@media (hover: hover) {
+  .road__row:hover .road__title { color: var(--brand-accent); }
 }
 
-/* --- the two borrowed components ------------------------------------- */
-/* The timeline and the project deck bring their own absolute layout from
-   the homepage. On this page they are pulled onto the shared column so
-   their labels start where every other section's label starts. */
-.about-page .tlpath__head {
-  top: var(--ab-pad-y);
-  left: calc(50% - var(--ab-col) / 2);
-}
-.about-page .tlpath__hint { right: calc(50% - var(--ab-col) / 2); }
-
-/* ------------------------------------------------------------------ */
-/* 4 · The switch. This one is the statement: the toggle is the size of */
-/* a headline, and flipping it swaps the whole section.                 */
-/* ------------------------------------------------------------------ */
-.ab--switch .abs__panels,
-.ab--switch .abs { text-align: center; }
-
+/* ── 02 The switch ──────────────────────────────────────────────── */
+.ab--switch { --cmd-yellow: #ffd60a; }
+.abs-card { align-items: center; text-align: center; padding-block: var(--space-xl); }
 .abs {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: clamp(1.25rem, 4vw, 3.5rem);
   width: 100%;
-  margin: 0.3rem 0 0.5rem;
 }
-/* CMD gets its own colour — flipping the switch is supposed to feel like
-   crossing into a different world, not just swapping two words */
-.ab--switch { --cmd-yellow: #ffd60a; }
-
 .abs__side {
-  font-family: var(--main-font);
-  font-size: 1.15rem;
+  font-size: clamp(4rem, 2rem + 7vw, 9rem);
   line-height: 1;
-  font-weight: 700;
-  letter-spacing: -0.02rem;
-  color: var(--color-faint);
-  transition: color 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+  letter-spacing: var(--tracking-heading);
+  color: #ffffff1f;
+  transition: color .55s var(--ease-swift);
   user-select: none;
 }
-/* the inactive side sits back rather than disappearing, so the pair still
-   reads as one before/after */
-.abs__side.is-on { color: var(--color-white); }
+.abs__side.is-on { color: var(--ink); }
 .abs__side--cmd.is-on { color: var(--cmd-yellow); }
-
-.abs__toggle {
-  flex: none;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  color: var(--color-white);
-}
+.abs__toggle { flex: none; color: var(--ink); }
 .abs__track {
-  display: block;
-  width: 2.9rem;
-  height: 1.32rem;
-  border-radius: 0.66rem;
-  border: 2px solid var(--color-white);
-  padding: 0.14rem;
-  /* the CMD artwork is loaded but held at zero opacity by a pseudo-element,
-     so it can cross-fade — a background-image on the track itself would
-     pop in rather than transition */
+  --tw: clamp(7.5rem, 5rem + 6vw, 11rem);
+  --pad: calc(var(--tw) * .05);
+  --knob: calc(var(--tw) * .36);
   position: relative;
+  display: block;
+  width: var(--tw);
+  height: calc(var(--knob) + var(--pad) * 2 + 4px);
+  padding: var(--pad);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-pill);
   overflow: hidden;
-  transition: border-color 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+  transition: border-color .55s var(--ease-swift);
 }
 .abs__track::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: url('../img/about/bg-cmd.png') center / cover no-repeat;
+  background: url("../img/about/bg-cmd.png") center / cover no-repeat;
   opacity: 0;
-  transition: opacity 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+  transition: opacity .55s var(--ease-swift);
 }
 .abs__toggle[aria-checked="true"] .abs__track { border-color: var(--cmd-yellow); }
 .abs__toggle[aria-checked="true"] .abs__track::before { opacity: 1; }
 .abs__knob {
-  display: block;
-  position: relative;      /* above the artwork, not under it */
+  position: relative;
   z-index: 1;
-  width: 1rem;
-  height: 1rem;
+  display: block;
+  width: var(--knob);
+  height: var(--knob);
   border-radius: 50%;
-  background: var(--color-white);
-  transition: transform 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+  background: var(--ink);
+  transition: transform .55s var(--ease-swift);
 }
-.abs__toggle[aria-checked="true"] .abs__knob { transform: translateX(1.58rem); }
-.abs__toggle:focus-visible { outline: 2px solid var(--color-white); outline-offset: 0.1rem; border-radius: 0.7rem; }
-
-.abs__panels { position: relative; width: 100%; min-height: 2.1rem; }
+.abs__toggle[aria-checked="true"] .abs__knob {
+  transform: translateX(calc(var(--tw) - var(--knob) - var(--pad) * 2 - 4px));
+}
+.abs__toggle:focus-visible { outline-offset: 6px; border-radius: var(--radius-pill); }
+.abs__panels {
+  display: grid;
+  width: 100%;
+  margin-top: var(--space-lg);
+}
 .abs__panel {
-  position: absolute;
-  inset: 0;
-  text-align: center;
+  grid-area: 1 / 1;
+  display: grid;
+  justify-items: center;
+  gap: var(--space-sm);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(0.14rem);
-  transition: opacity 0.45s ease, transform 0.45s ease, visibility 0.45s;
+  transform: translateY(.75rem);
+  transition: opacity .45s var(--ease-out), transform .45s var(--ease-out), visibility .45s;
 }
 .abs__panel.is-on { opacity: 1; visibility: visible; transform: none; }
-.abs__heading {
-  font-family: var(--main-font);
-  font-size: 0.66rem;
-  line-height: 0.74rem;
-  font-weight: 700;
-  color: var(--color-heading);
-  margin-bottom: 0.16rem;
-}
 .abs__body {
-  font-family: var(--sub-font);
-  font-size: 0.2rem;
-  line-height: 0.32rem;
-  color: var(--color-muted);
-  max-width: 6.4rem;
-  margin: 0 auto;
+  max-width: 38rem;
+  color: var(--ink-soft);
+  font-size: 1.125rem;
+  text-wrap: pretty;
 }
-.abs__body .ab__todo { text-align: left; display: inline-block; }
+.abs__body .ab__todo { display: block; text-align: left; width: fit-content; margin-inline: auto; }
+@media (max-width: 47.99rem) {
+  .abs { flex-direction: column; }
+}
 
-/* --- 6 · goals -------------------------------------------------------- */
-.ab__goals { list-style: none; margin-top: 0.1rem; display: grid; gap: 0.02rem; }
+/* ── Internship goals (?intro) ──────────────────────────────────── */
+.ab__goals { border-top: 1px solid var(--rule); }
 .ab__goal {
   display: grid;
-  grid-template-columns: 0.8rem 1fr;
-  gap: 0.3rem;
-  padding: 0.26rem 0;
-  border-top: 1px solid var(--color-border);
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: var(--space-sm);
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--rule);
 }
-.ab__goal-num { font-family: var(--mono-font); font-size: 0.16rem; color: var(--color-accent); }
-.ab__goal-title {
-  font-family: var(--sub-font);
-  font-size: 0.24rem;
-  font-weight: 600;
-  color: var(--color-heading);
-  margin-bottom: 0.06rem;
-}
-.ab__goal-body {
-  font-family: var(--sub-font);
-  font-size: 0.16rem;
-  line-height: 0.25rem;
-  color: var(--color-muted);
-  max-width: 6.4rem;
-}
+.ab__goal-num { font-size: var(--text-caption); color: var(--ink-soft); letter-spacing: 0; padding-top: .375rem; }
+.ab__goal-title { font-size: var(--text-title); letter-spacing: var(--tracking-heading); line-height: 1.05; margin-bottom: .5rem; }
+.ab__goal-body { color: var(--ink-soft); max-width: 40rem; }
 
-/* ------------------------------------------------------------------ */
-/* 7 · Hobby illustrations. Same viewBox, stroke weights and greys as   */
-/* the homepage focus points, so the two sets read as one family.       */
-/* ------------------------------------------------------------------ */
-.focus-sport { --tile-color: 160, 160, 160; }
-.focus-photo { --tile-color: 160, 160, 160; }
-.focus-web   { --tile-color: 160, 160, 160; }
-
-/* sport — a stopwatch, hand sweeping */
-.focus-sport .sw-hand {
-  transform-origin: 100px 72px;
-  animation: abSweep 4s linear infinite;
+/* ── 03 Off the clock ───────────────────────────────────────────── */
+.ab--hobby { position: relative; }
+.hobbies {
+  display: grid;
+  gap: var(--space-xs);
+  grid-template-columns: minmax(0, 1fr);
 }
+@media (min-width: 64rem) { .hobbies { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hobby { min-height: 24rem; }
+.hobby__art {
+  margin: var(--space-sm) 0 auto;
+  color: var(--ink);
+}
+.hobby__art svg { width: 100%; height: auto; max-height: 11rem; }
+.hobby.is-clickable { cursor: pointer; }
+.hobby.is-clickable::after {
+  content: "Klik";
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  padding: .3125rem .75rem;
+  border-radius: var(--radius-pill);
+  background: var(--brand-accent);
+  color: var(--brand-white);
+  font-size: var(--text-caption);
+  letter-spacing: 0;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.hobby.is-clickable:hover::after { transform: scale(1.06); }
+.hobby.is-clickable:hover { outline: 1px solid var(--brand-accent); outline-offset: -1px; }
+
+.focus-sport .sw-hand { transform-origin: 100px 72px; animation: abSweep 4s linear infinite; }
 @keyframes abSweep { to { transform: rotate(360deg); } }
-
-/* photography — the aperture opens and closes */
-.focus-photo .iris {
-  transform-origin: center;
-  transform-box: fill-box;
-  animation: abIris 5s ease-in-out infinite;
-}
-.focus-photo .iris-core {
-  transform-origin: center;
-  transform-box: fill-box;
-  animation: abIrisCore 5s ease-in-out infinite;
-}
+.focus-photo .iris { transform-origin: center; transform-box: fill-box; animation: abIris 5s ease-in-out infinite; }
+.focus-photo .iris-core { transform-origin: center; transform-box: fill-box; animation: abIrisCore 5s ease-in-out infinite; }
 @keyframes abIris {
   0%, 100% { transform: rotate(0deg) scale(1); }
-  50%      { transform: rotate(22deg) scale(0.9); }
+  50% { transform: rotate(22deg) scale(.9); }
 }
 @keyframes abIrisCore {
-  0%, 100% { transform: scale(1); opacity: 0.85; }
-  50%      { transform: scale(0.55); opacity: 1; }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(.55); }
 }
-
-/* web — the lines type themselves in, one after the other */
-.focus-web .wl {
-  transform-origin: left center;
-  transform-box: fill-box;
-  animation: abType 4.2s ease-in-out infinite;
-}
-.focus-web .wl2 { animation-delay: 0.35s; }
-.focus-web .wl3 { animation-delay: 0.7s; }
+.focus-web .wl { transform-origin: left center; transform-box: fill-box; animation: abType 4.2s ease-in-out infinite; }
+.focus-web .wl2 { animation-delay: .35s; }
+.focus-web .wl3 { animation-delay: .7s; }
 @keyframes abType {
-  0%       { transform: scaleX(0); opacity: 0; }
+  0% { transform: scaleX(0); opacity: 0; }
   14%, 72% { transform: scaleX(1); opacity: 1; }
-  88%, 100%{ transform: scaleX(0); opacity: 0; }
+  88%, 100% { transform: scaleX(0); opacity: 0; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  /* about-polaroid.js returns early here, so the card simply rests */
-  .polaroid { transition: none; }
-  .focus-sport .sw-hand,
-  .focus-photo .iris,
-  .focus-photo .iris-core,
-  .focus-web .wl { animation: none; }
-  .focus-web .wl { transform: none; opacity: 1; }
-  .abs__knob, .abs__panel, .abs__side { transition: none; }
+/* the camera opens over the cards: sport and web step aside */
+#ab-hobby.is-camera-open { min-height: 52rem; }
+#ab-hobby .hobby {
+  transition: transform .7s var(--ease-swift), opacity .5s var(--ease-out);
 }
-
-/* --- mobile ------------------------------------------------------------ */
-@media (max-width: 700px) {
-  /* one column, edge to edge — the measure caps are for the desktop
-     layouts where artwork shares the width */
-  .about-page {
-    --ab-gutter: 0.6rem;
-    --ab-col: calc(100% - var(--ab-gutter) * 2);
-    --ab-measure: none;
-    --ab-pad-y: 3.1rem;
-  }
-  .ab {
-    padding: var(--ab-pad-y) var(--ab-gutter) 1.4rem;
-    align-items: flex-start;
-    min-height: auto;
-  }
-  .ab__col,
-  .ab__col--wide { max-width: none; }
-
-  .ab__display { font-size: 1.95rem; line-height: 1.85rem; }
-  .ab__heading { font-size: 1.15rem; line-height: 1.25rem; }
-  .ab__eyebrow { font-size: 0.32rem; letter-spacing: 0.06rem; }
-  .ab__num { font-size: 0.3rem; }
-  .ab__eyebrow::before { width: 0.4rem; margin-right: 0.16rem; }
-  .ab__lead { font-size: 0.55rem; line-height: 0.85rem; }
-
-  /* the hero stacks: copy first, photo under it, still tilted */
-  .ab__inner--hero { grid-template-columns: 1fr; gap: 1.5rem; }
-  .polaroid { --pol-w: 9.4rem; --pol-tilt: -2.5deg; justify-self: center;
-              padding: 0.37rem 0.37rem 1.42rem; }
-  .polaroid__caption { margin-top: 0.44rem; font-size: 0.34rem; letter-spacing: 0.12rem; }
-  .ab__body { font-size: 0.46rem; line-height: 0.72rem; }
-  .ab__todo { font-size: 0.4rem; line-height: 0.62rem; }
-  .ab__hint { display: none; }
-
-  /* a dot rail is a desktop affordance; on a phone it is just something
-     else covering the content */
-  .abnav { display: none; }
-
-  .ab--globe { min-height: 100vh; }
-  .ab__globe { height: 60%; top: auto; bottom: 0; opacity: 0.5; }
-
-  /* the switch stacks: the two labels sit above and below the toggle so
-     it can stay big instead of shrinking to fit a phone's width */
-  .abs { flex-direction: column; gap: 0.3rem; margin: 0.6rem 0 0.9rem; }
-  .abs__side { font-size: 1.5rem; }
-  .abs__track { width: 4.6rem; height: 2.1rem; border-radius: 1.05rem; padding: 0.22rem; }
-  .abs__knob { width: 1.6rem; height: 1.6rem; }
-  .abs__toggle[aria-checked="true"] .abs__knob { transform: translateX(2.5rem); }
-  .abs__panels { min-height: 7.5rem; }
-  .abs__heading { font-size: 1.1rem; line-height: 1.2rem; }
-  .abs__body { font-size: 0.46rem; line-height: 0.72rem; max-width: none; }
-
-  /* the tiles stack, so the grid stops being a three-up */
-  .ab--hobby .focusPoint_container { grid-template-columns: 1fr; margin-top: 0.7rem; }
-  .ab__facts > div { padding: 0.3rem 0; }
-  .ab__facts dt { font-size: 0.32rem; }
-  .ab__facts dd { font-size: 0.44rem; text-align: right; }
-  .ab__goal { grid-template-columns: 1.2rem 1fr; }
-  .ab__goal-title { font-size: 0.6rem; }
-  .ab__goal-body { font-size: 0.44rem; line-height: 0.68rem; }
-}
-
-/* ------------------------------------------------------------------ */
-/* 7b · The photography tile opens into a 3D camera.                    */
-/*                                                                      */
-/* Clicking it pushes the other two hobbies out to the sides and drops  */
-/* the stage in between. The tiles are not hidden — they slide and fade */
-/* so it reads as making room rather than a page swap.                  */
-/* ------------------------------------------------------------------ */
-.focusPoint_tile.is-clickable { cursor: pointer; }
-.focusPoint_tile.is-clickable::after {
-  content: 'Klik';
-  position: absolute;
-  right: 0.24rem;
-  bottom: 0.24rem;
-  z-index: 3;
-  font-family: var(--sub-font);
-  font-size: 0.115rem;
-  font-weight: 600;
-  letter-spacing: 0.03rem;
-  text-transform: uppercase;
-  color: var(--color-dim);
-  transition: color 0.3s ease;
-}
-.focusPoint_tile.is-clickable:hover::after { color: var(--color-white); }
-
-#ab-hobby { position: relative; }
-/* the tile grid is the full column rather than a centred block of its own,
-   so it starts on the same left edge as the heading above it */
-.ab--hobby .focusPoint_container {
-  max-width: none;
-  margin: 0.4rem 0 0;
-  text-align: left;
-}
-/* the stage is far bigger than the tile row, so the section has to make
-   room for it or the camera gets clipped by the next section */
-#ab-hobby.is-camera-open { min-height: 8.4rem; }
-#ab-hobby .focusPoint_container,
-#ab-hobby .focusPoint_tile {
-  transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1),
-              opacity 0.5s ease;
-}
-/* sport goes left, web goes right, photography stays put and fades under
-   the stage that lands on top of it */
-#ab-hobby.is-camera-open .focus-sport  { transform: translateX(-26%) scale(0.9); opacity: 0.28; }
-#ab-hobby.is-camera-open .focus-web    { transform: translateX(26%)  scale(0.9); opacity: 0.28; }
-#ab-hobby.is-camera-open .focus-photo  { opacity: 0; pointer-events: none; }
-/* the camera is big enough to sit over the section heading, so that steps
-   back too — it has done its job by the time you have clicked */
-#ab-hobby .ab__head { transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.76, 0, 0.24, 1); }
-#ab-hobby.is-camera-open .ab__head { opacity: 0; transform: translateY(-0.3rem); }
+#ab-hobby.is-camera-open .focus-sport { transform: translateX(-26%) scale(.9); opacity: .28; }
+#ab-hobby.is-camera-open .focus-web { transform: translateX(26%) scale(.9); opacity: .28; }
+#ab-hobby.is-camera-open .focus-photo { opacity: 0; pointer-events: none; }
+#ab-hobby .ab__head { transition: opacity .45s var(--ease-out), transform .6s var(--ease-swift); }
+#ab-hobby.is-camera-open .ab__head { opacity: 0; transform: translateY(-1.5rem); }
 
 .camstage {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%) scale(0.94);
-  width: min(11rem, 94vw);
-  aspect-ratio: 3 / 2;
   z-index: 4;
+  width: min(68rem, 94vw);
+  aspect-ratio: 3 / 2;
+  transform: translate(-50%, -50%) scale(.94);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.76, 0, 0.24, 1), visibility 0.5s;
+  transition: opacity .5s var(--ease-out), transform .7s var(--ease-swift), visibility .5s;
 }
 #ab-hobby.is-camera-open .camstage {
   opacity: 1;
@@ -672,101 +395,82 @@
 }
 .camstage__canvas { position: absolute; inset: 0; }
 .camstage__canvas canvas { width: 100%; height: 100%; display: block; }
-
-/* the flash is a full-stage white wash, not a light in the scene — a real
-   light would take a frame to build and the point is that it is instant */
 .camstage__flash {
   position: absolute;
   inset: -20%;
   border-radius: 50%;
-  background: radial-gradient(circle, #ffffff 0%, rgba(255,255,255,0.5) 35%, transparent 70%);
+  background: radial-gradient(circle, #fff 0%, rgba(255, 255, 255, .5) 35%, transparent 70%);
   opacity: 0;
   pointer-events: none;
   mix-blend-mode: screen;
 }
 .camstage__flash.is-firing { animation: camflash 420ms ease-out; }
 @keyframes camflash {
-  0%   { opacity: 0;    transform: scale(0.7); }
-  8%   { opacity: 1;    transform: scale(1); }
-  100% { opacity: 0;    transform: scale(1.15); }
+  0% { opacity: 0; transform: scale(.7); }
+  8% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.15); }
 }
-
 .camstage__status {
   position: absolute;
-  left: 0; right: 0; top: 50%;
+  inset: 50% 0 auto;
   text-align: center;
-  font-family: var(--sub-font);
-  font-size: 0.16rem;
-  color: var(--color-dim);
+  color: var(--ink-soft);
 }
 .camstage__close {
   position: absolute;
   left: 50%;
-  bottom: -0.5rem;
-  transform: translateX(-50%);
-  padding: 0.1rem 0.3rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.3rem;
-  background: transparent;
-  cursor: pointer;
-  font-family: var(--sub-font);
-  font-size: 0.14rem;
-  font-weight: 600;
-  color: var(--color-muted);
-  transition: color 0.25s ease, border-color 0.25s ease;
+  bottom: -3rem;
+  translate: -50% 0;
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--canvas);
+  transition: background var(--dur-fast) var(--ease-out);
 }
-.camstage__close:hover { color: var(--color-white); border-color: var(--color-white); }
-
-@media (prefers-reduced-motion: reduce) {
-  #ab-hobby .focusPoint_tile, .camstage { transition: none; }
-  .camstage__flash.is-firing { animation: none; }
+.camstage__close:hover { background: var(--brand-accent); color: var(--brand-white); }
+@media (max-width: 47.99rem) {
+  .camstage { aspect-ratio: 4 / 3; }
+  #ab-hobby.is-camera-open { min-height: 70rem; }
+  #ab-hobby.is-camera-open .focus-sport { transform: translateY(-8%) scale(.94); }
+  #ab-hobby.is-camera-open .focus-web { transform: translateY(8%) scale(.94); }
 }
 
-@media (max-width: 700px) {
-  .camstage { width: 94vw; aspect-ratio: 4 / 3; }
-  #ab-hobby.is-camera-open { min-height: 26rem; }
-  .camstage__close { font-size: 0.4rem; padding: 0.24rem 0.7rem; bottom: -1.2rem; border-radius: 0.7rem; }
-  .camstage__status { font-size: 0.42rem; }
-  .focusPoint_tile.is-clickable::after { font-size: 0.32rem; right: 0.5rem; bottom: 0.5rem; }
-  /* stacked on a phone, so the neighbours move up and down instead */
-  #ab-hobby.is-camera-open .focus-sport { transform: translateY(-8%) scale(0.94); }
-  #ab-hobby.is-camera-open .focus-web   { transform: translateY(8%)  scale(0.94); }
-}
-
-/* ------------------------------------------------------------------ */
-/* 10 · AirPods — a pinned, scroll-scrubbed stage. The canvas fills it  */
-/* and the copy sits over the top-left, out of the model's way.         */
-/* ------------------------------------------------------------------ */
+/* ── AirPods outro ──────────────────────────────────────────────────
+   The word sits behind the model; the renderer is alpha:true and never
+   clears to a colour, so the type reads straight through the canvas. */
 .apods {
   position: relative;
   height: 100vh;
+  height: 100svh;
   overflow: hidden;
-  background: var(--color-black);
 }
-/* the model sits over the type, so the canvas needs a layer of its own —
-   without the z-index it would paint under nothing in particular */
 .apods__canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  display: block;
   z-index: 1;
 }
-/* Same idea as .showcase__bg: one big word, centred in the section, with
-   the thing it belongs to passing in front of it. */
 .apods__bg {
   position: absolute;
   inset: 0;
+  z-index: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 0;
   pointer-events: none;
 }
-/* the canvas is laid over the heading, a touch proud of it so a glyph
-   that overhangs its line box is not sliced off */
 .apods__word { position: relative; }
+.apods__bgtext {
+  margin: 0;
+  font-size: 21.5vw;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: var(--tracking-heading);
+  white-space: nowrap;
+  color: var(--ink);
+}
 .apods__eq {
   position: absolute;
   inset: -9% -2%;
@@ -774,43 +478,33 @@
   height: 118%;
   pointer-events: none;
 }
-/* the heading hands over its pixels to the canvas, but keeps its box —
-   that box is what the canvas measures itself against */
 .apods__bg.is-eq .apods__bgtext { color: transparent; }
-
-/* Bigger than the showcase's word, because it has to survive a bigger
-   object in front of it: "Recent work" is long enough that its ends clear
-   the card on their own, a short word has to be scaled to do the same. */
-.apods__bgtext {
-  font-size: 3.1rem;
-  line-height: 1;
-  letter-spacing: -0.04rem;
-  white-space: nowrap;
-  margin: 0;
-}
 .apods__status {
   position: absolute;
-  left: 0; right: 0; top: 50%;
+  inset: 50% 0 auto;
+  z-index: 2;
   text-align: center;
-  font-family: var(--sub-font);
-  font-size: 0.16rem;
-  color: var(--color-dim);
+  color: var(--ink-soft);
 }
-@media (max-width: 700px) {
-  /* On a phone the model fills the screen and bleeds off both edges, so
-     nothing can sit behind it and still be read. Same element, different
-     job: a normal heading at the top of the section, in front. */
+@media (max-width: 47.99rem) {
   .apods__bg {
     align-items: flex-start;
     justify-content: flex-start;
-    padding: var(--ab-pad-y) var(--ab-gutter) 0;
+    padding: calc(var(--header-h) + var(--space-sm)) var(--gutter) 0;
     z-index: 2;
   }
-  .apods__bgtext {
-    font-size: 1.15rem;
-    line-height: 1.25rem;
-    letter-spacing: 0;
-    white-space: normal;
-  }
-  .apods__status { font-size: 0.42rem; }
+  .apods__bgtext { font-size: var(--text-mega); white-space: normal; }
+  /* no AirPods section on phones at all, the "Love" outro included
+     (about-airpods.js does not run there either) */
+  .apods { display: none; }
+}
+
+/* model credits under the footer line */
+.footer__credits { border-top: 0; padding-top: 0; }
+.footer__credits a { text-decoration: underline; text-underline-offset: .2em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .polaroid { transition: none; }
+  .focus-sport .sw-hand, .focus-photo .iris, .focus-photo .iris-core, .focus-web .wl { animation: none; }
+  .focus-web .wl { transform: none; opacity: 1; }
 }

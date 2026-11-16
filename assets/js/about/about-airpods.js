@@ -115,8 +115,11 @@ const TUNE = {
 
 const LID_CLOSED = TUNE.lidClosedDeg * Math.PI / 180;
 
+// Phones skip the AirPods altogether: no model download, no pinned scroll.
+// The section stays as the "Love" outro on its own (see about.css).
 const stage = document.querySelector('[data-airpods]');
-if (stage) init(stage);
+const phone = window.matchMedia('(max-width: 47.99rem)').matches;
+if (stage && !phone) init(stage);
 
 // map a scroll position onto one beat, eased
 const span = (p, a, b) => {
