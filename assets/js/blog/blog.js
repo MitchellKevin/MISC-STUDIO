@@ -9,7 +9,7 @@
   if (!grid) return;
 
   const buttons = Array.from(document.querySelectorAll('.filters__btn'));
-  const cards = Array.from(grid.querySelectorAll('.bpost'));
+  const cards = Array.from(grid.querySelectorAll('[data-tag]'));
   const count = document.getElementById('filter-count');
   const empty = document.getElementById('archive-empty');
 
@@ -27,7 +27,7 @@
 
     if (count) {
       count.textContent =
-        shown === cards.length ? `${cards.length} posts` : `${shown} van ${cards.length}`;
+        shown === cards.length ? `${cards.length} posts` : `${shown} of ${cards.length}`;
     }
     if (empty) empty.classList.toggle('is-shown', shown === 0);
 

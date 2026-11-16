@@ -30,7 +30,9 @@
   function getAudio() {
     if (audio) return audio;
     audio = document.createElement('audio');
-    audio.src = SRC;
+    // a page that sits deeper in the tree passes its own path on the button
+    var marked = document.querySelector('[data-sound-toggle][data-src]');
+    audio.src = marked ? marked.getAttribute('data-src') : SRC;
     audio.loop = true;
     audio.preload = 'none';
     audio.volume = 0;
@@ -52,9 +54,12 @@
     }, 25);
   }
 
-  function paint(btn) {
-    btn.setAttribute('aria-pressed', intent === 'on' ? 'true' : 'false');
-    btn.setAttribute('aria-label', intent === 'on' ? 'Mute ambient music' : 'Play ambient music');
+  var buttons = [];
+  function paint() {
+    buttons.forEach(function (btn) {
+      btn.setAttribute('aria-pressed', intent === 'on' ? 'true' : 'false');
+      btn.setAttribute('aria-label', intent === 'on' ? 'Mute ambient music' : 'Play ambient music');
+    });
   }
 
   // returns a promise for whether the browser actually let it through
@@ -109,16 +114,22 @@
   }
 
   function init() {
-    var btn = build();
-    if (!btn) return;
+    // the redesigned header ships its own buttons (one in the bar, one in the
+    // menu); older pages still get one injected into .header-menu
+    buttons = Array.prototype.slice.call(document.querySelectorAll('[data-sound-toggle]'));
+    if (!buttons.length) {
+      var built = build();
+      if (built) buttons = [built];
+    }
+    if (!buttons.length) return;
 
     try { intent = localStorage.getItem(KEY) === 'off' ? 'off' : 'on'; } catch (e) {}
-    paint(btn);
+    paint();
 
-    btn.addEventListener('click', function () {
+    var toggle = function () {
       intent = intent === 'on' ? 'off' : 'on';
       try { localStorage.setItem(KEY, intent); } catch (e) {}
-      paint(btn);
+      paint();
 
       if (intent === 'off') {
         armed = false;           // cancels a pending first-gesture start
@@ -126,7 +137,8 @@
         return;
       }
       play().then(function (ok) { if (!ok) arm(); });
-    });
+    };
+    buttons.forEach(function (btn) { btn.addEventListener('click', toggle); });
 
     if (intent === 'on') {
       play().then(function (ok) { if (!ok) arm(); });

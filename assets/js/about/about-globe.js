@@ -56,9 +56,11 @@
     let ink = '#ffffff', dim = '#767676';
 
     function readColors() {
-      const cs = getComputedStyle(document.documentElement);
-      ink = (cs.getPropertyValue('--color-white') || '#fff').trim();
-      dim = (cs.getPropertyValue('--color-dim') || '#767676').trim();
+      // the section's surface tokens, read off the canvas itself, so the
+      // globe inks itself for whatever surface it sits on
+      const cs = getComputedStyle(canvas);
+      ink = (cs.getPropertyValue('--ink') || '#fff').trim() || '#fff';
+      dim = (cs.getPropertyValue('--ink-soft') || '#767676').trim() || '#767676';
     }
 
     function resize() {

@@ -2,155 +2,217 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"></noscript>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#141414">
+    <script>document.documentElement.classList.add('js');</script>
+    <link rel="preload" href="../../assets/fonts/OverusedGrotesk-Medium.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/brand/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="../../assets/img/brand/favicon.png">
     <link rel="apple-touch-icon" href="../../assets/img/brand/apple-touch-icon.png">
-    <script>
-      /* read the saved theme before first paint — otherwise a light-mode
-         reload flashes the black page for a frame */
-      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
-      /* arriving through a page transition: start in the curtain colour so the
-         page never flashes before page-transition.js lifts the curtain */
-      (function(){try{if(sessionStorage.getItem('nomi-wave-enter'))document.documentElement.classList.add('curtain-in');}catch(e){}})();
-    </script>
-    <!-- header, footer, buttons and CTA come from the service pages -->
-    <link rel="stylesheet" href="../../assets/css/services.css">
+    <link rel="stylesheet" href="../../assets/css/site.css">
     <link rel="stylesheet" href="../../assets/css/case-study.css">
     <!-- case-study.js replaces this with the project's name -->
     <title>Case study — MISC STUDIO</title>
 </head>
 <body>
-  <svg class="goo-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><filter id="goo"><feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix><feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend></filter></defs></svg>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ── Header ───────────────────────────────────────────────────── -->
   <header class="site-header">
-    <a class="site-header__logo" href="../../index.html">
-      <img src="../../assets/img/brand/logo-192.webp" alt="">
-      <span class="site-header__name"><span>MISC</span><span>STUDIO</span></span>
+    <a class="brand" href="../../index.html" aria-label="MISC STUDIO, home">
+      <img src="../../assets/img/brand/logo-192.webp" alt="" width="38" height="38">
+      <span class="brand__word">MISC STUDIO</span>
     </a>
-    <nav class="site-header__nav">
-      <a class="header-btn" href="../../about.html" aria-label="About me" title="About me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></a>
+    <nav class="header-actions" aria-label="Quick links">
+      <a class="header-control header-control--cta" aria-label="Contact" href="../../index.html#contact">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2"/><path d="M3 5.5l7 5 7-5"/></svg>
+        <span class="header-control__label--desktop">Contact</span>
+      </a>
+      <button class="header-control header-control--hide-sm" type="button" data-sound-toggle data-src="../../assets/audio/bensound-moonlightdrive.mp3" aria-pressed="false" aria-label="Play ambient music">
+        <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="header-control__label--desktop">Sound</span>
+      </button>
+      <a class="header-control header-control--hide-sm" href="../../about.html">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="7" r="3"/><path d="M4 17c.7-3 3-4.7 6-4.7s5.3 1.7 6 4.7"/></svg>
+        <span class="header-control__label--desktop">About</span>
+      </a>
+      <button class="header-control" type="button" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-menu">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M3.5 7.5h13M3.5 12.5h13"/></svg>
+        <span>Menu</span>
+      </button>
     </nav>
   </header>
 
+  <dialog class="menu" id="site-menu" data-menu aria-label="Main navigation">
+    <div class="menu__panel">
+      <div class="menu__top">
+        <span class="menu__title">Menu</span>
+        <button class="menu__close" type="button" data-menu-close aria-label="Close navigation">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>
+        </button>
+      </div>
+      <nav class="menu__links" aria-label="Main navigation">
+        <a href="../../index.html" style="--i:0"><span class="menu__index">01</span><span>Studio</span></a>
+        <a href="../../index.html#process" style="--i:1"><span class="menu__index">02</span><span>How it works</span></a>
+        <a href="../../index.html#work" style="--i:2" aria-current="page"><span class="menu__index">03</span><span>Work</span></a>
+        <a href="../../index.html#pricing" style="--i:3"><span class="menu__index">04</span><span>Pricing</span></a>
+        <a href="../../index.html#faq" style="--i:4"><span class="menu__index">05</span><span>FAQ</span></a>
+        <a href="../../blog.html" style="--i:5"><span class="menu__index">06</span><span>Journal</span></a>
+        <a href="../../about.html" style="--i:6"><span class="menu__index">07</span><span>About</span></a>
+      </nav>
+      <div class="menu__foot">
+        <span class="status">Available for new projects</span>
+        <span class="menu__social">
+          <a href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
+          <a href="https://github.com/MitchellKevin">GitHub</a>
+          <button type="button" class="header-control--sound-mobile" data-sound-toggle aria-pressed="false" aria-label="Play ambient music"><span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
+        </span>
+      </div>
+    </div>
+  </dialog>
+
   <!-- Everything inside [data-cs] is filled from case-studies.js by
        case-study.js, picked by the ?project=<slug> in the URL. -->
-  <main class="cs">
-    <!-- The hero: the title over a card holding the whole project shot. As
-         you scroll the card grows to fill the screen (case-study.js drives
-         --p from 0 to 1; the CSS turns that into the card's size), and a
-         project's gallery, if it has one, drifts past it. -->
-    <section class="cs-hero">
-      <div class="cs-hero__sticky">
-        <div class="cs-hero__caption">
-          <span class="cs-hero__label" data-cs="label"></span>
-          <h1 class="cs-hero__title" data-cs="title"></h1>
-        </div>
-        <div class="cs-hero__frame">
-          <img class="cs-hero__backdrop" data-cs="image" alt="" aria-hidden="true">
-          <img class="cs-hero__img" data-cs="image" alt="">
+  <main id="main" tabindex="-1" class="cs">
+
+    <!-- ── Hero: title, intro and facts on the void surface ─────────── -->
+    <section class="cs-hero" data-surface="void">
+      <div class="grain" aria-hidden="true"></div>
+      <div class="shell cs-hero__inner">
+        <p class="cs-hero__crumbs" data-enter style="--d:0">
+          <a href="../../index.html#work">Work</a>
+          <span aria-hidden="true">/</span>
+          <span class="eyebrow" data-cs="label"></span>
+        </p>
+        <h1 class="t-mega cs-hero__title" data-cs="title" data-enter style="--d:1"></h1>
+        <div class="cs-hero__split">
+          <p class="t-title cs-hero__intro" data-cs="intro" data-enter style="--d:2"></p>
+          <div class="cs-hero__side" data-enter style="--d:3">
+            <dl class="cs-facts" data-cs-facts></dl>
+            <a class="btn" data-variant="primary" data-cs="live" target="_blank" rel="noopener">
+              <span class="btn__copy"><span class="btn__label">Visit the live site</span><span class="btn__caption">Opens in a new tab</span></span>
+              <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Visit the live site</span><span class="btn__caption">Opens in a new tab</span></span></span>
+              <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l6-6M6 5h5v5"/></svg></span>
+            </a>
+          </div>
         </div>
       </div>
-      <div class="cs-gallery" data-cs-gallery hidden></div>
-    </section>
 
-    <section class="cs-overview" id="details">
-      <div class="container cs-overview__inner">
-        <div>
-          <span class="section-label">The project</span>
-          <h2 class="cs-overview__title" data-cs="intro"></h2>
-        </div>
-        <div class="cs-overview__side">
-          <dl class="cs-meta" data-cs-facts></dl>
-          <a class="btn blob-btn" data-cs="live" target="_blank" rel="noopener">Visit the live site ↗<span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></a>
+      <!-- The project shot: a rounded card that grows to the full width of
+           the screen as it scrolls through (case-study.js sets --p 0 → 1). -->
+      <div class="cs-stage" data-cs-stage>
+        <div class="cs-stage__frame">
+          <img class="cs-stage__backdrop" data-cs="image" alt="" aria-hidden="true">
+          <img class="cs-stage__img" data-cs="image" alt="">
         </div>
       </div>
     </section>
 
-    <section class="cs-story">
-      <div class="container">
-        <span class="section-label">How it came together</span>
+    <!-- ── Gallery: shots that drift past at their own speeds ───────── -->
+    <section class="cs-gallery-wrap" data-surface="void" data-cs-gallery-wrap hidden>
+      <div class="shell cs-gallery" data-cs-gallery></div>
+    </section>
+
+    <!-- ── Story ────────────────────────────────────────────────────── -->
+    <section class="section cs-story" data-surface="light" aria-labelledby="cs-story-title">
+      <div class="shell">
+        <div class="section__head">
+          <div class="section__intro">
+            <span class="eyebrow">The story</span>
+            <h2 class="t-display lines" id="cs-story-title" data-reveal><span><span>How it came</span></span><span><span class="soft">together.</span></span></h2>
+          </div>
+        </div>
         <div class="cs-chapters" data-cs-story></div>
       </div>
     </section>
+
     <!-- Optional deeper sections (design decisions, visual system, page
          structure, build notes, figures). case-study.js fills this only for
          projects that have them in case-studies.js; otherwise it stays empty. -->
     <div class="cs-extra" data-cs-extra></div>
 
-    <section class="detail-cta">
-      <div class="container">
-        <div class="detail-cta__inner">
-          <h2 class="detail-cta__title">Got a project like this?</h2>
-          <a class="btn blob-btn btn--light" href="../../index.html#contact">Get in touch<span class="blob-btn__inner"><span class="blob-btn__blobs"><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span><span class="blob-btn__blob"></span></span></span></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="cs-next">
-      <div class="container">
-        <a class="cs-next__card" data-cs="next">
-          <img class="cs-next__img" data-cs="next-image" alt="">
+    <!-- ── Next project ─────────────────────────────────────────────── -->
+    <section class="section cs-next" data-surface="void" aria-label="Next project">
+      <div class="grain" aria-hidden="true"></div>
+      <div class="shell">
+        <a class="cs-next__card" data-cs="next" data-reveal>
           <span class="cs-next__text">
-            <span class="cs-next__label">Next project</span>
-            <span class="cs-next__title"><span data-cs="next-title"></span> <span aria-hidden="true">→</span></span>
+            <span class="eyebrow">Next project</span>
+            <span class="t-display cs-next__title" data-cs="next-title"></span>
+            <span class="cs-next__tag" data-cs="next-label"></span>
+          </span>
+          <span class="cs-next__media">
+            <img data-cs="next-image" alt="" loading="lazy" decoding="async">
+            <span class="work__go" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
           </span>
         </a>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="footer__inner">
-      <div class="footer__top">
-        <div class="footer__brand">
-          <div class="footer__logo-row">
-            <img class="footer__logo-img" src="../../assets/img/brand/logo-192.webp" alt="">
-            <div class="footer__logo"><span>MISC</span><span>STUDIO</span></div>
-          </div>
-          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
-          <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
+  <!-- ── Footer ───────────────────────────────────────────────────── -->
+  <footer class="site-footer" data-surface="paper">
+    <div class="shell">
+      <div class="footer__close">
+        <p class="t-display lines" data-reveal><span><span>Got a project like this?</span></span><span><span class="soft">Let’s make it next.</span></span></p>
+        <div class="btn-pair">
+          <a class="btn" data-variant="primary" href="../../index.html#contact">
+            <span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span>
+            <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span></span>
+            <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </a>
+          <a class="btn" data-variant="secondary" href="../../index.html#work">
+            <span class="btn__copy"><span class="btn__label">All work</span></span>
+            <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">All work</span></span></span>
+            <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </a>
         </div>
-        <nav class="footer__nav">
-          <div class="footer__col">
-            <h2 class="footer__heading">Services</h2>
-            <a class="footer__link" href="../services/ux-design.html">UX Design</a>
-            <a class="footer__link" href="../services/web-development.html">Web Development</a>
-          </div>
-          <div class="footer__col">
-            <h2 class="footer__heading">Company</h2>
-            <a class="footer__link" href="../../index.html">Home</a>
-            <a class="footer__link" href="../../index.html#showcase">Work</a>
-            <a class="footer__link" href="../../index.html#contact">Contact</a>
-          </div>
-          <div class="footer__col">
-            <h2 class="footer__heading">Elsewhere</h2>
-            <a class="footer__link" href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
-            <a class="footer__link" href="https://github.com/MitchellKevin">Github</a>
-            <a class="footer__link" href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>
-          </div>
+      </div>
+
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a class="brand" href="../../index.html" style="width:fit-content"><img src="../../assets/img/brand/logo-192.webp" alt="" width="38" height="38" loading="lazy"><span class="brand__word" style="display:inline">MISC STUDIO</span></a>
+          <p>Design, build and secure. A small studio in the Netherlands.</p>
+          <span class="status">Available for new projects</span>
+        </div>
+        <nav class="footer__col" aria-label="Explore">
+          <h2 class="footer__heading">Explore</h2>
+          <a href="../../index.html#process"><span class="menu__index">01</span>How it works</a>
+          <a href="../../index.html#work"><span class="menu__index">02</span>Work</a>
+          <a href="../../index.html#pricing"><span class="menu__index">03</span>Pricing</a>
+          <a href="../../index.html#faq"><span class="menu__index">04</span>FAQ</a>
+          <a href="../../blog.html"><span class="menu__index">05</span>Journal</a>
+          <a href="../../about.html"><span class="menu__index">06</span>About</a>
+        </nav>
+        <nav class="footer__col" aria-label="Services">
+          <h2 class="footer__heading">Services</h2>
+          <a href="../services/ux-design.html">UX Design</a>
+          <a href="../services/web-development.html">Web Development</a>
+          <a href="../career.html">Career</a>
+        </nav>
+        <nav class="footer__col" aria-label="Elsewhere">
+          <h2 class="footer__heading">Elsewhere</h2>
+          <a href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
+          <a href="https://github.com/MitchellKevin">GitHub</a>
+          <a href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>
         </nav>
       </div>
 
       <div class="footer__bottom">
-        <span>© 2026 Mitchell Scholte. All rights reserved.</span>
-        <span>Made in Amsterdam</span>
+        <span>© <span data-year>2026</span> Mitchell Scholte — All rights reserved. Made in Amsterdam.</span>
+        <span>Music: <a href="https://www.bensound.com" target="_blank" rel="noopener">Bensound.com</a> · Artist: Yunior Arronte · License code: TTAJRAXT3KMQMEPT</span>
       </div>
     </div>
-    <!-- MISC drawn in dots that scatter under the cursor (hero-particles.js);
-         it runs edge to edge and off the bottom of the page -->
     <div class="footer__mark" aria-hidden="true"><canvas class="footer__particles" data-src="../../assets/img/brand/misc-wordmark.svg"></canvas></div>
   </footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
-    <script src="../../assets/js/shared/page-transition.js"></script>
-    <script src="../../assets/js/work/case-studies.js"></script>
-    <script src="../../assets/js/work/case-study.js"></script>
-    <script src="../../assets/js/shared/hero-particles.js"></script>
-    <script src="../../assets/js/shared/header-scroll.js"></script>
-    <script src="../../assets/js/shared/theme-toggle.js"></script>
+
+  <!-- case-study.js renders first, so site.js finds the [data-reveal]
+       elements it adds when it scans the page -->
+  <script src="../../assets/js/work/case-studies.js" defer></script>
+  <script src="../../assets/js/work/case-study.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js" defer></script>
+  <script src="../../assets/js/site.js" defer></script>
+  <script src="../../assets/js/shared/hero-particles.js" defer></script>
+  <script src="../../assets/js/home/sound-toggle.js" defer></script>
 </body>
 </html>
