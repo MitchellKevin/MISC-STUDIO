@@ -569,9 +569,9 @@ window.CASE_STUDIES = [
     theme: { surface: 'void', bg: '#030915', deep: '#000000', glow: '#EB5D34', accent: '#EB5D34', onAccent: '#030915' },
     // live: 'https://mitchellkevin.github.io/Space/',
     gallery: [
-      { src: 'assets/img/projects/sron/mobile.webp', alt: 'The hero on a phone, with the Earth rising from the bottom' },
+      { src: 'assets/img/projects/sron/mobile.webp', video: 'assets/video/projects/sron/mobile.mp4', alt: 'The hero on a phone: the text fades in and the Earth rises from the bottom' },
       { src: 'assets/img/projects/sron/stats.webp', alt: 'The key figures: 5 years, 161 kg, 10 concentrators, 89 W' },
-      { src: 'assets/img/projects/sron/mobile-satellite.webp', alt: 'The satellite viewer on a phone, with the solar arrays opened' },
+      { src: 'assets/img/projects/sron/mobile-satellite.webp', video: 'assets/video/projects/sron/mobile-satellite.mp4', alt: 'The satellite turning by itself on a phone while its hotspots are tapped open one by one' },
       { src: 'assets/img/projects/sron/experts.webp', alt: 'The team section with the SRON experts' },
     ],
     facts: [
@@ -593,7 +593,8 @@ window.CASE_STUDIES = [
         body: 'The hero is a three.js Earth, turned so Europe and the Netherlands, home of SRON, face the viewer. On load the camera flies in from deep space, the globe turns slowly and can be dragged around, and the strip along the bottom ticks the UTC time, sidereal time and Earth’s axial tilt every second.',
         quote: { text: 'A compact X-ray space telescope studying binary star systems from low-Earth orbit.' },
         image: 'assets/img/projects/sron/earth.webp',
-        alt: 'The three.js Earth in the hero, with Europe facing the viewer',
+        video: 'assets/video/projects/sron/earth.mp4',
+        alt: 'The camera flying in from deep space until the three.js Earth fills the bottom of the hero, Europe facing the viewer',
       },
       {
         label: 'The spacecraft',
@@ -601,7 +602,8 @@ window.CASE_STUDIES = [
         body: 'I modelled the satellite in Blender and load it into the page, where you can drag it around. Five hotspots are pinned to its parts: the X-ray instrument, solar arrays, propulsion, communications and attitude control. Each one opens a short plain-language note, and hotspots on the far side of the model dim so you only reach for what you can see.',
         quote: { text: 'Rotate the model and select a hotspot to see what each part does.' },
         image: 'assets/img/projects/sron/satellite.webp',
-        alt: 'The 3D satellite with the X-ray instrument note opened',
+        video: 'assets/video/projects/sron/satellite.mp4',
+        alt: 'The 3D satellite being dragged around, then the X-ray instrument and solar array hotspots opening their notes',
       },
       {
         label: 'The engineering',
@@ -625,7 +627,8 @@ window.CASE_STUDIES = [
         body: 'With the globe behind the headline, the two fought for attention. Now the Earth rises from the bottom of the screen like a horizon seen from orbit, and the script measures where the text ends so the globe always starts just below it, on any screen. On touch screens the 3D scenes are display-only, so they never trap the page’s scrolling, and the satellite turns slowly by itself while you tap its hotspots.',
         quote: { text: 'Explore the mission.' },
         image: 'assets/img/projects/sron/mobile.webp',
-        alt: 'The hero on a phone, with the Earth as a horizon below the text',
+        video: 'assets/video/projects/sron/mobile.mp4',
+        alt: 'The hero on a phone, with the Earth rising as a horizon below the text',
       },
     ],
 
