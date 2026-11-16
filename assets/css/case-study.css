@@ -150,7 +150,8 @@
   box-shadow: 0 1.5rem 4rem #00000066;
   will-change: transform;
 }
-.cs-shot img { width: 100%; }
+.cs-shot img,
+.cs-shot .cs-media { width: 100%; }
 .cs-shot__caption { font-size: .8125rem; color: var(--ink-soft); max-width: 32rem; }
 
 /* Gallery over the shot (case-study.js moves it into the hero): the shot
@@ -263,7 +264,37 @@
   border-radius: var(--radius-card);
   background: var(--panel);
 }
-.cs-decision__shot img { width: 100%; border-radius: var(--radius-well); }
+.cs-decision__shot img,
+.cs-decision__shot .cs-media { width: 100%; border-radius: var(--radius-well); overflow: clip; }
+
+/* ── Looping media (case-study.js: media) ───────────────────────── */
+/* a muted loop in place of a screenshot, with a small pause button */
+.cs-media { position: relative; }
+.cs-media video { width: 100%; height: auto; }
+.cs-media__toggle {
+  position: absolute;
+  right: .75rem;
+  bottom: .75rem;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--brand-white) 18%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--brand-void) 70%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--brand-white);
+  cursor: pointer;
+  opacity: .55;
+  transition: opacity .2s ease;
+}
+.cs-media__toggle svg { width: .875rem; height: .875rem; fill: currentColor; }
+.cs-media:hover .cs-media__toggle,
+.cs-media__toggle:focus-visible,
+.cs-media__toggle[aria-label="Play animation"] { opacity: 1; }
+.cs-media__toggle:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
 
 /* ── Visual system ──────────────────────────────────────────────── */
 .cs-swatches {

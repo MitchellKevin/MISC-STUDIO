@@ -12,7 +12,9 @@
 //   image    the shot that grows to fill the screen as you scroll, and is
 //            shown again in full further down
 //   gallery  optional: images that drift past the hero (four look best).
-//            Leave it out and the hero is just the shot.
+//            Leave it out and the hero is just the shot. A shot can add
+//            video: 'assets/video/….mp4' to play a short muted loop, with
+//            src as its poster (and the still for reduced motion).
 //   theme    the project's own colours for its hero and accent, taken
 //            from its palette: { surface: 'void' | 'light', bg, deep, glow,
 //            accent, onAccent } — bg is the hero's ground, deep and glow
@@ -23,8 +25,9 @@
 //
 // Optional deeper sections, shown under the story only when present
 // (see day-to-day-secure for a full example):
-//   decisions  [{ label, heading, body, quote: { text, translation }, image, alt }]
-//              text beside a screenshot, sides alternating
+//   decisions  [{ label, heading, body, quote: { text, translation }, image, video, alt }]
+//              text beside a screenshot, sides alternating; with video the
+//              screenshot becomes a muted loop and image is its poster
 //   system     { heading, body, colors: [{ name, hex }], fonts: [{ name, use }] }
 //   structure  { heading, body, steps: [{ title, text }] }  numbered, in order
 //   build      { heading, body, notes: [{ title, text }] }
@@ -44,8 +47,8 @@ window.CASE_STUDIES = [
     live: 'https://mitchellkevin.github.io/scholtes-klusbedrijf/',
     gallery: [
       { src: 'assets/img/projects/scholtes-klusbedrijf/mobile.webp', alt: 'The homepage on a phone, with the house below the headline' },
-      { src: 'assets/img/projects/scholtes-klusbedrijf/flight.webp', alt: 'The folded work order flying off as a paper plane' },
-      { src: 'assets/img/projects/scholtes-klusbedrijf/stamp.webp', alt: 'The confirmation with its “Onderweg” stamp' },
+      { src: 'assets/img/projects/scholtes-klusbedrijf/flight.webp', video: 'assets/video/projects/scholtes-klusbedrijf/flight.mp4', alt: 'The work order folding up three times and flying off as a paper plane' },
+      { src: 'assets/img/projects/scholtes-klusbedrijf/stamp.webp', video: 'assets/video/projects/scholtes-klusbedrijf/stamp.mp4', alt: 'The “Onderweg” stamp landing on the confirmation' },
       { src: 'assets/img/projects/scholtes-klusbedrijf/intro-offer.webp', alt: 'The block with the introductory offer for the first customers' },
     ],
     facts: [
@@ -67,7 +70,8 @@ window.CASE_STUDIES = [
         body: 'The hero is an exploded drawing of a house: the garden, the ground floor, the first floor and the roof lifted apart, with pins between them like an assembly drawing. Six cards point at the part of the house each service covers, from the bathroom for plumbing to the fence for the garden. Hover a card and that part of the house lights up in safety yellow; click it and the page jumps to the service. On load, the layers drop into place one by one.',
         quote: { text: 'Van tekening naar werk.', translation: 'From drawing to work.' },
         image: 'assets/img/projects/scholtes-klusbedrijf/hero-house.webp',
-        alt: 'The exploded house with six service cards, the bathroom lit up',
+        video: 'assets/video/projects/scholtes-klusbedrijf/hero-house.mp4',
+        alt: 'The exploded house assembling layer by layer, then three service cards lighting up their part of the house',
       },
       {
         label: 'Services',
@@ -75,7 +79,8 @@ window.CASE_STUDIES = [
         body: 'Six services in a grid, each with a code from SVC-001 to SVC-006, one line of plain text and a tool drawn in thin lines. It reads like a parts list on a drawing, which says “organised” before anyone reads a word. The range runs from a dripping tap to a full renovation, and a line underneath invites anything that is not on the list.',
         quote: { text: 'Alles wat blijft liggen, pak ik op.', translation: 'Everything that keeps getting put off, I pick up.' },
         image: 'assets/img/projects/scholtes-klusbedrijf/services.webp',
-        alt: 'The services grid with codes SVC-001 to SVC-006',
+        video: 'assets/video/projects/scholtes-klusbedrijf/services.mp4',
+        alt: 'The services grid with codes SVC-001 to SVC-006, each card lighting up as the cursor passes',
       },
       {
         label: 'For a first customer',
@@ -91,7 +96,8 @@ window.CASE_STUDIES = [
         body: 'A d3 radar puts Hoofddorp in the centre with rings at 5, 10 and 15 kilometres, and eight nearby towns placed by their real direction and distance. The rings grow in, the towns appear one by one and a sweep line turns, like a radar screen. Next to it, the towns are listed as tags, and a dashed circle says that further away is open to discussion.',
         quote: { text: 'Snel ter plaatse in de regio.', translation: 'Quickly on site in the region.' },
         image: 'assets/img/projects/scholtes-klusbedrijf/area.webp',
-        alt: 'The radar map of the service area around Hoofddorp, with the towns as tags',
+        video: 'assets/video/projects/scholtes-klusbedrijf/area.mp4',
+        alt: 'The radar map around Hoofddorp drawing itself: rings grow, towns appear and the sweep line turns',
       },
       {
         label: 'The quote request',
@@ -99,7 +105,8 @@ window.CASE_STUDIES = [
         body: 'The contact form is a numbered work order, with the type of job picked from the same six services. When it is sent, the order folds in half three times, turns into a paper plane and flies off along a dashed route marked “Destination: Hoofddorp”, and a stamp lands on the confirmation. Behind the animation the request really goes out, to a form service or as a ready-made email. If sending fails, the card says so and keeps everything filled in.',
         quote: { text: 'Beschrijf kort wat er moet gebeuren. Je hoort binnen 24 uur van me.', translation: 'Describe briefly what needs doing. You’ll hear from me within 24 hours.' },
         image: 'assets/img/projects/scholtes-klusbedrijf/work-order.webp',
-        alt: 'The work order form, filled in, next to the three next steps',
+        video: 'assets/video/projects/scholtes-klusbedrijf/work-order.mp4',
+        alt: 'The filled-in work order being sent: it folds up, flies off as a paper plane and the confirmation is stamped',
       },
     ],
 

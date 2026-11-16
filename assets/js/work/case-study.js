@@ -38,6 +38,60 @@
     return node;
   };
 
+  // MARK: Media
+  // A screenshot, or, when the entry has a video, a short muted loop with
+  // the screenshot as its poster. Loops play only while on screen, and
+  // each has a pause button. With reduced motion the still is shown.
+  const ICON_PAUSE = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="2.5" width="3" height="11" rx="1"/><rect x="9.5" y="2.5" width="3" height="11" rx="1"/></svg>';
+  const ICON_PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4a.8.8 0 0 0 1.2.7l8.3-5.2a.8.8 0 0 0 0-1.4L5.7 2.1a.8.8 0 0 0-1.2.7z"/></svg>';
+  const loops = 'IntersectionObserver' in window
+    ? new IntersectionObserver((entries) => entries.forEach(({ target, isIntersecting }) => {
+        if (isIntersecting && !target.dataset.paused) target.play().catch(() => {});
+        else target.pause();
+      }), { threshold: 0.2 })
+    : null;
+
+  const media = (src, video, alt) => {
+    const img = el('img');
+    img.src = asset(src);
+    img.alt = alt || '';
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    if (!video || prefersReduced) return img;
+
+    const wrap = el('div', 'cs-media');
+    const v = el('video');
+    v.muted = true;
+    v.loop = true;
+    v.playsInline = true;
+    v.preload = 'none';
+    v.poster = asset(src);
+    v.src = asset(video);
+    v.setAttribute('muted', '');
+    v.setAttribute('playsinline', '');
+    v.setAttribute('disablepictureinpicture', '');
+    v.setAttribute('aria-label', alt || '');
+
+    const btn = el('button', 'cs-media__toggle');
+    btn.type = 'button';
+    const sync = () => {
+      const paused = !!v.dataset.paused;
+      btn.innerHTML = paused ? ICON_PLAY : ICON_PAUSE;
+      btn.setAttribute('aria-label', paused ? 'Play animation' : 'Pause animation');
+    };
+    btn.addEventListener('click', () => {
+      if (v.dataset.paused) { delete v.dataset.paused; v.play().catch(() => {}); }
+      else { v.dataset.paused = '1'; v.pause(); }
+      sync();
+    });
+    sync();
+
+    wrap.append(v, btn);
+    if (loops) loops.observe(v);
+    else v.autoplay = true;
+    return wrap;
+  };
+
   if (current === -1) {
     // unknown or missing project: back to the work list
     location.replace(ROOT + 'index.html#work');
@@ -98,12 +152,7 @@
     (project.gallery || []).forEach((shot) => {
       const figure = el('figure', 'cs-shot');
       const frame = el('div', 'cs-shot__frame');
-      const img = el('img');
-      img.src = asset(shot.src);
-      img.alt = shot.alt || '';
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      frame.appendChild(img);
+      frame.appendChild(media(shot.src, shot.video, shot.alt));
       figure.appendChild(frame);
       // no visible caption: over the pinned shot it was clutter. The text
       // stays as the image's alt for screen readers.
@@ -193,12 +242,7 @@
         row.appendChild(text);
         if (d.image) {
           const fig = reveal(el('figure', 'cs-decision__shot'), 1);
-          const img = el('img');
-          img.src = asset(d.image);
-          img.alt = d.alt || '';
-          img.loading = 'lazy';
-          img.decoding = 'async';
-          fig.appendChild(img);
+          fig.appendChild(media(d.image, d.video, d.alt));
           row.appendChild(fig);
         }
         list.appendChild(row);
