@@ -96,24 +96,25 @@
         <!-- One card per post. Copy blog/post-template.html to
              blog/<slug>.html and add a card here pointing at it; blog.js
              picks it up from the DOM, so nothing else needs touching. The
-             cover is a portrait photo in img/blog/ (about 900 x 1440). -->
+             cover is type, not a photo: one word or number from the post in
+             data-dotcover, set in the logo's dots by hero-particles.js. -->
         <div class="posts posts--archive" id="archive-grid">
           <a class="post" href="blog/nextjs-course.html" data-tag="Development" data-reveal>
-            <span class="post__media"><img src="assets/img/blog/nextjs-course.jpg" alt="" loading="lazy" decoding="async"></span>
+            <span class="post__media dotcover" data-dotcover="15"><span class="dotcover__glyph" aria-hidden="true">15</span><span class="dotcover__note" aria-hidden="true">Chapters</span></span>
             <span class="post__body">
               <span class="post__meta"><span>Development</span><span><time datetime="2026-09-10">10 Sep 2026</time> · 16 min</span></span>
               <span class="post__title">Fifteen chapters of Next.js, and what actually stuck</span>
             </span>
           </a>
           <a class="post" href="blog/shopify-architecture.html" data-tag="Development" data-reveal style="--d:1">
-            <span class="post__media"><img src="assets/img/blog/shopify-architecture.jpg" alt="" loading="lazy" decoding="async"></span>
+            <span class="post__media dotcover" data-dotcover="{% %}"><span class="dotcover__glyph" aria-hidden="true">{% %}</span><span class="dotcover__note" aria-hidden="true">Liquid</span></span>
             <span class="post__body">
               <span class="post__meta"><span>Development</span><span><time datetime="2026-10-30">30 Oct 2026</time> · 8 min</span></span>
               <span class="post__title">How Shopify is built</span>
             </span>
           </a>
           <a class="post" href="blog/web-security.html" data-tag="Security" data-reveal style="--d:2">
-            <span class="post__media"><img src="assets/img/blog/web-security.jpg" alt="" loading="lazy" decoding="async"></span>
+            <span class="post__media dotcover" data-dotcover="403"><span class="dotcover__glyph" aria-hidden="true">403</span><span class="dotcover__note" aria-hidden="true">Forbidden</span></span>
             <span class="post__body">
               <span class="post__meta"><span>Security</span><span><time datetime="2026-10-30">30 Oct 2026</time> · 10 min</span></span>
               <span class="post__title">Pentesting and hardening a website</span>

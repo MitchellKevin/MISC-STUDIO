@@ -4,6 +4,10 @@
 // (pinned) section turns the ring; it can also be dragged or flicked, and
 // the prev / next buttons and arrow keys step it one project at a time.
 //
+// The screens are made of the site's dot (hero-particles.js): round the
+// sides of the ring, and while a shot loads, each one breaks up into the
+// logo's 2px accent dots on the same 4px grid instead of fading.
+//
 // The projects come from the .work-grid links already in the section
 // (image, title, tag, href), so the HTML stays the single source of truth
 // and is exactly what shows when WebGL or this module is not available.
@@ -52,20 +56,33 @@ uniform float uRadius;
 uniform float uHover;
 uniform float uReady;
 uniform vec2 uFade;
+uniform float uCell;
+uniform vec3 uDot;
 varying vec2 vUv;
 varying float vEdge;
 float roundedBox(vec2 p, vec2 b, float r) {
   vec2 q = abs(p) - b + r;
   return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
 }
+float hash(vec2 c) { return fract(sin(dot(c, vec2(12.9898, 78.233))) * 43758.5453); }
 void main() {
   vec2 p = (vUv - 0.5) * vec2(uAspect, 1.0);
   float d = roundedBox(p, vec2(uAspect, 1.0) * 0.5, uRadius);
   float aa = fwidth(d);
   float mask = 1.0 - smoothstep(-aa, aa, d);
   vec4 tex = texture2D(uTex, vUv);
-  float fade = 1.0 - smoothstep(uFade.x, uFade.y, vEdge);
-  gl_FragColor = vec4(tex.rgb, mask * fade * uReady);
+  // A screen is made of the logo's dots: on the same 4px screen grid, each
+  // cell is a square dot that grows from the 2px dot to the full cell as the
+  // screen comes round the bottle (or finishes loading), each cell at its own
+  // moment. Full cells show the shot; the ones still forming are the accent.
+  float cover = (1.0 - smoothstep(uFade.x, uFade.y, vEdge)) * uReady;
+  vec2 cell = floor(gl_FragCoord.xy / uCell);
+  vec2 f = fract(gl_FragCoord.xy / uCell) - 0.5;
+  float v = cover * 1.5 - hash(cell) * 0.45;
+  float side = v >= 1.0 ? 1.0 : (v > 0.0 ? mix(0.5, 1.0, v) : 0.0);
+  float inDot = side > 0.0 ? step(max(abs(f.x), abs(f.y)), side * 0.5) : 0.0;
+  vec3 col = v >= 1.0 ? tex.rgb : uDot;
+  gl_FragColor = vec4(col, mask * inDot);
   // the textures are sRGB and three decodes them to linear when sampling; a
   // ShaderMaterial does not encode back on its own, which made every shot
   // look darker and muddier than it is. This is three's standard step.
@@ -197,6 +214,9 @@ function init() {
         uFade: { value: new THREE.Vector2(FADE_FROM, FADE_TO) },
         uAlong: { value: 0 },
         uSpan: { value: CARD_W / RADIUS },
+        // the logo's 4px dot grid, in device pixels, and its accent
+        uCell: { value: ((window.miscDots && window.miscDots.GAP) || 4) * renderer.getPixelRatio() },
+        uDot: { value: new THREE.Color(window.miscDots ? window.miscDots.color(canvas) : '#0022ff') },
       },
     });
     const mesh = new THREE.Mesh(geometry, mat);
@@ -249,10 +269,13 @@ function init() {
   const pointer = new THREE.Vector2(-9, -9);
   let hovered = null;
 
+  // the pinned stretch only: the section may have room on top first (the
+  // dotted seam, see site.css), which scrolls by before the stage sticks
   const readScroll = () => {
     const r = section.getBoundingClientRect();
-    const total = r.height - window.innerHeight;
-    const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
+    const pad = parseFloat(getComputedStyle(section).paddingTop) || 0;
+    const total = r.height - pad - window.innerHeight;
+    const p = total > 0 ? Math.min(1, Math.max(0, -(r.top + pad) / total)) : 0;
     scrollRot = -lead + p * (span + lead * 2);
   };
 
