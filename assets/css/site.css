@@ -724,14 +724,9 @@ hr { border: 0; border-top: 1px solid var(--rule); }
   flex-direction: column;
   overflow: clip;
   padding-top: var(--header-h);
-  background:
-    radial-gradient(120% 90% at 85% 10%, #828282 0%, transparent 60%),
-    radial-gradient(90% 80% at 10% 100%, #4a4a4a 0%, transparent 65%),
-    radial-gradient(70% 60% at 70% 85%, #767676 0%, transparent 70%),
-    #545454;
-  /* the colour along the hero's bottom edge, left to right, for the dotted
-     seam that carries it into the next section (hero-particles.js) */
-  --seam-stops: #4c4c4c 0%, #4c4c4c 25%, #515151 33%, #565656 42%, #5c5c5c 50%, #636363 58%, #6a6a6a 67%, #6a6a6a 75%, #686868 83%, #646464 92%, #626262 100%;
+  /* plain white; the dotted seam below carries it into the next section
+     (hero-particles.js reads this background colour) */
+  background: var(--brand-white);
 }
 .hero__particles {
   position: absolute;
@@ -759,13 +754,25 @@ hr { border: 0; border-top: 1px solid var(--rule); }
   color: var(--ink-soft);
 }
 .hero__title {
+  /* one block with the buttons below it, anchored at the foot of the hero,
+     big enough to hold its own against the mark and the wordmark */
   grid-column: 1 / -1;
-  align-self: start;
-  font-size: var(--text-title);
+  align-self: end;
+  /* sized by the screen's width AND height, so a short laptop screen gets a
+     smaller line and the hero still fits in one view */
+  font-size: clamp(1.875rem, min(1.2rem + 1.8vw, 4.8svh), 3.25rem);
+  line-height: 1.02;
+  letter-spacing: var(--tracking-heading);
   text-wrap: balance;
 }
 @media (min-width: 48rem) { .hero__title { grid-column: 1 / span 6; } }
-@media (min-width: 64rem) { .hero__title { grid-column: 1 / span 5; } }
+/* from tablet up the meta line, the tagline and the buttons stack as one
+   group at the foot of the hero, the empty first row taking up the rest; on
+   a phone the meta line stays at the top */
+@media (min-width: 48rem) {
+  .hero__grid { grid-template-rows: 1fr auto auto; }
+  .hero__meta { align-self: end; margin-bottom: calc(var(--space-sm) - var(--space-md)); }
+}
 .hero__offer {
   grid-column: 1 / -1;
   align-self: end;
@@ -1945,8 +1952,9 @@ hr { border: 0; border-top: 1px solid var(--rule); }
 
 /* Light sheen running across the hero's second sentence */
 .sheen {
-  background-color: #c6c6c6;
-  background-image: linear-gradient(100deg, #c6c6c6 40%, #dedede 46%, #fff 50%, #dedede 54%, #c6c6c6 60%);
+  /* soft grey copy with a dark glint passing through it (on the white hero) */
+  background-color: #8c8c8c;
+  background-image: linear-gradient(100deg, #8c8c8c 40%, #5a5a5a 46%, #111 50%, #5a5a5a 54%, #8c8c8c 60%);
   background-size: 300% 100%;
   background-position: 100% 0;
   -webkit-background-clip: text;
