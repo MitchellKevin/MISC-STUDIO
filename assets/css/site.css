@@ -1246,6 +1246,39 @@ hr { border: 0; border-top: 1px solid var(--rule); }
   max-width: 12ch;
 }
 .work-orbit__title > span { justify-content: center; }
+
+/* Accent blobs drifting through the letters (port of the React
+   GradientText). The colour layers are clipped to the glyphs, so the
+   section background is never tinted. */
+.gradient-text { display: inline-block; }
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .gradient-text {
+    color: transparent;
+    background-color: var(--brand-accent-deep);
+    background-image:
+      radial-gradient(closest-side, var(--brand-accent), transparent),
+      radial-gradient(closest-side, color-mix(in srgb, var(--brand-accent-soft) 55%, var(--brand-white)), transparent),
+      radial-gradient(closest-side, var(--brand-ink), transparent),
+      radial-gradient(closest-side, var(--brand-accent-soft), transparent);
+    background-repeat: no-repeat;
+    background-size: 60% 160%, 45% 130%, 55% 150%, 50% 140%;
+    background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: gradient-text-drift 10s ease-in-out infinite alternate;
+  }
+}
+@keyframes gradient-text-drift {
+  20%  { background-position: 60% 110%, 30% -10%, 110% 40%, -10% 70%;
+         background-size: 75% 130%, 35% 170%, 45% 140%, 65% 160%; }
+  40%  { background-position: 110% 20%, -10% 80%, 40% -10%, 70% 110%;
+         background-size: 45% 180%, 60% 120%, 70% 170%, 40% 130%; }
+  60%  { background-position: 30% 60%, 90% 110%, -10% 90%, 110% 10%;
+         background-size: 80% 150%, 40% 150%, 50% 120%, 70% 180%; }
+  80%  { background-position: -10% 10%, 110% 30%, 80% 110%, 20% -10%;
+         background-size: 55% 170%, 65% 140%, 60% 160%, 45% 140%; }
+  100% { background-position: 100% 100%, 0% 100%, 100% 0%, 0% 0%; }
+}
 .work-orbit__canvas,
 .work-orbit__cursor,
 .work-orbit__caption { display: none; }
@@ -2047,5 +2080,6 @@ html[data-intro] .hero [data-enter] { animation-delay: calc(var(--intro-delay) +
   .marquee__track { animation: none; }
   html[data-intro] .intro { display: none; }
   .sheen { animation: none; background-position: 50% 0; }
+  .gradient-text { animation: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
