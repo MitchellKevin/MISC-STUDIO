@@ -44,8 +44,16 @@
   display: none;
 }
 @media (min-width: 64rem) {
-  .page-hero__text { grid-column: 1 / span 8; }
-  .page-hero__art { display: block; grid-column: 10 / -1; align-self: end; }
+  .page-hero__text { grid-column: 1 / span 6; }
+  /* big, out of the corner and level with the copy: centred in the
+     columns from the copy to the edge */
+  .page-hero__art {
+    display: block;
+    grid-column: 7 / -1;
+    align-self: center;
+    justify-self: center;
+    width: min(100%, 30rem, 52svh);   /* capped by height too, for short laptop screens */
+  }
 }
 .page-hero [data-enter] {
   animation: enter 1s var(--ease-out) both;
@@ -77,6 +85,55 @@
   animation: float 6s ease-in-out infinite;
 }
 @keyframes float { 50% { transform: translateY(-.5rem); } }
+
+/* The same tile as a 3D object (services.js builds it around the flat one):
+   a slab with thickness, the icon floating in front of its face, and a
+   glare, all turning to face the pointer (--rx / --ry). */
+.page-hero__art { perspective: 1100px; }
+.icon-3d {
+  --rx: 0deg;
+  --ry: 0deg;
+  --gx: 30%;
+  --gy: 20%;
+  --sx: 0px;
+  --sy: 16px;
+  position: relative;
+  aspect-ratio: 1;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+}
+.icon-3d__face { transform: translateZ(0); }
+/* the thickness: rounded slices stacked behind the face, darker as they go */
+.icon-3d__slice {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, #0019c2, #000 calc(var(--i) * 3.5%));
+  transform: translateZ(calc(var(--i) * -2.6px));
+}
+.icon-3d__glare {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(55% 55% at var(--gx) var(--gy), rgb(255 255 255 / .3), transparent 65%);
+  mix-blend-mode: soft-light;
+}
+.icon-3d__glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--brand-white);
+  pointer-events: none;
+  transform: translateZ(64px);
+}
+.icon-3d__glyph svg {
+  width: 42%;
+  height: 42%;
+  filter: drop-shadow(var(--sx) var(--sy) 14px rgb(0 8 90 / .55));
+  animation: float 6s ease-in-out infinite;
+}
 
 .page-hero__bar {
   position: relative;

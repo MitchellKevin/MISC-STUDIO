@@ -54,7 +54,7 @@
   padding-block: var(--space-sm) var(--space-xl);
 }
 .ab-hero__copy {
-  align-self: end;
+  align-self: center;   /* level with the photo, not sunk to the bottom */
   grid-row: 1;
   display: grid;
   gap: var(--space-md);
@@ -76,6 +76,9 @@
 .ab-hero__hint span { width: 4rem; height: 1px; background: var(--rule); }
 @media (min-width: 64rem) {
   .ab-hero { grid-template-columns: minmax(0, 1fr) auto; }
+  /* the copy sits level with the photo; the scroll hint stays down at the
+     foot of the hero, where it was */
+  .ab-hero__hint { position: absolute; left: var(--gutter); bottom: var(--space-xl); }
   /* bigger, and pulled in from the right edge towards the copy */
   .polaroid-stage { align-self: center; grid-row: 1; grid-column: 2; margin-right: clamp(2rem, 7vw, 9rem); }
 }
