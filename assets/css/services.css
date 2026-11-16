@@ -16,6 +16,7 @@
   min-height: min(100svh, 60rem);
   padding-top: var(--header-h);
   background:
+    var(--dots),
     radial-gradient(120% 90% at 85% 10%, #828282 0%, transparent 60%),
     radial-gradient(90% 80% at 10% 100%, #4a4a4a 0%, transparent 65%),
     radial-gradient(70% 60% at 70% 85%, #767676 0%, transparent 70%),

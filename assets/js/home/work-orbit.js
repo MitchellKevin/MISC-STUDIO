@@ -417,10 +417,37 @@ function init() {
     pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     if (cursor) cursor.style.transform = `translate(${e.clientX - r.left}px, ${e.clientY - r.top}px)`;
   };
+  // Turn the ring to angle `to` by moving the page's scroll there, instead
+  // of leaving an offset on top of it: with an offset the ring and the
+  // scrollbar drift apart, and after a few clicks ahead the rest of the
+  // section is a long scroll past a ring that has already finished. While
+  // the stage is pinned the page doesn't visibly move, so the scroll can jump;
+  // the ring still eases there, because the jump is handed to the drag offset
+  // (which eases back to 0). Before or after the pin, it falls back to the
+  // offset so the page never jumps under you.
+  const settleTo = (to) => {
+    const r = section.getBoundingClientRect();
+    const pad = parseFloat(getComputedStyle(section).paddingTop) || 0;
+    const total = r.height - pad - window.innerHeight;
+    const into = -(r.top + pad);
+    if (total <= 0 || into < -1 || into > total + 1) {
+      dragTarget += to - (scrollRot + dragTarget);
+      wake();
+      return;
+    }
+    const p = Math.min(1, Math.max(0, (to + lead) / (span + lead * 2)));
+    const y = window.scrollY + (p * total - into);
+    const goalNow = scrollRot + drag;
+    if (window.miscLenis) window.miscLenis.scrollTo(y, { immediate: true, force: true });
+    else window.scrollTo(0, y);
+    readScroll();
+    drag = goalNow - scrollRot;
+    dragTarget = 0;
+    wake();
+  };
   const snap = () => {
-    // land the ring on the nearest screen, keeping the scroll part as is
-    const goal = scrollRot + dragTarget;
-    dragTarget += nearest(goal) * STEP - goal;
+    // land the ring on the nearest screen
+    settleTo(nearest(scrollRot + dragTarget) * STEP);
   };
 
   canvas.addEventListener('pointerdown', (e) => {
@@ -467,10 +494,8 @@ function init() {
   canvas.addEventListener('pointerleave', () => { pointer.set(-9, -9); wake(); });
 
   const step = (dir) => {
-    const goal = scrollRot + dragTarget;
-    const to = Math.min(items.length - 1, Math.max(0, nearest(goal) + dir));
-    dragTarget += to * STEP - goal;
-    wake();
+    const to = Math.min(items.length - 1, Math.max(0, nearest(scrollRot + dragTarget) + dir));
+    settleTo(to * STEP);
   };
   section.querySelectorAll('[data-orbit-step]').forEach((b) => {
     b.addEventListener('click', () => step(Number(b.getAttribute('data-orbit-step'))));

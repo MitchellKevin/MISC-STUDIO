@@ -61,6 +61,9 @@ window.initParticles = function (options) {
     cut: 0.06,
     square: false,    // centre-crop a non-square source to a square
     fill: null,       // size of the field; defaults to the homepage sizing
+    // or full control: (w, h) => ({ size, x, y }) — the image's size and its
+    // top-left corner in the field; return null to fall back to fill/align
+    place: null,
     spring: 0.02,     // pull back home — low, so they drift far
     friction: 0.93,   // high, so a shove keeps carrying after the cursor left
     // form: hold the dots back until this happens, then assemble them.
@@ -121,7 +124,9 @@ window.initParticles = function (options) {
       size = Math.round(width);
       sizeY = Math.round(height);
     } else {
-      size = Math.round(o.fill ? o.fill(width, height) : Math.min(height * 1.45, width * 0.95));
+      const placed = o.place ? o.place(width, height) : null;
+      size = Math.round(placed ? placed.size
+        : o.fill ? o.fill(width, height) : Math.min(height * 1.45, width * 0.95));
       const ratio = !o.square && image.naturalWidth && image.naturalHeight
         ? image.naturalHeight / image.naturalWidth : 1;
       sizeY = Math.round(size * ratio);
@@ -153,9 +158,10 @@ window.initParticles = function (options) {
     }
 
     const inset = typeof o.inset === 'function' ? o.inset(width, height) : o.inset;
-    const originX = o.source ? 0
+    const placed = !o.source && o.place ? o.place(width, height) : null;
+    const originX = o.source ? 0 : placed ? Math.round(placed.x)
       : o.align === 'right' ? Math.round(width - size - inset) : Math.round((width - size) / 2);
-    const originY = o.source ? 0 : Math.round((height - sizeY) / 2);
+    const originY = o.source ? 0 : placed ? Math.round(placed.y) : Math.round((height - sizeY) / 2);
 
     const halftone = o.mode === 'halftone';
     const span = Math.max(0.0001, o.white - o.black);
