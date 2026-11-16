@@ -34,6 +34,7 @@ const STEP = 1.2;           // angle between neighbouring screens, radians (a sc
 // straighten up again when it stops.
 const TILT = 0.2;           // lean of the ring's axis, radians (towards the right)
 const LEAN_BACK = 0.1;      // and tipped back a touch, so the path reads as a ring
+const TIP_BACK = 2;         // how far the screens tip going back, in TILTs (going forward: 1, the other way)
 const LEAN_SPEED = 0.02;    // ring speed (radians a frame) at which the screens lie fully along it
 const FADE_FROM = 1.15;     // radians round the bottle where a screen starts to fade…
 const FADE_TO = 1.62;       // …and where it is gone (so the back never covers the text)
@@ -203,8 +204,11 @@ function init() {
   const yAxis = new THREE.Vector3(0, 1, 0);
   const qUpright = new THREE.Quaternion();
   const qTipped = new THREE.Quaternion();
-  const qForward = bottle.quaternion.clone();
-  const qBack = new THREE.Quaternion().setFromEuler(new THREE.Euler(LEAN_BACK, 0, TILT, 'ZXY'));
+  // Going forward the screens tip against the ring's lean, which reads
+  // strongly; going back they tip the same way as the ring, so they tip
+  // further (TIP_BACK) to stand out from it just as much.
+  const qForward = new THREE.Quaternion().setFromEuler(new THREE.Euler(LEAN_BACK, 0, TILT, 'ZXY'));
+  const qBack = new THREE.Quaternion().setFromEuler(new THREE.Euler(LEAN_BACK, 0, -TILT * TIP_BACK, 'ZXY'));
 
   section.classList.add('is-orbit');
 
