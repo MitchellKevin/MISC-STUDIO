@@ -2,24 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#545454">
     <meta name="description" content="Mitchell Scholte — designer who codes, based near Amsterdam.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"></noscript>
+    <script>document.documentElement.classList.add('js');</script>
+    <link rel="preload" href="assets/fonts/OverusedGrotesk-Medium.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="assets/img/brand/favicon.png">
     <link rel="apple-touch-icon" href="assets/img/brand/apple-touch-icon.png">
-    <script>
-      /* read the saved theme before first paint — otherwise a light-mode
-         reload flashes the black page for a frame */
-      (function(){try{if(localStorage.getItem('misc-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();
-      /* arriving through a page transition: start in the curtain colour so the
-         page never flashes before page-transition.js lifts the curtain */
-      (function(){try{if(sessionStorage.getItem('nomi-wave-enter'))document.documentElement.classList.add('curtain-in');}catch(e){}})();
-    </script>
-    <link rel="stylesheet" href="assets/css/nomi-studio.css">
+    <link rel="stylesheet" href="assets/css/site.css">
     <link rel="stylesheet" href="assets/css/about.css">
     <title>About — Mitchell Scholte</title>
     <link rel="canonical" href="https://miscstudio.nl/about.html">
@@ -55,48 +46,87 @@
     </script>
 </head>
 <body class="about-page">
-  <header class="header">
-    <div class="flex-wrapper">
-      <div class="logo-wrap">
-        <a class="logo-link" href="index.html" aria-label="Back to home">
-          <img class="logo-img" src="assets/img/brand/logo-192.webp" alt="">
-        </a>
-        <div class="logo-text">
-          <span class="btn-2">MISC</span>
-          <span class="btn-2">STUDIO</span>
-        </div>
-      </div>
-      <ul class="header-menu">
-        <li class="header-menu__item header-icon-item"><a class="header-btn" href="index.html" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20h-5.5v-5h-5v5H4z"/></svg></a></li>
-      </ul>
-    </div>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ── Header ───────────────────────────────────────────────────── -->
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="MISC STUDIO, home">
+      <img src="assets/img/brand/logo-192.webp" alt="" width="38" height="38">
+      <span class="brand__word">MISC STUDIO</span>
+    </a>
+    <nav class="header-actions" aria-label="Quick links">
+      <a class="header-control header-control--cta" aria-label="Contact" href="index.html#contact">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2"/><path d="M3 5.5l7 5 7-5"/></svg>
+        <span class="header-control__label--desktop">Contact</span>
+      </a>
+      <button class="header-control header-control--hide-sm" type="button" data-sound-toggle data-src="assets/audio/bensound-moonlightdrive.mp3" aria-pressed="false" aria-label="Play ambient music">
+        <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="header-control__label--desktop">Sound</span>
+      </button>
+      <a class="header-control header-control--hide-sm" href="about.html" aria-current="page">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="7" r="3"/><path d="M4 17c.7-3 3-4.7 6-4.7s5.3 1.7 6 4.7"/></svg>
+        <span class="header-control__label--desktop">About</span>
+      </a>
+      <button class="header-control" type="button" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-menu">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M3.5 7.5h13M3.5 12.5h13"/></svg>
+        <span>Menu</span>
+      </button>
+    </nav>
   </header>
 
-  <!-- Section index. Built by about.js from the [data-chapter] sections
-       below, so adding a section is enough to get it into the rail. -->
-  <nav class="abnav" aria-label="Sections">
-    <ol class="abnav__list" data-abnav></ol>
-  </nav>
+  <dialog class="menu" id="site-menu" data-menu aria-label="Main navigation">
+    <div class="menu__panel">
+      <div class="menu__top">
+        <span class="menu__title">Menu</span>
+        <button class="menu__close" type="button" data-menu-close aria-label="Close navigation">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>
+        </button>
+      </div>
+      <nav class="menu__links" aria-label="Main navigation">
+        <a href="index.html#top" style="--i:0"><span class="menu__index">01</span><span>Studio</span></a>
+        <a href="index.html#process" style="--i:1"><span class="menu__index">02</span><span>How it works</span></a>
+        <a href="index.html#work" style="--i:2"><span class="menu__index">03</span><span>Work</span></a>
+        <a href="index.html#pricing" style="--i:3"><span class="menu__index">04</span><span>Pricing</span></a>
+        <a href="index.html#faq" style="--i:4"><span class="menu__index">05</span><span>FAQ</span></a>
+        <a href="blog.html" style="--i:5"><span class="menu__index">06</span><span>Journal</span></a>
+        <a href="about.html" style="--i:6" aria-current="page"><span class="menu__index">07</span><span>About</span></a>
+      </nav>
+      <div class="menu__foot">
+        <span class="status">Available for new projects</span>
+        <span class="menu__social">
+          <a href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
+          <a href="https://github.com/MitchellKevin">GitHub</a>
+          <button type="button" class="header-control--sound-mobile" data-sound-toggle aria-pressed="false" aria-label="Play ambient music"><span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
+        </span>
+      </div>
+    </div>
+  </dialog>
 
-  <main class="about-main">
+  <main id="main" class="about-main" tabindex="-1">
 
-    <!-- ══ Intro ═══════════════════════════════════════════════════════ -->
+    <!-- ══ Hero ═════════════════════════════════════════════════════ -->
+    <!-- Copy on the left, a Polaroid on the right. about-polaroid.js tilts
+         the print towards the pointer anywhere inside this section (.ab). -->
+    <section class="ab ab--hero" id="ab-hero" data-chapter data-label="Start" data-surface="graphite">
+      <div class="grain" aria-hidden="true"></div>
+      <div class="shell ab-hero">
+        <p class="ab-hero__meta" data-enter style="--d:0">
+          <span class="status">Available for new projects</span>
+          <span>Hoofddorp, NL</span>
+          <span><time data-local-time>--:--</time> in Amsterdam</span>
+        </p>
 
-    <!-- Hero. Copy on the left, a Polaroid on the right. -->
-    <section class="ab ab--hero" id="ab-hero" data-chapter data-label="Start">
-      <div class="ab__inner ab__inner--hero">
-        <div class="ab__col ab__col--wide">
-          <p class="ab__eyebrow">About</p>
+        <div class="ab-hero__copy">
+          <span class="eyebrow" data-enter style="--d:1">About</span>
           <!-- the space between the spans is load-bearing: without it the
                heading reads as the single word "MitchellScholte", which is
-               not what anyone types into a search box. The spans are
-               display:block, so it costs nothing visually. -->
-          <h1 class="ab__display"><span>Mitchell</span> <span>Scholte</span></h1>
-          <p class="ab__lead">
-            Designer who codes. I started in Technical Computer Science, moved to
+               not what anyone types into a search box. -->
+          <h1 class="t-mega ab-hero__title" data-enter style="--d:2"><span>Mitchell Scholte.</span> <span class="soft">Designer who codes.</span></h1>
+          <p class="ab-hero__lead t-title" data-enter style="--d:3">
+            I started in Technical Computer Science, moved to
             Communication &amp; Multimedia Design, and never really picked a side.
           </p>
-          <p class="ab__hint">Scroll to explore<span class="ab__hint-line"></span></p>
+          <p class="ab-hero__hint" data-enter style="--d:4">Scroll to explore<span aria-hidden="true"></span></p>
         </div>
 
         <!-- FOTO — portrait.jpg komt uit img/MS.jpg: vierkant uitgesneden
@@ -112,19 +142,12 @@
                sips -s format jpeg -s formatOptions 66 zw.jpg \
                     --out assets/img/about/portrait.jpg
 
-             Het origineel blijft onaangeraakt staan, dus een andere
-             uitsnede draai je hiermee zo opnieuw: de eerste twee getallen
-             zijn de offset vanaf linksboven. Een andere foto? Zet hem in
-             assets/img/about/ en wijs de src hieronder erop aan; vierkant is het
-             makkelijkst, al het andere wordt vanuit het midden bijgesneden.
              Frame en 3D zijn CSS. -->
-        <div class="polaroid-stage" data-polaroid-stage>
+        <div class="polaroid-stage" data-polaroid-stage data-enter style="--d:2">
           <figure class="polaroid" data-polaroid>
             <div class="polaroid__shot">
               <img class="polaroid__img" src="assets/img/about/portrait.jpg"
                    alt="Mitchell Scholte" width="900" height="900">
-              <!-- the sheen is the thing that sells the 3D: a real print
-                   catches the light as it turns -->
               <span class="polaroid__sheen" aria-hidden="true"></span>
             </div>
             <figcaption class="polaroid__caption">Hi, it's me</figcaption>
@@ -133,19 +156,17 @@
       </div>
     </section>
 
-    <!-- ══ Chapter 01 — where this started ═════════════════════════════ -->
-
-    <!-- Where I'm from. The globe swings round to Hoofddorp on first view. -->
-    <section class="ab ab--globe" id="ab-from" data-chapter data-label="Hoofddorp">
+    <!-- ══ 01 — Where I'm from ════════════════════════════════════════ -->
+    <!-- The globe swings round to Hoofddorp on first view. -->
+    <section class="ab ab--globe section" id="ab-from" data-chapter data-label="Hoofddorp" data-surface="void">
+      <div class="grain" aria-hidden="true"></div>
       <canvas class="ab__globe" data-globe="home" aria-hidden="true"></canvas>
-      <div class="ab__inner">
-        <div class="ab__col">
-          <header class="ab__head">
-            <p class="ab__eyebrow"><span class="ab__num" data-num></span>Where I'm from</p>
-            <h2 class="ab__heading">Hoofddorp</h2>
-          </header>
+      <div class="shell ab-split">
+        <div class="ab-split__copy">
+          <span class="eyebrow"><span class="ab__num" data-num></span>Where I'm from</span>
+          <h2 class="t-display lines" data-reveal><span><span>Hoofddorp.</span></span><span><span class="soft">Near Amsterdam.</span></span></h2>
           <p class="ab__body" data-copy="home"></p>
-          <dl class="ab__facts">
+          <dl class="ab__facts" data-reveal>
             <div><dt>Based</dt><dd>Hoofddorp, NL</dd></div>
             <div><dt>Studio</dt><dd>MISC STUDIO</dd></div>
             <div><dt>Now</dt><dd>Front-end intern, Build in Amsterdam</dd></div>
@@ -154,84 +175,77 @@
       </div>
     </section>
 
-    <!-- Roadmap. Same component as the homepage: markup built by about.js
-         from about-data.js, then handed to initTimeline() in timeline.js. -->
-    <section class="tlpath" id="timeline" data-chapter data-label="Timeline">
-      <div class="tlpath__head">
-        <span class="tlpath__eyebrow">Timeline</span>
-        <h2 class="tlpath__title">The road so far</h2>
-      </div>
-      <div class="tlpath__viewport">
-        <div class="tlpath__track">
-          <svg class="tlpath__svg" aria-hidden="true">
-            <path class="tlpath__line"></path>
-            <path class="tlpath__trail"></path>
-          </svg>
-          <div class="tlpath__arrow" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10" fill="var(--color-black)"></circle>
-              <path d="M9 7l6 5-6 5"></path>
-            </svg>
+    <!-- ══ Timeline ═══════════════════════════════════════════════════ -->
+    <!-- Rows built by about.js from ABOUT.road in about-data.js. -->
+    <section class="section" id="timeline" data-chapter data-label="Timeline" data-surface="light">
+      <div class="shell">
+        <div class="section__head">
+          <div class="section__intro">
+            <span class="eyebrow"><span class="ab__num" data-num></span>Timeline</span>
+            <h2 class="t-display lines" data-reveal><span><span>The road so far.</span></span><span><span class="soft">Never picked a side.</span></span></h2>
           </div>
-          <ol class="tlpath__events" data-road></ol>
+          <p class="section__aside" data-reveal>School, work, certificates and a company of my own, in the order they happened.</p>
         </div>
+        <ol class="road" data-road></ol>
       </div>
-      <span class="tlpath__hint">Scroll</span>
     </section>
 
-    <!-- ══ Chapter 02 — the work ═══════════════════════════════════════ -->
-
-    <!-- The IT → CMD switch. -->
-    <section class="ab ab--switch" id="ab-switch" data-chapter data-label="The switch">
-      <div class="ab__inner">
-        <div class="ab__col">
-
+    <!-- ══ 02 — The switch ════════════════════════════════════════════ -->
+    <section class="ab ab--switch section" id="ab-switch" data-chapter data-label="The switch" data-surface="void">
+      <div class="grain" aria-hidden="true"></div>
+      <div class="shell">
+        <div class="section__head">
+          <div class="section__intro">
+            <span class="eyebrow"><span class="ab__num" data-num></span>The switch</span>
+            <h2 class="t-display lines" data-reveal><span><span>From IT.</span></span><span><span class="soft">To CMD.</span></span></h2>
+          </div>
+          <p class="section__aside" data-reveal>Flip the switch.</p>
         </div>
 
-        <div class="abs">
-          <span class="abs__side abs__side--it is-on" data-side="it">IT</span>
-          <button class="abs__toggle" type="button" role="switch" aria-checked="false"
-                  aria-label="Switch between Technical Computer Science and Communication &amp; Multimedia Design">
-            <span class="abs__track"><span class="abs__knob"></span></span>
-          </button>
-          <span class="abs__side abs__side--cmd" data-side="cmd">CMD</span>
-        </div>
+        <div class="card abs-card" data-reveal>
+          <div class="abs">
+            <span class="abs__side abs__side--it is-on" data-side="it">IT</span>
+            <button class="abs__toggle" type="button" role="switch" aria-checked="false"
+                    aria-label="Switch between Technical Computer Science and Communication &amp; Multimedia Design">
+              <span class="abs__track"><span class="abs__knob"></span></span>
+            </button>
+            <span class="abs__side abs__side--cmd" data-side="cmd">CMD</span>
+          </div>
 
-        <div class="abs__panels">
-          <div class="abs__panel is-on" data-side="it" data-panel="it"></div>
-          <div class="abs__panel" data-side="cmd" data-panel="cmd"></div>
+          <div class="abs__panels">
+            <div class="abs__panel is-on" data-side="it" data-panel="it"></div>
+            <div class="abs__panel" data-side="cmd" data-panel="cmd"></div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Internship goals. Removed entirely unless the URL carries ?intro —
          see about.js. The chapter numbers renumber around it either way. -->
-    <section class="ab ab--goals" id="ab-goals" data-chapter data-label="Internship" data-intro-only hidden>
-      <div class="ab__inner">
-        <div class="ab__col ab__col--wide">
-          <header class="ab__head">
-            <p class="ab__eyebrow"><span class="ab__num" data-num></span>This internship</p>
-            <h2 class="ab__heading">Three <span class="ab__heading-accent">learning goals</span> I'm here for</h2>
-          </header>
-          <ol class="ab__goals" data-goals></ol>
+    <section class="section ab--goals" id="ab-goals" data-chapter data-label="Internship" data-intro-only hidden data-surface="paper">
+      <div class="shell">
+        <div class="section__head">
+          <div class="section__intro">
+            <span class="eyebrow"><span class="ab__num" data-num></span>This internship</span>
+            <h2 class="t-display lines" data-reveal><span><span>Three goals.</span></span><span><span class="soft">I'm here for.</span></span></h2>
+          </div>
         </div>
+        <ol class="ab__goals" data-goals></ol>
       </div>
     </section>
 
-    <!-- ══ Chapter 03 — off the clock ══════════════════════════════════ -->
-
-    <!-- Hobbies. Reuses the homepage focus-point tiles, illustrations and
-         all. The camera lives here too, hidden until the photography tile
-         is clicked — about-camera.js fills the canvas host. -->
-    <section class="ab ab--hobby" id="ab-hobby" data-chapter data-label="Off the clock">
-      <div class="ab__inner">
-        <div class="ab__col ab__col--wide">
-          <header class="ab__head">
-            <p class="ab__eyebrow"><span class="ab__num" data-num></span>Off the clock</p>
-            <h2 class="ab__heading">What I do when I'm <span class="ab__heading-accent">not working</span></h2>
-          </header>
+    <!-- ══ 03 — Off the clock ═════════════════════════════════════════ -->
+    <!-- The camera lives here too, hidden until the photography card is
+         clicked — about-camera.js fills the canvas host. -->
+    <section class="section ab--hobby" id="ab-hobby" data-chapter data-label="Off the clock" data-surface="paper">
+      <div class="shell">
+        <div class="section__head ab__head">
+          <div class="section__intro">
+            <span class="eyebrow"><span class="ab__num" data-num></span>Off the clock</span>
+            <h2 class="t-display lines" data-reveal><span><span>When I'm not working.</span></span><span><span class="soft">Still making things.</span></span></h2>
+          </div>
         </div>
-        <div class="focusPoint_container" data-hobby></div>
+        <div class="hobbies focusPoint_container" data-hobby></div>
       </div>
 
       <div class="camstage" data-camera-stage aria-hidden="true">
@@ -242,24 +256,18 @@
       </div>
     </section>
 
-    <!-- ══ Outro ═══════════════════════════════════════════════════════ -->
-
+    <!-- ══ Outro ══════════════════════════════════════════════════════ -->
     <!-- AirPods. Scroll-driven, and deliberately the last pinned section:
          the model loads async, so its ScrollTrigger is created late — which
-         is only safe when nothing is pinned below it. -->
-    <section class="apods" id="ab-airpods" data-airpods data-chapter data-label="One more thing">
-      <!-- The heading sits behind the model, the way a giant word sits
-           behind a card. The renderer is alpha:true and
-           never clears to a colour, so the type reads straight through the
-           canvas and the AirPods pass in front of it. -->
+         is only safe when nothing is pinned below it. The word sits behind
+         the model; the renderer is alpha:true, so the type reads through. -->
+    <section class="apods" id="ab-airpods" data-airpods data-chapter data-label="One more thing" data-surface="void">
+      <div class="grain" aria-hidden="true"></div>
       <div class="apods__bg">
-        <!-- <p class="ab__eyebrow">Secret weapon</p> -->
         <!-- The canvas paints the same word as an equalizer and clips the
-             bars to the letterforms. The <h2> stays the real heading — it
-             just goes transparent while the canvas is doing the drawing,
-             so edit the word here and both follow. -->
+             bars to the letterforms. The <h2> stays the real heading. -->
         <div class="apods__word">
-          <h2 class="ab__heading apods__bgtext" data-eq>Love</h2>
+          <h2 class="apods__bgtext" data-eq>Love</h2>
           <canvas class="apods__eq" data-eq-canvas aria-hidden="true" hidden></canvas>
         </div>
       </div>
@@ -269,80 +277,93 @@
 
   </main>
 
-  <footer class="footer">
-    <div class="footer__inner">
-      <div class="footer__top">
-        <div class="footer__brand">
-          <div class="footer__logo-row">
-            <img class="footer__logo-img" src="assets/img/brand/logo-192.webp" alt="">
-            <div class="footer__logo"><span>MISC</span><span>STUDIO</span></div>
-          </div>
-          <p class="footer__tagline">Design, build and secure. A small studio in the Netherlands.</p>
-          <div class="footer__loc"><span class="footer__dot"></span>Available for new projects</div>
+  <!-- ── Footer ───────────────────────────────────────────────────── -->
+  <footer class="site-footer" data-surface="paper">
+    <div class="shell">
+      <div class="footer__close">
+        <p class="t-display lines" data-reveal><span><span>This is where the page ends.</span></span><span><span class="soft">Your project starts here.</span></span></p>
+        <div class="btn-pair">
+          <a class="btn" data-variant="primary" href="index.html#contact">
+            <span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span>
+            <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span></span>
+            <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </a>
+          <a class="btn" data-variant="secondary" href="index.html#work">
+            <span class="btn__copy"><span class="btn__label">See the work</span></span>
+            <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">See the work</span></span></span>
+            <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </a>
         </div>
+      </div>
 
-        <nav class="footer__nav">
-          <div class="footer__col">
-            <h2 class="footer__heading">Services</h2>
-            <a class="footer__link" href="detail-pages/services/ux-design.html">UX Design</a>
-            <a class="footer__link" href="detail-pages/services/web-development.html">Web Development</a>
-          </div>
-          <div class="footer__col">
-            <h2 class="footer__heading">Company</h2>
-            <a class="footer__link" href="index.html#services">Process</a>
-            <a class="footer__link" href="index.html#showcase">Work</a>
-            <a class="footer__link" href="blog.html">Blog</a>
-            <a class="footer__link" href="index.html#contact">Contact</a>
-          </div>
-          <div class="footer__col">
-            <h2 class="footer__heading">Elsewhere</h2>
-            <a class="footer__link" href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
-            <a class="footer__link" href="https://github.com/MitchellKevin">Github</a>
-            <a class="footer__link" href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>
-          </div>
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a class="brand" href="index.html" style="width:fit-content"><img src="assets/img/brand/logo-192.webp" alt="" width="38" height="38" loading="lazy"><span class="brand__word" style="display:inline">MISC STUDIO</span></a>
+          <p>Design, build and secure. A small studio in the Netherlands.</p>
+          <span class="status">Available for new projects</span>
+        </div>
+        <nav class="footer__col" aria-label="Explore">
+          <h2 class="footer__heading">Explore</h2>
+          <a href="index.html#process"><span class="menu__index">01</span>How it works</a>
+          <a href="index.html#work"><span class="menu__index">02</span>Work</a>
+          <a href="index.html#pricing"><span class="menu__index">03</span>Pricing</a>
+          <a href="index.html#faq"><span class="menu__index">04</span>FAQ</a>
+          <a href="blog.html"><span class="menu__index">05</span>Journal</a>
+          <a href="about.html" aria-current="page"><span class="menu__index">06</span>About</a>
+        </nav>
+        <nav class="footer__col" aria-label="Services">
+          <h2 class="footer__heading">Services</h2>
+          <a href="detail-pages/services/ux-design.html">UX Design</a>
+          <a href="detail-pages/services/web-development.html">Web Development</a>
+          <a href="detail-pages/career.html">Career</a>
+        </nav>
+        <nav class="footer__col" aria-label="Elsewhere">
+          <h2 class="footer__heading">Elsewhere</h2>
+          <a href="https://www.linkedin.com/in/mitchell-scholte-a10652238">LinkedIn</a>
+          <a href="https://github.com/MitchellKevin">GitHub</a>
+          <a href="https://www.awwwards.com/mitchell-scholte/">Awwwards</a>
         </nav>
       </div>
 
       <div class="footer__bottom">
-        <span class="footer__copy">© 2026 Mitchell Scholte. All rights reserved.</span>
-        <span class="footer__made">Made in Amsterdam</span>
+        <span>© <span data-year>2026</span> Mitchell Scholte — All rights reserved. Made in Amsterdam.</span>
+        <span>Music: <a href="https://www.bensound.com" target="_blank" rel="noopener">Bensound.com</a> · Artist: Yunior Arronte · License code: TTAJRAXT3KMQMEPT</span>
       </div>
-      <!-- CC-BY 4.0 requires the title, the author,
-           the source and the licence to stay with the work wherever it is shown. -->
-      <p class="footer__credit">
-        <a href="https://skfb.ly/ptoZX" target="_blank" rel="noopener">&ldquo;SONY CAMERA 4K&rdquo;</a>
-        by Arham Abdullah is licensed under
-        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution</a>.<br>
-        <a href="https://skfb.ly/pGzr8" target="_blank" rel="noopener">&ldquo;AirPods 4&rdquo;</a>
-        by Falah3D is licensed under
-        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution</a>.
+      <!-- CC-BY 4.0 requires the title, the author, the source and the
+           licence to stay with the work wherever it is shown. -->
+      <p class="footer__bottom footer__credits">
+        <span>
+          <a href="https://skfb.ly/ptoZX" target="_blank" rel="noopener">&ldquo;SONY CAMERA 4K&rdquo;</a>
+          by Arham Abdullah is licensed under
+          <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution</a>.
+          <a href="https://skfb.ly/pGzr8" target="_blank" rel="noopener">&ldquo;AirPods 4&rdquo;</a>
+          by Falah3D is licensed under
+          <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution</a>.
+        </span>
       </p>
     </div>
-    <!-- MISC drawn in dots that scatter under the cursor (hero-particles.js);
-         it runs edge to edge and off the bottom of the page -->
     <div class="footer__mark" aria-hidden="true"><canvas class="footer__particles" data-src="assets/img/brand/misc-wordmark.svg"></canvas></div>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
-  <script src="assets/js/shared/page-transition.js"></script>
-  <script src="assets/js/shared/timeline.js"></script>
   <script type="importmap">
   { "imports": {
       "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
       "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
   }}
   </script>
-  <script src="assets/js/shared/hero-particles.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/shared/hero-particles.js" defer></script>
+  <script src="assets/js/home/sound-toggle.js" defer></script>
   <script src="assets/js/about/about-globe-data.js"></script>
   <script src="assets/js/about/about-globe.js"></script>
   <script src="assets/js/about/about-data.js"></script>
   <script src="assets/js/about/about.js"></script>
   <script src="assets/js/about/about-polaroid.js"></script>
   <script src="assets/js/about/about-eq.js"></script>
-  <script src="assets/js/shared/header-scroll.js"></script>
-  <script src="assets/js/shared/theme-toggle.js"></script>
-  <!-- module, and loaded last: it needs the hobby tiles about.js builds -->
+  <!-- modules, and loaded last: the camera needs the hobby cards about.js builds -->
   <script type="module" src="assets/js/about/about-camera.js"></script>
   <script type="module" src="assets/js/about/about-airpods.js"></script>
 </body>

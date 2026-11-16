@@ -1,297 +1,297 @@
 // ------------------------------------------------------------------
 // Case study page — fills case-study.html with one project from
-// case-studies.js (picked by ?project=<slug>) and runs its scroll
-// animations. Loaded after gsap + ScrollTrigger, at the end of <body>.
+// case-studies.js (picked by ?project=<slug>) and runs its scroll motion.
 //
-// Plain-JS take on the "SmoothScrollHero" React component (framer-motion):
-//   - the project shot sits as a card under the title and grows to fill
-//     the screen as you scroll, then scrolls away with the overview under it
+//   - the project shot sits as a rounded card under the intro and grows to
+//     the full width of the screen as it scrolls into view (--p, 0 → 1)
 //   - a project's gallery, if it has one, drifts past at its own speeds
-//   - everything below rises in as it enters the view
-// Its Lenis smooth scrolling is left out: the rest of the site scrolls
-// natively, and a case study should not feel different under the wheel.
+//   - everything else fades up through site.js: elements built here carry
+//     [data-reveal], and this file runs before site.js scans for them
+//
+// No dependencies: one rAF-throttled scroll handler does all the motion.
 // ------------------------------------------------------------------
-gsap.registerPlugin(ScrollTrigger);
+(() => {
+  const ROOT = '../../';
 
-const ROOT = '../../';
+  // where each gallery shot starts and ends its drift, in px (repeats every 4)
+  const PARALLAX = [[-60, 60], [80, -80], [-50, 70], [40, -110]];
 
-// where each gallery shot starts and ends its drift, in px (repeats every 4)
-const PARALLAX = [[-200, 200], [200, -250], [-200, 200], [0, -500]];
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const studies = window.CASE_STUDIES || [];
+  const current = studies.findIndex(
+    (s) => s.slug === new URLSearchParams(location.search).get('project')
+  );
 
-const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const studies = window.CASE_STUDIES || [];
-const current = studies.findIndex(
-  (s) => s.slug === new URLSearchParams(location.search).get('project')
-);
+  const asset = (path) => (/^https?:\/\//.test(path) ? path : ROOT + path);
+  const pad = (n) => String(n).padStart(2, '0');
 
-const asset = (path) => (/^https?:\/\//.test(path) ? path : ROOT + path);
-
-const el = (tag, className, text) => {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text != null) node.textContent = text;
-  return node;
-};
-
-if (current === -1) {
-  // unknown or missing project: back to the work list
-  location.replace(ROOT + 'index.html#showcase');
-} else {
-  const project = studies[current];
-  render(project, studies[(current + 1) % studies.length]);
-  animate(!!(project.gallery && project.gallery.length));
-}
-
-// MARK: Render
-function render(project, next) {
-  const slot = (name) => document.querySelector(`[data-cs="${name}"]`);
-
-  document.title = `${project.title} — Case study — MISC STUDIO`;
-  slot('title').textContent = project.title;
-  slot('label').textContent = `Case study — ${project.label || 'Project'}`;
-  slot('intro').textContent = project.intro || '';
-
-  // the hero shot and its blurred backdrop
-  document.querySelectorAll('[data-cs="image"]').forEach((img) => {
-    img.src = asset(project.image);
-    if (!img.hasAttribute('aria-hidden')) img.alt = project.title;
-  });
-
-  const live = slot('live');
-  if (project.live) live.href = project.live;
-  else live.remove();
-
-  const facts = document.querySelector('[data-cs-facts]');
-  (project.facts || []).forEach((fact) => {
-    const row = el('div');
-    row.append(el('dt', null, fact.label), el('dd', null, fact.value));
-    facts.appendChild(row);
-  });
-
-  const story = document.querySelector('[data-cs-story]');
-  (project.story || []).forEach((chapter, i) => {
-    const item = el('article', 'cs-chapter');
-    item.append(
-      el('span', 'cs-chapter__num', String(i + 1).padStart(2, '0')),
-      el('h3', 'cs-chapter__heading', chapter.heading),
-      el('p', 'cs-chapter__body', chapter.body)
-    );
-    story.appendChild(item);
-  });
-
-  renderExtras(project, document.querySelector('[data-cs-extra]'));
-
-  slot('next').href = `case-study.html?project=${next.slug}`;
-  slot('next').setAttribute('aria-label', `Next project: ${next.title}`);
-  slot('next-title').textContent = next.title;
-  slot('next-image').src = asset(next.image);
-
-  const gallery = document.querySelector('[data-cs-gallery]');
-  (project.gallery || []).forEach((shot) => {
-    const figure = el('figure', 'cs-shot');
-    const frame = el('div', 'cs-shot__frame');
-    const img = el('img');
-    img.src = asset(shot.src);
-    img.alt = shot.alt || '';
-    frame.appendChild(img);
-    figure.appendChild(frame);
-    gallery.appendChild(figure);
-  });
-  gallery.hidden = !gallery.children.length;
-}
-
-// MARK: Extra sections
-// Optional, per project (see case-studies.js): decisions, system, structure,
-// build, figures. Each one is skipped when the project doesn't have it.
-// Everything is built with textContent, so the copy is never parsed as HTML.
-function renderExtras(project, root) {
-  if (!root) return;
-
-  // a section with the usual label, plus an optional heading and lead
-  const section = (name, label, head = {}) => {
-    const wrap = el('section', `cs-${name}`);
-    const inner = el('div', 'container');
-    const top = el('div', 'cs-head cs-reveal');
-    top.appendChild(el('span', 'section-label', label));
-    if (head.heading) top.appendChild(el('h2', 'cs-head__title', head.heading));
-    if (head.body) top.appendChild(el('p', 'cs-head__body', head.body));
-    inner.appendChild(top);
-    wrap.appendChild(inner);
-    root.appendChild(wrap);
-    return inner;
+  const el = (tag, className, text) => {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text != null) node.textContent = text;
+    return node;
+  };
+  // mark a built element to fade up on scroll, optionally staggered
+  const reveal = (node, delay) => {
+    node.setAttribute('data-reveal', '');
+    if (delay) node.style.setProperty('--d', delay);
+    return node;
   };
 
-  // Design decisions: text beside a screenshot, alternating sides
-  if (project.decisions && project.decisions.length) {
-    const inner = section('decisions', 'Design decisions');
-    project.decisions.forEach((d, i) => {
-      const row = el('article', `cs-decision cs-reveal${i % 2 ? ' cs-decision--flip' : ''}`);
-      const text = el('div', 'cs-decision__text');
-      if (d.label) text.appendChild(el('span', 'cs-decision__label', d.label));
-      text.appendChild(el('h3', 'cs-decision__heading', d.heading));
-      text.appendChild(el('p', 'cs-decision__body', d.body));
-      if (d.quote) {
-        const q = el('blockquote', 'cs-decision__quote');
-        q.appendChild(el('p', null, `“${d.quote.text}”`));
-        if (d.quote.translation) q.appendChild(el('span', null, d.quote.translation));
-        text.appendChild(q);
-      }
-      row.appendChild(text);
-      if (d.image) {
-        const fig = el('figure', 'cs-decision__shot');
-        const img = el('img');
-        img.src = asset(d.image);
-        img.alt = d.alt || '';
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        fig.appendChild(img);
-        row.appendChild(fig);
-      }
-      inner.appendChild(row);
-    });
+  if (current === -1) {
+    // unknown or missing project: back to the work list
+    location.replace(ROOT + 'index.html#work');
+    return;
   }
 
-  // Visual system: colour swatches and typefaces
-  if (project.system) {
-    const s = project.system;
-    const inner = section('system', 'Visual system', s);
-    if (s.colors && s.colors.length) {
-      const grid = el('div', 'cs-swatches cs-reveal');
-      s.colors.forEach((c) => {
-        const sw = el('div', 'cs-swatch');
-        const chip = el('span', 'cs-swatch__chip');
-        chip.style.background = c.hex;
-        sw.append(chip, el('strong', null, c.name), el('span', null, c.hex));
-        grid.appendChild(sw);
-      });
-      inner.appendChild(grid);
+  const project = studies[current];
+  render(project, studies[(current + 1) % studies.length]);
+  animate();
+
+  // MARK: Render
+  function render(project, next) {
+    const slot = (name) => document.querySelector(`[data-cs="${name}"]`);
+
+    document.title = `${project.title} — Case study — MISC STUDIO`;
+    slot('title').textContent = project.title;
+    slot('label').textContent = project.label || 'Project';
+    slot('intro').textContent = project.intro || '';
+
+    // the shot and its blurred backdrop
+    document.querySelectorAll('[data-cs="image"]').forEach((img) => {
+      img.src = asset(project.image);
+      if (!img.hasAttribute('aria-hidden')) img.alt = project.title;
+    });
+
+    const live = slot('live');
+    if (project.live) live.href = project.live;
+    else live.remove();
+
+    const facts = document.querySelector('[data-cs-facts]');
+    (project.facts || []).forEach((fact) => {
+      const row = el('div');
+      row.append(el('dt', null, fact.label), el('dd', null, fact.value));
+      facts.appendChild(row);
+    });
+
+    const story = document.querySelector('[data-cs-story]');
+    (project.story || []).forEach((chapter, i) => {
+      const item = reveal(el('article', 'cs-chapter'), i);
+      item.append(
+        el('span', 'cs-chapter__num', pad(i + 1)),
+        el('h3', 'cs-chapter__heading t-title', chapter.heading),
+        el('p', 'cs-chapter__body', chapter.body)
+      );
+      story.appendChild(item);
+    });
+
+    renderExtras(project, document.querySelector('[data-cs-extra]'));
+
+    slot('next').href = `case-study.html?project=${next.slug}`;
+    slot('next').setAttribute('aria-label', `Next project: ${next.title}`);
+    slot('next-title').textContent = next.title;
+    slot('next-label').textContent = next.label || '';
+    slot('next-image').src = asset(next.image);
+
+    const gallery = document.querySelector('[data-cs-gallery]');
+    (project.gallery || []).forEach((shot) => {
+      const figure = el('figure', 'cs-shot');
+      const frame = el('div', 'cs-shot__frame');
+      const img = el('img');
+      img.src = asset(shot.src);
+      img.alt = shot.alt || '';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      frame.appendChild(img);
+      figure.appendChild(frame);
+      // no visible caption: over the pinned shot it was clutter. The text
+      // stays as the image's alt for screen readers.
+      gallery.appendChild(figure);
+    });
+    // Like the old page: the gallery moves into the hero, right after the
+    // project shot, so the shot stays pinned (sticky) at full width while
+    // the smaller shots scroll up over it. The empty section is dropped.
+    const wrap = document.querySelector('[data-cs-gallery-wrap]');
+    if (gallery.children.length) {
+      const hero = document.querySelector('.cs-hero');
+      hero.appendChild(gallery);
+      hero.classList.add('has-drift');
     }
-    if (s.fonts && s.fonts.length) {
-      const list = el('dl', 'cs-fonts cs-reveal');
-      s.fonts.forEach((f) => {
-        const row = el('div');
-        row.append(el('dt', null, f.name), el('dd', null, f.use));
+    if (wrap) wrap.remove();
+  }
+
+  // MARK: Extra sections
+  // Optional, per project (see case-studies.js): decisions, system,
+  // structure, build, figures. Each is skipped when the project lacks it.
+  // Everything is built with textContent, so the copy is never parsed as HTML.
+  // Sections alternate surfaces so the page keeps changing ground as you go.
+  function renderExtras(project, root) {
+    if (!root) return;
+    const surfaces = ['paper', 'void', 'light', 'paper', 'void'];
+    let count = 0;
+
+    // a section with the usual eyebrow, plus an optional heading and lead
+    const section = (name, label, head = {}) => {
+      const surface = surfaces[count++ % surfaces.length];
+      const wrap = el('section', `section cs-${name}`);
+      wrap.dataset.surface = surface;
+      if (surface === 'void') wrap.appendChild(el('div', 'grain'));
+      const inner = el('div', 'shell');
+      const top = el('div', 'section__head');
+      const intro = el('div', 'section__intro');
+      intro.appendChild(el('span', 'eyebrow', label));
+      if (head.heading) intro.appendChild(reveal(el('h2', 't-narrative cs-head__title balance', head.heading)));
+      top.appendChild(intro);
+      if (head.body) top.appendChild(reveal(el('p', 'section__aside', head.body), 1));
+      inner.appendChild(top);
+      wrap.appendChild(inner);
+      root.appendChild(wrap);
+      return inner;
+    };
+
+    // Design decisions: text beside a screenshot, alternating sides
+    if (project.decisions && project.decisions.length) {
+      const inner = section('decisions', 'Design decisions');
+      const list = el('div', 'cs-decisions__list');
+      project.decisions.forEach((d, i) => {
+        const row = el('article', `cs-decision${i % 2 ? ' cs-decision--flip' : ''}`);
+        const text = reveal(el('div', 'cs-decision__text'));
+        text.appendChild(el('span', 'cs-decision__label', `${pad(i + 1)} — ${d.label || 'Decision'}`));
+        text.appendChild(el('h3', 'cs-decision__heading t-title balance', d.heading));
+        text.appendChild(el('p', 'cs-decision__body', d.body));
+        if (d.quote) {
+          const q = el('blockquote', 'cs-decision__quote');
+          q.appendChild(el('p', null, `“${d.quote.text}”`));
+          if (d.quote.translation) q.appendChild(el('span', null, d.quote.translation));
+          text.appendChild(q);
+        }
+        row.appendChild(text);
+        if (d.image) {
+          const fig = reveal(el('figure', 'cs-decision__shot'), 1);
+          const img = el('img');
+          img.src = asset(d.image);
+          img.alt = d.alt || '';
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          fig.appendChild(img);
+          row.appendChild(fig);
+        }
         list.appendChild(row);
       });
       inner.appendChild(list);
     }
+
+    // Visual system: colour swatches and typefaces
+    if (project.system) {
+      const s = project.system;
+      const inner = section('system', 'Visual system', s);
+      if (s.colors && s.colors.length) {
+        const grid = el('div', 'cs-swatches');
+        s.colors.forEach((c, i) => {
+          const sw = reveal(el('div', 'cs-swatch'), i % 4);
+          const chip = el('span', 'cs-swatch__chip');
+          chip.style.background = c.hex;
+          const meta = el('span', 'cs-swatch__meta');
+          meta.append(el('strong', null, c.name), el('span', null, c.hex));
+          sw.append(chip, meta);
+          grid.appendChild(sw);
+        });
+        inner.appendChild(grid);
+      }
+      if (s.fonts && s.fonts.length) {
+        const list = el('dl', 'cs-fonts');
+        s.fonts.forEach((f, i) => {
+          const row = reveal(el('div', 'cs-font'), i);
+          row.append(el('dt', 't-title', f.name), el('dd', null, f.use));
+          list.appendChild(row);
+        });
+        inner.appendChild(list);
+      }
+    }
+
+    // Page structure: the sections of the site, in order, as numbered cards
+    if (project.structure && project.structure.steps) {
+      const inner = section('structure', 'Page structure', project.structure);
+      const list = el('ol', 'cs-steps');
+      project.structure.steps.forEach((step, i) => {
+        const li = reveal(el('li', 'card cs-step'), i % 4);
+        li.append(
+          el('span', 'card__num', `Section ${pad(i + 1)}`),
+          el('strong', 't-heading', step.title),
+          el('p', null, step.text)
+        );
+        list.appendChild(li);
+      });
+      inner.appendChild(list);
+    }
+
+    // Build notes: the technical choices
+    if (project.build && project.build.notes) {
+      const inner = section('build', 'Build', project.build);
+      const list = el('ul', 'cs-notes');
+      project.build.notes.forEach((n, i) => {
+        const li = reveal(el('li', 'cs-note'), i % 2);
+        li.append(el('span', 'cs-note__num', pad(i + 1)), el('strong', 't-heading', n.title), el('p', null, n.text));
+        list.appendChild(li);
+      });
+      inner.appendChild(list);
+    }
+
+    // Figures: a row of big numbers
+    if (project.figures && project.figures.items) {
+      const inner = section('figures', 'In numbers', project.figures);
+      const row = el('div', 'cs-figures__row');
+      project.figures.items.forEach((f, i) => {
+        const cell = reveal(el('div', 'cs-figure'), i);
+        const value = el('strong', 'cs-figure__value', f.value);
+        if (f.unit) value.appendChild(el('small', null, f.unit));
+        cell.append(value, el('span', 'cs-figure__label', f.label));
+        row.appendChild(cell);
+      });
+      inner.appendChild(row);
+    }
   }
 
-  // Page structure: the sections of the site, in order
-  if (project.structure && project.structure.steps) {
-    const inner = section('structure', 'Page structure', project.structure);
-    const list = el('ol', 'cs-steps');
-    project.structure.steps.forEach((step, i) => {
-      const li = el('li', 'cs-reveal');
-      li.append(
-        el('span', 'cs-steps__num', String(i + 1).padStart(2, '0')),
-        el('strong', null, step.title),
-        el('span', 'cs-steps__text', step.text)
-      );
-      list.appendChild(li);
-    });
-    inner.appendChild(list);
+  // MARK: Animate
+  function animate() {
+    if (prefersReduced) {
+      document.querySelector('[data-cs-stage]').style.setProperty('--p', 1);
+      return;
+    }
+    const stage = document.querySelector('[data-cs-stage]');
+    const shots = Array.from(document.querySelectorAll('.cs-shot'));
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      const vh = window.innerHeight;
+
+      // the card is at rest while its top sits at the bottom of the screen,
+      // and fills the width once its top has climbed to 15% from the top
+      const r = stage.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.85)));
+      stage.style.setProperty('--p', (1 - Math.pow(1 - p, 2)).toFixed(4));
+
+      // each gallery shot drifts from `from` to `to` px while it crosses
+      shots.forEach((shot, i) => {
+        const b = shot.getBoundingClientRect();
+        if (b.bottom < -300 || b.top > vh + 300) return;
+        const t = Math.min(1, Math.max(0, (vh - b.top) / (vh + b.height)));
+        const [from, to] = PARALLAX[i % PARALLAX.length];
+        // over the last stretch of its crossing a shot shrinks a little and
+        // fades, so it lets go of the pinned image instead of sliding off
+        const out = Math.max(0, (t - 0.75) / 0.25);
+        shot.firstElementChild.style.transform =
+          `translate3d(0, ${(from + (to - from) * t).toFixed(1)}px, 0) scale(${(1 - out * 0.15).toFixed(3)})`;
+        shot.style.opacity = (1 - out).toFixed(3);
+      });
+    };
+
+    const onScroll = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
   }
-
-  // Build notes: the technical choices, two columns
-  if (project.build && project.build.notes) {
-    const inner = section('build', 'Build', project.build);
-    const list = el('ul', 'cs-notes');
-    project.build.notes.forEach((n) => {
-      const li = el('li', 'cs-reveal');
-      li.append(el('strong', null, n.title), el('span', null, n.text));
-      list.appendChild(li);
-    });
-    inner.appendChild(list);
-  }
-
-  // Figures: a row of big numbers
-  if (project.figures && project.figures.items) {
-    const inner = section('figures', 'In numbers', project.figures);
-    const row = el('div', 'cs-figures__row cs-reveal');
-    project.figures.items.forEach((f) => {
-      const cell = el('div');
-      const value = el('strong', null, f.value);
-      if (f.unit) value.appendChild(el('small', null, f.unit));
-      cell.append(value, el('span', null, f.label));
-      row.appendChild(cell);
-    });
-    inner.appendChild(row);
-  }
-}
-
-// MARK: Animate
-function animate(hasGallery) {
-  const hero = document.querySelector('.cs-hero');
-  const sticky = document.querySelector('.cs-hero__sticky');
-
-  // px of scroll the card takes to fill the screen. Longer with a gallery,
-  // so its shots have room to drift past. Without motion there is nothing
-  // to scroll through, so the hero is just one screen.
-  const range = prefersReduced ? 0 : hasGallery ? 1500 : 1000;
-  hero.style.minHeight = `calc(${range}px + 100vh)`;
-
-  // a tween driven straight by the page scroll between two px positions
-  const scrub = (target, from, to, start, end) =>
-    gsap.fromTo(target, from, { ...to, ease: 'none', scrollTrigger: { start, end, scrub: 0.4 } });
-
-  // --- Intro: title rises in, the card follows ---
-  // (the caption's children, not the caption itself, which the scroll fades)
-  gsap
-    .timeline({ defaults: { ease: 'power3.out' }, delay: 0.15 })
-    .from('.cs-hero__caption > *', { y: 40, autoAlpha: 0, duration: 0.9, stagger: 0.08 }, 0)
-    .from('.cs-hero__frame', { y: 80, autoAlpha: 0, duration: 1.1 }, 0.15);
-
-  if (range) {
-    // --- Hero: the card grows to fill the screen, sliding over the title ---
-    scrub(sticky, { '--p': 0 }, { '--p': 1 }, 0, range);
-    scrub('.cs-hero__caption', { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -80 }, 0, range * 0.4);
-  }
-
-  // --- Gallery parallax ---
-  // Each shot moves from `from` to `to` px while it crosses the screen,
-  // then shrinks and fades over the last quarter. The trigger is the
-  // figure, the frame inside it is what moves, so the moving element
-  // never shifts its own start and end points.
-  if (hasGallery && !prefersReduced) {
-    gsap.utils.toArray('.cs-shot').forEach((shot, i) => {
-      const [from, to] = PARALLAX[i % PARALLAX.length];
-      const offset = (n) => (n < 0 ? '-=' : '+=') + Math.abs(n);
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: shot,
-            start: `top${offset(from)} bottom`,
-            end: `bottom top${offset(-to)}`,
-            scrub: true,
-          },
-        })
-        .fromTo(shot.firstElementChild, { y: from }, { y: to, ease: 'none', duration: 1 }, 0)
-        .to(shot.firstElementChild, { scale: 0.85, autoAlpha: 0, ease: 'none', duration: 0.25 }, 0.75);
-    });
-  }
-
-  // --- Reveal on scroll ---
-  const reveal = (target) =>
-    gsap.from(target, {
-      y: prefersReduced ? 0 : 40,
-      autoAlpha: 0,
-      duration: 0.75,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: target, start: 'top 88%' },
-    });
-
-  [
-    '.cs-overview .section-label',
-    '.cs-overview__title',
-    ...document.querySelectorAll('.cs-meta > div'),
-    '.cs-overview .btn',
-    '.cs-story .section-label',
-    ...document.querySelectorAll('.cs-chapter'),
-    ...document.querySelectorAll('.cs-reveal'),
-    '.detail-cta__inner',
-    '.cs-next__card',
-  ].forEach((target) => {
-    if (typeof target !== 'string' || document.querySelector(target)) reveal(target);
-  });
-}
+})();

@@ -29,7 +29,7 @@
   const zone = card.closest('.ab') || stage;
 
   const TILT = 13;      // degrees of pitch/yaw at the far edge of the hero
-  const SHIFT = 0.055;  // rem the photo slides inside its frame, for depth
+  const SHIFT = 8;      // px the photo slides inside its frame, for depth
   const EASE = 0.1;     // how hard the card chases the pointer, 0–1
   const REST = 0.0005;  // below this the loop stops rather than idling
 
@@ -72,13 +72,13 @@
     s.setProperty('--pol-rx', (-at.y * TILT).toFixed(2) + 'deg');
     // the print slides against the turn — parallax is what stops the card
     // looking like a flat image with a rotation on it
-    s.setProperty('--pol-px', (-at.x * SHIFT).toFixed(4) + 'rem');
-    s.setProperty('--pol-py', (-at.y * SHIFT).toFixed(4) + 'rem');
+    s.setProperty('--pol-px', (-at.x * SHIFT).toFixed(2) + 'px');
+    s.setProperty('--pol-py', (-at.y * SHIFT).toFixed(2) + 'px');
     // the shadow falls the other way from the light, and deepens as the
     // card lifts towards the cursor
-    s.setProperty('--pol-sx', (-at.x * 0.16).toFixed(4) + 'rem');
-    s.setProperty('--pol-sy', (0.28 + at.on * 0.1).toFixed(4) + 'rem');
-    s.setProperty('--pol-lift', (at.on * -0.05).toFixed(4) + 'rem');
+    s.setProperty('--pol-sx', (-at.x * 16).toFixed(2) + 'px');
+    s.setProperty('--pol-sy', (28 + at.on * 10).toFixed(2) + 'px');
+    s.setProperty('--pol-lift', (at.on * -5).toFixed(2) + 'px');
     // the sheen sweeps across the print as it turns
     s.setProperty('--pol-sheen-x', (50 + at.x * 55).toFixed(1) + '%');
     s.setProperty('--pol-sheen-o', (at.on * 0.55).toFixed(3));

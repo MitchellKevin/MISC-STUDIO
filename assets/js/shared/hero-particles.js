@@ -114,8 +114,11 @@ window.initParticles = function (options) {
       return;
     }
 
+    // inset may be a function of the field size; a negative one pushes the
+    // image past the right edge
+    const inset = typeof o.inset === 'function' ? o.inset(width, height) : o.inset;
     const originX = o.align === 'right'
-      ? Math.round(width - size - o.inset)
+      ? Math.round(width - size - inset)
       : Math.round((width - size) / 2);
     const originY = Math.round((height - sizeY) / 2);
 
@@ -153,9 +156,12 @@ window.initParticles = function (options) {
 
   // the canvas paints itself, so it has to read the theme token rather than
   // inherit it; theme-toggle.js fires themechange after the swap
+  // A canvas can set its own --dot-color (white on the graphite hero, ink on
+  // paper); without one it falls back to the site accent.
   let dotColor = '#0022ff';
   const readDotColor = () => {
-    const v = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
+    const v = getComputedStyle(canvas).getPropertyValue('--dot-color').trim()
+      || getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
     if (v) dotColor = v;
   };
   readDotColor();
@@ -244,7 +250,21 @@ window.initParticles = function (options) {
 // The homepage hero, with the settings it has always used. The about page
 // calls initParticles() itself with its own image, so this only fires where
 // .hero__particles actually exists.
-if (document.querySelector('.hero__particles')) window.initParticles();
+if (document.querySelector('.hero__particles')) {
+  // a hero that asks for it (data-align="right") keeps the logo to the right
+  // half, clear of the headline and the price on the left
+  const heroCanvas = document.querySelector('.hero__particles');
+  window.initParticles(heroCanvas.dataset.align === 'right' ? {
+    align: 'right',
+    dot: 2,
+    // A big mark pushed right. The size is the whole logo image; the mark
+    // itself spans roughly 26%–74% of it across (the rest is the tile's
+    // padding). On desktop that is a mark ~50% of the hero wide, starting
+    // past the middle (clear of the headline) and just running off the right edge.
+    fill: (w, h) => (w < 1024 ? Math.min(h * 1.1, w * 1.38) : Math.min(h * 2, w * 1.05)),
+    inset: (w) => (w < 1024 ? -w * 0.28 : -w * 0.3)
+  } : undefined);
+}
 
 // The MISC wordmark that closes every page, edge to edge, with the same dot
 // size and push as the hero logo. The canvas carries its own image path in
