@@ -110,14 +110,7 @@
     <section class="ab ab--hero" id="ab-hero" data-chapter data-label="Start" data-surface="graphite">
       <div class="grain" aria-hidden="true"></div>
       <div class="shell ab-hero">
-        <p class="ab-hero__meta" data-enter style="--d:0">
-          <span class="status">Available for new projects</span>
-          <span>Hoofddorp, NL</span>
-          <span><time data-local-time>--:--</time> in Amsterdam</span>
-        </p>
-
         <div class="ab-hero__copy">
-          <span class="eyebrow" data-enter style="--d:1">About</span>
           <!-- the space between the spans is load-bearing: without it the
                heading reads as the single word "MitchellScholte", which is
                not what anyone types into a search box. -->
@@ -264,14 +257,30 @@
     <section class="apods" id="ab-airpods" data-airpods data-chapter data-label="One more thing" data-surface="void">
       <div class="grain" aria-hidden="true"></div>
       <div class="apods__bg">
-        <!-- The canvas paints the same word as an equalizer and clips the
-             bars to the letterforms. The <h2> stays the real heading. -->
-        <div class="apods__word">
-          <h2 class="apods__bgtext" data-eq>Love</h2>
-          <canvas class="apods__eq" data-eq-canvas aria-hidden="true" hidden></canvas>
-        </div>
+        <!-- "my secret weapon": the big word is painted again by the canvas
+             as an equalizer, its bars clipped to the letterforms; "my" and
+             "weapon" are plain type. The <h2> stays the real heading. -->
+        <h2 class="apods__heading">
+          <span class="apods__small">my</span>
+          <span class="apods__word">
+            <span class="apods__bgtext" data-eq>secret</span>
+            <canvas class="apods__eq" data-eq-canvas aria-hidden="true" hidden></canvas>
+          </span>
+          <span class="apods__small apods__small--end">weapon</span>
+        </h2>
       </div>
       <canvas class="apods__canvas" data-airpods-canvas aria-hidden="true"></canvas>
+      <!-- What the outro says: "secret" is the meter of this site’s own music.
+           It only moves while the soundtrack plays; this button (one more
+           sound toggle, sound-toggle.js picks it up) starts it. -->
+      <div class="apods__say">
+        <p class="apods__line">This site has a soundtrack. <span class="soft">Put it on and the word plays along.</span></p>
+        <button class="btn btn--compact apods__play" data-variant="secondary" type="button" data-sound-toggle aria-pressed="false" aria-label="Play ambient music">
+          <span class="btn__copy"><span class="btn__label"><span class="apods__off">Play the music</span><span class="apods__on">Pause the music</span></span></span>
+          <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label"><span class="apods__off">Play the music</span><span class="apods__on">Pause the music</span></span></span></span>
+          <span class="btn__arrow" aria-hidden="true"><span class="sound-bars"><i></i><i></i><i></i><i></i></span></span>
+        </button>
+      </div>
       <p class="apods__status" data-airpods-status>AirPods laden…</p>
     </section>
 

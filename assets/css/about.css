@@ -50,25 +50,19 @@
   flex: 1;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 1fr;
   gap: var(--space-lg) var(--gutter);
   padding-block: var(--space-sm) var(--space-xl);
 }
-.ab-hero__meta {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem 1.5rem;
-  font-size: .875rem;
-  color: var(--ink-soft);
-}
 .ab-hero__copy {
   align-self: end;
+  grid-row: 1;
   display: grid;
   gap: var(--space-md);
   justify-items: start;
 }
 .ab-hero__title span { display: block; }
+/* the name leads; "Designer who codes." is its subtitle, a step down */
+.ab-hero__title .soft { margin-top: .2em; font-size: .55em; line-height: 1; }
 .ab-hero__lead { max-width: 26ch; color: var(--ink-soft); text-wrap: balance; }
 .ab-hero__hint {
   display: flex;
@@ -82,7 +76,8 @@
 .ab-hero__hint span { width: 4rem; height: 1px; background: var(--rule); }
 @media (min-width: 64rem) {
   .ab-hero { grid-template-columns: minmax(0, 1fr) auto; }
-  .polaroid-stage { align-self: center; grid-row: 2; grid-column: 2; }
+  /* bigger, and pulled in from the right edge towards the copy */
+  .polaroid-stage { align-self: center; grid-row: 1; grid-column: 2; margin-right: clamp(2rem, 7vw, 9rem); }
 }
 @media (max-width: 63.99rem) {
   .ab-hero__hint { display: none; }
@@ -97,7 +92,7 @@
   perspective-origin: 50% 45%;
 }
 .polaroid {
-  --pol-w: clamp(15rem, 24vw, 23rem);
+  --pol-w: clamp(17rem, min(32vw, 55svh), 30rem);   /* capped by height too, for short laptop screens */
   --pol-tilt: -3.5deg;
   --pol-rx: 0deg;
   --pol-ry: 0deg;
@@ -462,10 +457,26 @@
   justify-content: center;
   pointer-events: none;
 }
-.apods__word { position: relative; }
-.apods__bgtext {
+.apods__heading {
+  display: grid;
   margin: 0;
-  font-size: 21.5vw;
+  font-weight: 500;
+}
+/* the small words sit on the big word's edges: "my" at its left, "weapon"
+   at its right */
+.apods__small {
+  justify-self: start;
+  font-size: clamp(1.75rem, 1rem + 2.6vw, 4rem);
+  line-height: 1;
+  letter-spacing: var(--tracking-heading);
+  color: var(--ink);
+}
+.apods__small--end { justify-self: end; }
+.apods__word { position: relative; display: block; }
+.apods__bgtext {
+  display: block;
+  margin: 0;
+  font-size: 21vw;
   line-height: 1;
   font-weight: 500;
   letter-spacing: var(--tracking-heading);
@@ -473,13 +484,44 @@
   color: var(--ink);
 }
 .apods__eq {
+  /* a little bigger than the word on every side, so no letter that
+     overhangs its box (the s and the t) is ever sliced */
   position: absolute;
-  inset: -9% -2%;
-  width: 104%;
+  inset: -9% -6%;
+  width: 112%;
   height: 118%;
   pointer-events: none;
 }
 .apods__bg.is-eq .apods__bgtext { color: transparent; }
+/* the line under the word, and the button that starts the music. While
+   the section is scrubbing (.is-scrubbed) it waits for the buds to be out
+   (.is-said); without the script it simply shows. */
+.apods__say {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--space-xl);
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: var(--space-sm);
+  padding-inline: var(--gutter);
+  text-align: center;
+  transition: opacity .7s var(--ease-out), translate .7s var(--ease-out);
+}
+.apods.is-scrubbed:not(.is-said) .apods__say { opacity: 0; translate: 0 1rem; pointer-events: none; }
+.apods__line {
+  max-width: 34ch;
+  font-size: var(--text-title);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-heading);
+  text-wrap: balance;
+}
+.apods__line .soft { display: block; }
+.apods__play .sound-bars { color: inherit; }
+.apods__play .apods__on,
+.apods__play[aria-pressed="true"] .apods__off { display: none; }
+.apods__play[aria-pressed="true"] .apods__on { display: inline; }
 .apods__status {
   position: absolute;
   inset: 50% 0 auto;
@@ -495,7 +537,7 @@
     z-index: 2;
   }
   .apods__bgtext { font-size: var(--text-mega); white-space: normal; }
-  /* no AirPods section on phones at all, the "Love" outro included
+  /* no AirPods section on phones at all, the "my secret weapon" outro included
      (about-airpods.js does not run there either) */
   .apods { display: none; }
 }

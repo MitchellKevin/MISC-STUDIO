@@ -13,7 +13,12 @@
 //            shown again in full further down
 //   gallery  optional: images that drift past the hero (four look best).
 //            Leave it out and the hero is just the shot.
-//   facts    the small label / value grid next to the intro
+//   theme    the project's own colours for its hero and accent, taken
+//            from its palette: { surface: 'void' | 'light', bg, deep, glow,
+//            accent, onAccent } — bg is the hero's ground, deep and glow
+//            tint it, accent replaces the site blue across the page, and
+//            onAccent is the text colour that sits on the accent
+//   facts    the small label / value grid at the top of the story
 //   story    the three chapters under the full shot
 //
 // Optional deeper sections, shown under the story only when present
@@ -35,6 +40,7 @@ window.CASE_STUDIES = [
     label: 'Client website',
     intro: 'The website for Scholtes Klusbedrijf, a new handyman business in Hoofddorp. It is built as a technical drawing, because every job starts as a plan, and it has to win the first customers without any past work to show.',
     image: 'assets/img/projects/scholtes-klusbedrijf.webp',
+    theme: { surface: 'void', bg: '#0D2B4A', deep: '#081D33', glow: '#7FD3FF', accent: '#FFB020', onAccent: '#081D33' },
     live: 'https://mitchellkevin.github.io/scholtes-klusbedrijf/',
     gallery: [
       { src: 'assets/img/projects/scholtes-klusbedrijf/mobile.webp', alt: 'The homepage on a phone, with the house below the headline' },
@@ -180,6 +186,7 @@ window.CASE_STUDIES = [
     label: 'Sales site',
     intro: 'The sales site for day-to-day secure, the website-security scanner from my company Day-to-Day. It sells to web agencies and shows the real product from the first scroll.',
     image: 'assets/img/projects/day-to-day-secure.webp',
+    theme: { surface: 'void', bg: '#000000', deep: '#121216', glow: '#0022FF', accent: '#0022FF', onAccent: '#FFFFFF' },
     gallery: [
       { src: 'assets/img/projects/day-to-day-secure/mobile.webp', alt: 'The sales site on a phone' },
       { src: 'assets/img/projects/day-to-day-secure/platform.webp', alt: 'The platform section with three promises' },
@@ -304,6 +311,7 @@ window.CASE_STUDIES = [
     label: 'Data visualisation',
     intro: 'A scrolling data story for the Visdeurbel, Utrecht’s fish doorbell. It turns one month of rings, visitors and fish into an aquarium, a sonar, a cloud of languages and a set of bubbles. The page was built by a team of four; these are my chapters.',
     image: 'assets/img/projects/visdeurbel.webp',
+    theme: { surface: 'void', bg: '#01463C', deep: '#01302A', glow: '#1EACB0', accent: '#C0A8FF', onAccent: '#01463C' },
     live: 'https://vis-b05f.onrender.com/',
     gallery: [
       { src: 'assets/img/projects/visdeurbel/mobile.webp', alt: 'The aquarium chapter on a phone, with the species filters above the tank' },
@@ -427,6 +435,7 @@ window.CASE_STUDIES = [
     label: 'Sales site',
     intro: 'The sales site for AI Academy, a learning platform that teaches design and development teams to work with AI. It gives the team lead, the manager and the privacy officer each their reason to say yes.',
     image: 'assets/img/projects/ai-academy-salessite.webp',
+    theme: { surface: 'light', bg: '#F3F6FB', deep: '#E8EEFC', glow: '#FFFFFF', accent: '#1D4ED8', onAccent: '#FFFFFF' },
     gallery: [
       { src: 'assets/img/projects/ai-academy/mobile-home.webp', alt: 'The homepage on a phone' },
       { src: 'assets/img/projects/ai-academy/calculator.webp', alt: 'The seat calculator on the pricing page' },
@@ -550,6 +559,7 @@ window.CASE_STUDIES = [
     label: 'Hackathon',
     intro: 'A one-page site for NEBULA-Xplorer, an X-ray space telescope from SRON, the Netherlands Institute for Space Research. Made in a hackathon week, it turns a spacecraft spec sheet into a live Earth, a 3D satellite you can take apart, and data anyone can read.',
     image: 'assets/img/projects/sron.webp',
+    theme: { surface: 'void', bg: '#030915', deep: '#000000', glow: '#EB5D34', accent: '#EB5D34', onAccent: '#030915' },
     // live: 'https://mitchellkevin.github.io/Space/',
     gallery: [
       { src: 'assets/img/projects/sron/mobile.webp', alt: 'The hero on a phone, with the Earth rising from the bottom' },

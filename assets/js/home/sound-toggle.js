@@ -25,6 +25,7 @@
   var fadeTimer = null;
   var intent = 'on';           // default; overridden by a stored choice
   var playing = false;
+  var sounding = false;        // the audio element is really playing right now
   var armed = false;
 
   function getAudio() {
@@ -36,6 +37,10 @@
     audio.loop = true;
     audio.preload = 'none';
     audio.volume = 0;
+    // the bars dance only while sound is actually coming out (the switch can
+    // read "on" long before the first gesture lets the browser play)
+    audio.addEventListener('playing', function () { sounding = true; paint(); announce(); });
+    audio.addEventListener('pause', function () { sounding = false; paint(); announce(); });
     document.body.appendChild(audio);
     return audio;
   }
@@ -54,11 +59,23 @@
     }, 25);
   }
 
+  // Other parts of the page can follow the music (the "Love" equalizer on
+  // the about page): window.miscSound.sounding, and a soundchange event.
+  window.miscSound = { sounding: false };
+  function announce() {
+    window.miscSound.sounding = sounding;
+    window.dispatchEvent(new CustomEvent('soundchange', { detail: { sounding: sounding } }));
+  }
+
+  // A button reads as on only while the music is really playing. Before the
+  // first gesture the music is "on" but silent, and showing it as on there
+  // made the first click on a play button mute it instead.
   var buttons = [];
   function paint() {
     buttons.forEach(function (btn) {
-      btn.setAttribute('aria-pressed', intent === 'on' ? 'true' : 'false');
-      btn.setAttribute('aria-label', intent === 'on' ? 'Mute ambient music' : 'Play ambient music');
+      btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+      btn.setAttribute('aria-label', playing ? 'Mute ambient music' : 'Play ambient music');
+      btn.classList.toggle('is-sounding', sounding);
     });
   }
 
@@ -66,12 +83,13 @@
   function play() {
     var p = getAudio().play();
     if (!p || !p.then) return Promise.resolve(false);
-    return p.then(function () { playing = true; fadeTo(VOLUME); return true; },
+    return p.then(function () { playing = true; armed = false; fadeTo(VOLUME); paint(); return true; },
                   function () { return false; });
   }
 
   function silence() {
     playing = false;
+    paint();
     fadeTo(0, function () { if (audio) audio.pause(); });
   }
 
@@ -79,7 +97,11 @@
   function arm() {
     if (armed) return;
     armed = true;
-    var go = function () {
+    var go = function (e) {
+      // a gesture on a sound button is that button's to handle (its click
+      // decides on or off); starting the music here first would let the
+      // click read it as playing and mute it straight away
+      if (e && e.target && e.target.closest && e.target.closest('[data-sound-toggle]')) return;
       document.removeEventListener('pointerdown', go, true);
       document.removeEventListener('keydown', go, true);
       document.removeEventListener('touchstart', go, true);
@@ -126,8 +148,10 @@
     try { intent = localStorage.getItem(KEY) === 'off' ? 'off' : 'on'; } catch (e) {}
     paint();
 
+    // A click turns on what isn't playing and turns off what is — judged by
+    // what you can hear, not by the stored choice
     var toggle = function () {
-      intent = intent === 'on' ? 'off' : 'on';
+      intent = playing ? 'off' : 'on';
       try { localStorage.setItem(KEY, intent); } catch (e) {}
       paint();
 

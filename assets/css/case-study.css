@@ -5,16 +5,29 @@
    ================================================================== */
 
 /* ── Hero ───────────────────────────────────────────────────────── */
+/* In the project's own colours: case-study.js sets the surface (void or
+   light), --cs-bg / --cs-deep / --cs-glow and .is-themed from the project's
+   theme. The ground is the project's base colour, deepened in one corner,
+   lit by a soft glow of its palette in the other, with the dot field on top.
+   Short on purpose: title left, intro right, so the shot below fills the
+   lower half of the first screen. */
 .cs-hero {
   position: relative;
   overflow: clip;
-  padding-top: calc(var(--header-h) + var(--space-lg));
+  padding-top: calc(var(--header-h) + var(--space-md));
+}
+.cs-hero.is-themed {
+  background:
+    var(--dots),
+    radial-gradient(65% 75% at 92% -10%, color-mix(in srgb, var(--cs-glow) 26%, transparent) 0%, transparent 70%),
+    radial-gradient(90% 80% at 0% 100%, var(--cs-deep) 0%, transparent 70%),
+    var(--cs-bg);
 }
 .cs-hero [data-enter] {
   animation: enter 1s var(--ease-out) both;
   animation-delay: calc(150ms + var(--d, 0) * 90ms);
 }
-.cs-hero__inner { position: relative; z-index: 1; display: grid; gap: var(--space-lg); }
+.cs-hero__inner { position: relative; z-index: 1; display: grid; gap: var(--space-md); }
 .cs-hero__crumbs {
   display: flex;
   align-items: center;
@@ -26,24 +39,43 @@
 }
 .cs-hero__crumbs a { transition: color var(--dur-fast); }
 .cs-hero__crumbs a:hover { color: var(--ink); }
-.cs-hero__title {
-  max-width: 14ch;
-  text-wrap: balance;
-  overflow-wrap: anywhere;
-}
 .cs-hero__split {
   display: grid;
-  gap: var(--space-lg) var(--gutter);
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--rule);
+  gap: var(--space-md) var(--gutter);
+  align-items: end;
 }
 @media (min-width: 64rem) {
   .cs-hero__split { grid-template-columns: repeat(12, minmax(0, 1fr)); }
-  .cs-hero__intro { grid-column: 1 / span 7; }
-  .cs-hero__side { grid-column: 9 / -1; }
+  .cs-hero__title { grid-column: 1 / span 7; }
+  .cs-hero__side { grid-column: 8 / -1; }
 }
-.cs-hero__intro { color: var(--ink); text-wrap: pretty; }
-.cs-hero__side { display: grid; gap: var(--space-md); align-content: start; justify-items: start; }
+.cs-hero__title {
+  max-width: 12ch;
+  font-size: clamp(2.75rem, 1.4rem + 4.3vw, 6.5rem);
+  font-weight: 500;
+  line-height: .92;
+  letter-spacing: var(--tracking-heading);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.cs-hero__side { display: grid; gap: var(--space-md); justify-items: start; }
+.cs-hero__intro {
+  color: var(--ink);
+  font-size: clamp(1rem, .92rem + .3vw, 1.1875rem);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+/* the primary button wears the project's accent, with its own text colour
+   (dark on yellow, orange and lilac; white on the blues) */
+.cs .btn[data-variant="primary"] {
+  --copy: var(--cs-on-accent, var(--brand-white));
+  --fill: var(--cs-on-accent, var(--brand-white));
+  --fill-copy: var(--brand-accent);
+}
+
+/* the facts open the story: a row of four on a wide screen */
+.cs-facts--strip { margin-bottom: var(--space-xl); }
+@media (min-width: 64rem) { .cs-facts.cs-facts--strip { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 .cs-facts {
   display: grid;
@@ -74,7 +106,7 @@
   --inset: calc(var(--gutter) + 6vw);
   position: relative;
   z-index: 1;
-  margin-top: var(--space-xl);
+  margin-top: var(--space-lg);
 }
 .cs-stage__frame {
   position: relative;

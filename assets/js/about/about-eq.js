@@ -14,6 +14,10 @@
 // heading stays a real heading in the markup — the canvas only paints
 // over the top of it. Change the text in about.html and this follows.
 //
+// It is the meter of the site's own music: it moves only while the
+// soundtrack is actually playing (sound-toggle.js announces it), and holds
+// its last shape, frozen, while it is off — like the bars in the header.
+//
 // Unlit segments are still drawn, faintly. Without them the word breaks
 // up into disconnected fragments every time the levels drop, and a
 // heading you cannot read is not worth the effect.
@@ -59,7 +63,10 @@
 
   let w = 0, h = 0, dpr = 1;
   let raf = 0, running = false, visible = false;
-  let t0 = 0;
+  // the meter's own clock: it only advances while the music plays, so
+  // pausing freezes the shape where it was and playing picks it up again
+  let clock = 1.3, last = 0;
+  let playing = !!(window.miscSound && window.miscSound.sounding);
 
   // ---- sizing ------------------------------------------------------
   // The canvas is measured, not assumed: it sits over the heading, so
@@ -120,8 +127,9 @@
 
   // ---- paint -------------------------------------------------------
   function draw(now) {
-    if (!t0) t0 = now;
-    const t = (now - t0) / 1000;
+    if (playing && last && now) clock += Math.min(0.1, (now - last) / 1000);
+    last = playing ? now : 0;
+    const t = clock;
 
     ctx.clearRect(0, 0, w, h);
 
@@ -131,6 +139,13 @@
     // peak band in the empty space above the caps, where no glyph can
     // ever show it. Everything below is in glyph-box space.
     ctx.font = font();
+    // the heading is set with tight (negative) tracking; drawn without it the
+    // canvas word comes out wider than the real one, and its first and last
+    // letters run off the edges of the canvas
+    if ('letterSpacing' in ctx) {
+      const ls = getComputedStyle(word).letterSpacing;
+      ctx.letterSpacing = ls === 'normal' ? '0px' : ls;
+    }
     ctx.textAlign = 'center';
     const m = ctx.measureText(word.textContent);
     const asc = m.actualBoundingBoxAscent || 0;
@@ -189,8 +204,8 @@
 
   function frame(now) {
     draw(now);
-    // a static meter needs one frame, not sixty
-    if (!running || still.matches) { raf = 0; return; }
+    // a static meter (music off, or reduced motion) needs one frame, not sixty
+    if (!running || still.matches || !playing) { raf = 0; last = 0; return; }
     raf = requestAnimationFrame(frame);
   }
 
@@ -239,6 +254,10 @@
   ready.then(apply);
 
   window.addEventListener('resize', () => { if (measure()) requestAnimationFrame(draw); });
+  window.addEventListener('soundchange', (e) => {
+    playing = !!(e.detail && e.detail.sounding);
+    if (running && playing) start();
+  });
   small.addEventListener('change', apply);
   still.addEventListener('change', apply);
 })();

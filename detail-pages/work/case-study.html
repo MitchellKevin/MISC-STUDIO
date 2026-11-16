@@ -75,7 +75,10 @@
        case-study.js, picked by the ?project=<slug> in the URL. -->
   <main id="main" tabindex="-1" class="cs">
 
-    <!-- ── Hero: title, intro and facts on the void surface ─────────── -->
+    <!-- ── Hero: in the project's own colours (case-study.js sets the
+         surface, the tint and the accent from its theme in case-studies.js).
+         Kept short, title on the left and intro on the right, so the shot
+         below already fills the lower half of the first screen. -->
     <section class="cs-hero" data-surface="void">
       <div class="grain" aria-hidden="true"></div>
       <div class="shell cs-hero__inner">
@@ -84,11 +87,10 @@
           <span aria-hidden="true">/</span>
           <span class="eyebrow" data-cs="label"></span>
         </p>
-        <h1 class="t-mega cs-hero__title" data-cs="title" data-enter style="--d:1"></h1>
         <div class="cs-hero__split">
-          <p class="t-title cs-hero__intro" data-cs="intro" data-enter style="--d:2"></p>
-          <div class="cs-hero__side" data-enter style="--d:3">
-            <dl class="cs-facts" data-cs-facts></dl>
+          <h1 class="cs-hero__title" data-cs="title" data-enter style="--d:1"></h1>
+          <div class="cs-hero__side" data-enter style="--d:2">
+            <p class="cs-hero__intro" data-cs="intro"></p>
             <a class="btn" data-variant="primary" data-cs="live" target="_blank" rel="noopener">
               <span class="btn__copy"><span class="btn__label">Visit the live site</span><span class="btn__caption">Opens in a new tab</span></span>
               <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Visit the live site</span><span class="btn__caption">Opens in a new tab</span></span></span>
@@ -122,6 +124,8 @@
             <h2 class="t-display lines" id="cs-story-title" data-reveal><span><span>How it came</span></span><span><span class="soft">together.</span></span></h2>
           </div>
         </div>
+        <!-- the facts that used to sit in the hero, now opening the story -->
+        <dl class="cs-facts cs-facts--strip" data-cs-facts data-reveal></dl>
         <div class="cs-chapters" data-cs-story></div>
       </div>
     </section>

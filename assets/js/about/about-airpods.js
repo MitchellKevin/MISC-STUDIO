@@ -42,8 +42,14 @@ const LID = ['tIkViEHUUFQAmea', 'bTVaRraRjrgTKif', 'OWQgrklvaGQVzql',
 // Keep every number inside 0..1 and keep start < end.
 // ------------------------------------------------------------------
 const TUNE = {
-  scrollLength: 9,        // how many screen-heights the section is pinned for.
-                          // Higher = slower, more scrolling per beat.
+  scrollLength: 2.8,      // how many screen-heights the section is pinned for
+                          // (higher = slower, more scrolling per beat), kept
+                          // between scrollMin and scrollMax px so the outro
+                          // never outstays its welcome on a tall screen
+  scrollMin: 2000,
+  scrollMax: 3000,
+  sayAt: 0.62,            // where in the scroll the line under the word shows
+                          // (once the buds are out)
 
   beats: {
     turn:  [0.08, 0.34],  // 2 · the case spins
@@ -116,7 +122,7 @@ const TUNE = {
 const LID_CLOSED = TUNE.lidClosedDeg * Math.PI / 180;
 
 // Phones skip the AirPods altogether: no model download, no pinned scroll.
-// The section stays as the "Love" outro on its own (see about.css).
+// The section stays as the "my secret weapon" outro on its own (see about.css).
 const stage = document.querySelector('[data-airpods]');
 const phone = window.matchMedia('(max-width: 47.99rem)').matches;
 if (stage && !phone) init(stage);
@@ -378,13 +384,22 @@ function init(host) {
       progress = 1; apply();
       return;
     }
+    // the line under the word waits for the buds; until this runs it just shows
+    host.classList.add('is-scrubbed');
+    const length = () => Math.round(Math.min(TUNE.scrollMax,
+      Math.max(TUNE.scrollMin, window.innerHeight * TUNE.scrollLength)));
     ScrollTrigger.create({
       trigger: host,
       start: 'top top',
-      end: '+=' + window.innerHeight * TUNE.scrollLength,
+      end: () => '+=' + length(),
       pin: true,
       scrub: 0.6,
-      onUpdate: (self) => { progress = self.progress; apply(); }
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        progress = self.progress;
+        apply();
+        host.classList.toggle('is-said', progress >= TUNE.sayAt);
+      }
     });
   }
 

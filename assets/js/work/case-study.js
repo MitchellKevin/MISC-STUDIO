@@ -56,6 +56,7 @@
     slot('title').textContent = project.title;
     slot('label').textContent = project.label || 'Project';
     slot('intro').textContent = project.intro || '';
+    applyTheme(project.theme);
 
     // the shot and its blurred backdrop
     document.querySelectorAll('[data-cs="image"]').forEach((img) => {
@@ -118,6 +119,30 @@
       hero.classList.add('has-drift');
     }
     if (wrap) wrap.remove();
+  }
+
+  // MARK: Theme
+  // Each project brings its own colours (theme in case-studies.js): its
+  // accent replaces the site blue across the whole case study (eyebrows,
+  // buttons, links), and the hero takes its ground, tint and light/dark
+  // surface. The template stays the same; the world around it changes.
+  function applyTheme(theme) {
+    if (!theme) return;
+    const main = document.querySelector('main.cs');
+    if (main) {
+      main.style.setProperty('--brand-accent', theme.accent);
+      main.style.setProperty('--cs-on-accent', theme.onAccent || '#ffffff');
+    }
+    const hero = document.querySelector('.cs-hero');
+    if (hero) {
+      hero.dataset.surface = theme.surface || 'void';
+      hero.style.setProperty('--cs-bg', theme.bg);
+      hero.style.setProperty('--cs-deep', theme.deep || theme.bg);
+      hero.style.setProperty('--cs-glow', theme.glow || theme.accent);
+      hero.classList.add('is-themed');
+    }
+    const bar = document.querySelector('meta[name="theme-color"]');
+    if (bar) bar.setAttribute('content', theme.bg);
   }
 
   // MARK: Extra sections
