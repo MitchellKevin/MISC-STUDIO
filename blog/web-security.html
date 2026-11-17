@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="../assets/css/blog.css">
     <meta name="description" content="How I pentest a website, from scope and recon to the findings that come up again and again, and how I harden a site afterwards: headers, cookies, input, dependencies and operations.">
     <title>Pentesting and hardening a website — Mitchell Scholte</title>
-    <link rel="canonical" href="https://miscstudio.nl/blog/web-security.html">
+    <link rel="canonical" href="https://miscstudio.nl/blog/web-security">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://miscstudio.nl/blog/web-security.html">
+    <meta property="og:url" content="https://miscstudio.nl/blog/web-security">
     <meta property="og:site_name" content="MISC STUDIO">
     <meta property="og:title" content="Pentesting and hardening a website">
     <meta property="og:description" content="Attack it before someone else does, then close what you found and the things around it.">
@@ -26,12 +26,12 @@
 
   <!-- ── Header ───────────────────────────────────────────────────── -->
   <header class="site-header">
-    <a class="brand" href="../index.html" aria-label="MISC STUDIO, home">
+    <a class="brand" href="../" aria-label="MISC STUDIO, home">
       <img src="../assets/img/brand/logo-192.webp" alt="" width="38" height="38">
       <span class="brand__word">MISC STUDIO</span>
     </a>
     <nav class="header-actions" aria-label="Quick links">
-      <a class="header-control header-control--cta" aria-label="Contact" href="../index.html#contact">
+      <a class="header-control header-control--cta" aria-label="Contact" href="../#contact">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2"/><path d="M3 5.5l7 5 7-5"/></svg>
         <span class="header-control__label--desktop">Contact</span>
       </a>
@@ -39,7 +39,7 @@
         <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
         <span class="header-control__label--desktop">Sound</span>
       </button>
-      <a class="header-control header-control--hide-sm" href="../about.html">
+      <a class="header-control header-control--hide-sm" href="../about">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="7" r="3"/><path d="M4 17c.7-3 3-4.7 6-4.7s5.3 1.7 6 4.7"/></svg>
         <span class="header-control__label--desktop">About</span>
       </a>
@@ -59,13 +59,13 @@
         </button>
       </div>
       <nav class="menu__links" aria-label="Main navigation">
-        <a href="../index.html#top" style="--i:0"><span class="menu__index">01</span><span>Studio</span></a>
-        <a href="../index.html#process" style="--i:1"><span class="menu__index">02</span><span>How it works</span></a>
-        <a href="../index.html#work" style="--i:2"><span class="menu__index">03</span><span>Work</span></a>
-        <a href="../index.html#pricing" style="--i:3"><span class="menu__index">04</span><span>Pricing</span></a>
-        <a href="../index.html#faq" style="--i:4"><span class="menu__index">05</span><span>FAQ</span></a>
-        <a href="../blog.html" class="is-here" style="--i:5"><span class="menu__index">06</span><span>Journal</span></a>
-        <a href="../about.html" style="--i:6"><span class="menu__index">07</span><span>About</span></a>
+        <a href="../#top" style="--i:0"><span class="menu__index">01</span><span>Studio</span></a>
+        <a href="../#process" style="--i:1"><span class="menu__index">02</span><span>How it works</span></a>
+        <a href="../#work" style="--i:2"><span class="menu__index">03</span><span>Work</span></a>
+        <a href="../#pricing" style="--i:3"><span class="menu__index">04</span><span>Pricing</span></a>
+        <a href="../#faq" style="--i:4"><span class="menu__index">05</span><span>FAQ</span></a>
+        <a href="../blog" class="is-here" style="--i:5"><span class="menu__index">06</span><span>Journal</span></a>
+        <a href="../about" style="--i:6"><span class="menu__index">07</span><span>About</span></a>
       </nav>
       <div class="menu__foot">
         <span class="status">Available for new projects</span>
@@ -81,7 +81,7 @@
   <main id="main" tabindex="-1">
     <article class="article" data-surface="light">
       <header class="shell article__head">
-        <a class="article__back" href="../blog.html"><span aria-hidden="true">←</span> Journal</a>
+        <a class="article__back" href="../blog"><span aria-hidden="true">←</span> Journal</a>
         <!-- keep the tag, date and read time in sync with the card in blog.html -->
         <span class="eyebrow">Security</span>
         <h1 class="t-display article__title">Pentesting and hardening a website</h1>
@@ -242,8 +242,8 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()</code></pre>
           <p><strong>The idea:</strong> a pentest tells you where the holes are today. Hardening makes sure the next bug someone writes does less damage. You need both, and you need to do them again, because the site keeps changing.</p>
         </div>
         <div class="article__end">
-          <a class="article__back" href="../blog.html"><span aria-hidden="true">←</span> Back to the journal</a>
-          <a class="btn" data-variant="primary" href="../index.html#contact">
+          <a class="article__back" href="../blog"><span aria-hidden="true">←</span> Back to the journal</a>
+          <a class="btn" data-variant="primary" href="../#contact">
             <span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span>
             <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span></span>
             <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
@@ -260,21 +260,21 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()</code></pre>
             <span class="eyebrow">Keep reading</span>
             <h2 class="t-display lines" id="next-title" data-reveal><span><span>Next read.</span></span><span><span class="soft">From the journal.</span></span></h2>
           </div>
-          <a class="btn" data-variant="secondary" href="../blog.html">
+          <a class="btn" data-variant="secondary" href="../blog">
             <span class="btn__copy"><span class="btn__label">All posts</span></span>
             <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">All posts</span></span></span>
             <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
           </a>
         </div>
         <div class="posts posts--two">
-          <a class="post" href="../blog/nextjs-course.html" data-reveal>
+          <a class="post" href="../blog/nextjs-course" data-reveal>
             <span class="post__media dotcover" data-dotcover="15"><span class="dotcover__glyph" aria-hidden="true">15</span><span class="dotcover__note" aria-hidden="true">Chapters</span></span>
             <span class="post__body">
               <span class="post__meta"><span>Development</span><span><time datetime="2026-09-10">10 Sep 2026</time> · 16 min</span></span>
               <span class="post__title">Fifteen chapters of Next.js, and what actually stuck</span>
             </span>
           </a>
-          <a class="post" href="../blog/shopify-architecture.html" data-reveal style="--d:1">
+          <a class="post" href="../blog/shopify-architecture" data-reveal style="--d:1">
             <span class="post__media dotcover" data-dotcover="{% %}"><span class="dotcover__glyph" aria-hidden="true">{% %}</span><span class="dotcover__note" aria-hidden="true">Liquid</span></span>
             <span class="post__body">
               <span class="post__meta"><span>Development</span><span><time datetime="2026-10-30">30 Oct 2026</time> · 8 min</span></span>
@@ -292,12 +292,12 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()</code></pre>
       <div class="footer__close">
         <p class="t-display lines" data-reveal><span><span>This is where the page ends.</span></span><span><span class="soft">Your project starts here.</span></span></p>
         <div class="btn-pair">
-          <a class="btn" data-variant="primary" href="../index.html#contact">
+          <a class="btn" data-variant="primary" href="../#contact">
             <span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span>
             <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">Start a project</span><span class="btn__caption">Free intro call · No obligation</span></span></span>
             <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
           </a>
-          <a class="btn" data-variant="secondary" href="../index.html#pricing">
+          <a class="btn" data-variant="secondary" href="../#pricing">
             <span class="btn__copy"><span class="btn__label">See pricing</span></span>
             <span class="btn__reveal" aria-hidden="true"><span class="btn__copy"><span class="btn__label">See pricing</span></span></span>
             <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
@@ -307,24 +307,24 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()</code></pre>
 
       <div class="footer__grid">
         <div class="footer__brand">
-          <a class="brand" href="../index.html" style="width:fit-content"><img src="../assets/img/brand/logo-192.webp" alt="" width="38" height="38" loading="lazy"><span class="brand__word" style="display:inline">MISC STUDIO</span></a>
+          <a class="brand" href="../" style="width:fit-content"><img src="../assets/img/brand/logo-192.webp" alt="" width="38" height="38" loading="lazy"><span class="brand__word" style="display:inline">MISC STUDIO</span></a>
           <p>Design, build and secure. A small studio in the Netherlands.</p>
           <span class="status">Available for new projects</span>
         </div>
         <nav class="footer__col" aria-label="Explore">
           <h2 class="footer__heading">Explore</h2>
-          <a href="../index.html#process"><span class="menu__index">01</span>How it works</a>
-          <a href="../index.html#work"><span class="menu__index">02</span>Work</a>
-          <a href="../index.html#pricing"><span class="menu__index">03</span>Pricing</a>
-          <a href="../index.html#faq"><span class="menu__index">04</span>FAQ</a>
-          <a href="../blog.html"><span class="menu__index">05</span>Journal</a>
-          <a href="../about.html"><span class="menu__index">06</span>About</a>
+          <a href="../#process"><span class="menu__index">01</span>How it works</a>
+          <a href="../#work"><span class="menu__index">02</span>Work</a>
+          <a href="../#pricing"><span class="menu__index">03</span>Pricing</a>
+          <a href="../#faq"><span class="menu__index">04</span>FAQ</a>
+          <a href="../blog"><span class="menu__index">05</span>Journal</a>
+          <a href="../about"><span class="menu__index">06</span>About</a>
         </nav>
         <nav class="footer__col" aria-label="Services">
           <h2 class="footer__heading">Services</h2>
-          <a href="../detail-pages/services/ux-design.html">UX Design</a>
-          <a href="../detail-pages/services/web-development.html">Web Development</a>
-          <a href="../detail-pages/career.html">Career</a>
+          <a href="../detail-pages/services/ux-design">UX Design</a>
+          <a href="../detail-pages/services/web-development">Web Development</a>
+          <a href="../detail-pages/career">Career</a>
         </nav>
         <nav class="footer__col" aria-label="Elsewhere">
           <h2 class="footer__heading">Elsewhere</h2>

@@ -1,6 +1,6 @@
 // ------------------------------------------------------------------
 // Page transition — one accent-blue panel with a single soft curve on its
-// leading edge. Clicking an internal link to another .html page brings
+// leading edge. Clicking an internal link to another of our pages brings
 // the panel up from the bottom to cover the screen, then navigates; the
 // arriving page lifts it away off the top. The curve only exists while
 // the panel moves: it starts flat, domes in the middle, settles flat.
@@ -103,7 +103,13 @@
     var href = a.getAttribute('href');
     if (!href) return;
     if (href.charAt(0) === '#' || href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0 || /^https?:\/\//i.test(href)) return;
-    if (!/\.html(\?|#|$)/.test(href)) return; // only cross-page .html links
+    if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.indexOf('//') === 0) return; // javascript:, data:, protocol-relative…
+    // only cross-page links to our own pages: links are extensionless
+    // (/about, ../../#work), so skip files (.pdf, .webp…) and same-page hash jumps
+    var url = new URL(href, location.href);
+    if (url.origin !== location.origin) return;
+    if (url.pathname === location.pathname && url.search === location.search) return;
+    if (/\.(?!html$)[a-z0-9]+$/i.test(url.pathname)) return;
     e.preventDefault();
     goWithCurtain(href);
   });

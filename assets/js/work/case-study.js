@@ -94,7 +94,7 @@
 
   if (current === -1) {
     // unknown or missing project: back to the work list
-    location.replace(ROOT + 'index.html#work');
+    location.replace(ROOT + '#work');
     return;
   }
 
@@ -142,7 +142,7 @@
 
     renderExtras(project, document.querySelector('[data-cs-extra]'));
 
-    slot('next').href = `case-study.html?project=${next.slug}`;
+    slot('next').href = `case-study?project=${next.slug}`;
     slot('next').setAttribute('aria-label', `Next project: ${next.title}`);
     slot('next-title').textContent = next.title;
     slot('next-label').textContent = next.label || '';

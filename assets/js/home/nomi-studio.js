@@ -891,7 +891,7 @@ if (serviceChecks.length && notSure) {
 }
 
 // MARK: Smooth-scroll for all on-page hash links (header + footer nav, hero
-// "Get in touch"). Cross-page .html links are handled by page-transition.js.
+// "Get in touch"). Cross-page links are handled by page-transition.js.
 document.addEventListener('click', (e) => {
   if (e.defaultPrevented) return;
   const a = e.target.closest && e.target.closest('a[href^="#"]');

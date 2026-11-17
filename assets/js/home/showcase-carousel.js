@@ -1190,7 +1190,7 @@ if (deck) {
       src: img.getAttribute('src'),
       title: (meta ? meta.firstChild.textContent : img.alt).trim(),
       // as written, not the resolved .href: page-transition.js only plays the
-      // wave for relative .html links
+      // wave for relative links to our own pages
       href: card.getAttribute('href'),
     };
   });
