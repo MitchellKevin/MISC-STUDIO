@@ -333,9 +333,13 @@ function init() {
     raycaster.setFromCamera(pointer, camera);
     const hits = raycaster.intersectObjects(meshes, false);
     for (const h of hits) {
-      // ignore the parts of the bottle that have faded out
-      const local = bottle.worldToLocal(h.point.clone());
-      const a = Math.abs(Math.atan2(local.x, local.z));
+      // ignore the parts of the bottle that have faded out. Measure the
+      // angle the way the shader does (unwrapped, from uAlong), not from the
+      // hit point: with more screens than fit round the ring, a faded screen
+      // a full turn away sits right on top of the front one and would
+      // otherwise take its clicks.
+      const u = h.object.material.uniforms;
+      const a = Math.abs(u.uAlong.value + (h.uv.x - 0.5) * u.uSpan.value);
       if (a < FADE_FROM) return h.object;
     }
     return null;

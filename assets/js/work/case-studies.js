@@ -720,4 +720,139 @@ window.CASE_STUDIES = [
       ],
     },
   },
+  {
+    // TODO: add `live:` once the repo and the sales site have their public address.
+    slug: 'agentic-office',
+    title: 'Agentic Office',
+    label: 'Source-available',
+    intro: 'A source-available app that shows every Claude Code session on your machine as a robot in a 3D office building, and the one-screen sales site that launches it. I built both: the product reads Claude Code’s own transcripts on your machine, and the site sells it with a single robot that acts out the same states.',
+    image: 'assets/img/projects/agentic-office.webp',
+    theme: { surface: 'void', bg: '#0B0D12', deep: '#08090C', glow: '#E07A3C', accent: '#F2B766', onAccent: '#1C0E03' },
+    gallery: [
+      { src: 'assets/img/projects/agentic-office/mobile.webp', video: 'assets/video/projects/agentic-office/mobile.mp4', alt: 'The sales site on a phone: a tap on the face makes the robot smile, then the dock button steps it through working and needs you' },
+      { src: 'assets/img/projects/agentic-office/state-working.webp', video: 'assets/video/projects/agentic-office/working.mp4', alt: 'The robot working: lines being typed under its cyan eyes while the bubble ticks through tool calls' },
+      { src: 'assets/img/projects/agentic-office/night.webp', video: 'assets/video/projects/agentic-office/night.mp4', alt: 'The office building at night in the app, with lit windows, traffic and a tag per department' },
+      { src: 'assets/img/projects/agentic-office/state-turn.webp', alt: 'The robot smiling in blue: “Done. What’s next?”' },
+    ],
+    facts: [
+      { label: 'Year', value: '2026' },
+      { label: 'Role', value: 'Product, design & development' },
+      { label: 'Audience', value: 'Developers who run several Claude Code sessions' },
+      { label: 'Built with', value: 'Node.js, plain WebGL2, HTML, CSS, SVG' },
+    ],
+    story: [
+      { heading: 'The brief', body: 'Once you run more than one Claude Code agent, you run more than one terminal, and the agent that is waiting for your approval is the one you miss. Agentic Office makes every session visible at a glance: who is working, who needs you and what they are doing. It is free to use and its code is open to read, so it also needed a launch page that gets a developer from “what is this?” to a running office in one command.' },
+      { heading: 'The constraints', body: 'The app reads people’s coding sessions, so nothing could leave their machine: no accounts, no telemetry, no outbound requests and no npm dependencies to trust. It had to run anywhere with Node 20 and a browser. The sales site had the opposite problem: explain a 3D app in a single screen, without a scroll, a screenshot wall or a feature list.' },
+      { heading: 'The approach', body: 'I gave every session a body. Each project is a building, each department a glass floor, and each session a robot at a desk whose eyes and antenna show its state. The sales site uses the same idea at full size: one big robot that follows your cursor and acts out the four states, next to the command that installs it. The decisions below show how that played out.' },
+    ],
+
+    decisions: [
+      {
+        label: 'The product',
+        heading: 'A building per project, a robot per session.',
+        body: 'You start outside, looking at a small city with traffic, street trees and a sky that follows your clock. In the middle stands the office: a lobby, a glass-walled floor per department and a sign on the roof. Every floor carries a tag with live dots for agents that are working or need you, so you can read the whole building before you step inside.',
+        image: 'assets/img/projects/agentic-office/building.webp',
+        video: 'assets/video/projects/agentic-office/flyin.mp4',
+        alt: 'The building in the app, then a click on Development: the camera flies in and cuts away the glass and the floors above',
+      },
+      {
+        label: 'Status',
+        heading: 'Read the room, not the logs.',
+        body: 'Pick a floor and the camera flies in while the glass and the floors above are cut away. A robot typing at a glowing monitor is working, with the current tool call in its speech bubble. One standing up and waving with a red ! needs you. On a git floor, desks are grouped per branch, and departments can work as a team: a robot finishes its turn, rides the glass lift and hands the work to the next floor.',
+        image: 'assets/img/projects/agentic-office/floor.webp',
+        video: 'assets/video/projects/agentic-office/floor.mp4',
+        alt: 'Inside the Development floor: robots typing and walking between desks, one waving with a red ! while its tool calls change',
+      },
+      {
+        label: 'Control',
+        heading: 'Click a robot to see what it is doing.',
+        body: 'A click opens the robot’s side panel: every step it took, the conversation, the files it changed, the tokens it used and anything waiting for approval. You can give it its next task from the same panel, or hire a new robot onto any floor. With the optional hooks installed, permission prompts land in an Approvals drawer, so you allow or deny them without hunting for the right terminal.',
+        image: 'assets/img/projects/agentic-office/panel.webp',
+        video: 'assets/video/projects/agentic-office/panel.mp4',
+        alt: 'A click on the robot that needs you opens its side panel with its steps, then the Conversation tab',
+      },
+      {
+        label: 'The sales site',
+        heading: 'One screen, one robot, one command.',
+        body: 'The launch page is exactly one screen high. A two-line headline, then the git clone command with a copy button, then a large robot drawn in SVG that follows your cursor. A small dock at the bottom holds the rest: a menu with three short panels about the robots, the office and privacy, a coffee button, and Watch demo. There is nothing to scroll past, because the one thing to do is clone it.',
+        quote: { text: 'We’ve watched agents scroll by before. This time we built them an office.' },
+        image: 'assets/img/projects/agentic-office/sales-hero.webp',
+        video: 'assets/video/projects/agentic-office/hero.mp4',
+        alt: 'The one-screen sales site: the robot’s head follows the cursor around the page, then a tap on its face makes it smile and hop',
+      },
+      {
+        label: 'The robot',
+        heading: 'The mascot acts out the product.',
+        body: 'The robot button in the dock steps through the same states the app shows, in the same colours: working in cyan, with tool calls ticking by in its speech bubble; needs you in red, with a flashing ! and a nervous shake; your turn in blue, with a smile and a hop; and idle in grey, slumped with a drifting zzz. Tap its face and it smiles, but not while it is busy, asking for approval or asleep.',
+        quote: { text: 'Allow Bash: npm test?' },
+        image: 'assets/img/projects/agentic-office/state-needs.webp',
+        video: 'assets/video/projects/agentic-office/states.mp4',
+        alt: 'The dock button stepping the robot through working, needs you, your turn and idle, each with its own face, colour and bubble',
+      },
+      {
+        label: 'The demo',
+        heading: 'Show the real thing, one click away.',
+        body: 'Watch demo opens the recorded walkthrough of the app over the page. The page behind it shrinks a little, dims and blurs, so the video seems to float in front. Escape, the close button or a click outside closes it, and the video pauses.',
+        image: 'assets/img/projects/agentic-office/demo.webp',
+        video: 'assets/video/projects/agentic-office/demo.mp4',
+        alt: 'Watch demo opens the walkthrough over the blurred page, the video plays, and the close button brings the page back',
+      },
+    ],
+
+    system: {
+      heading: 'Night ink, one warm amber, and the product’s status colours.',
+      body: 'The robot’s orange paint sets the palette: a dark ink background with an amber glow behind the head, amber for every action and a warm gradient on the second line of the headline. The robot’s LEDs borrow the app’s status colours, so cyan, red and blue mean the same thing on the site as they do in the office.',
+      colors: [
+        { name: 'Night ink', hex: '#0B0D12' },
+        { name: 'Cream', hex: '#F4F1EC' },
+        { name: 'Amber', hex: '#F2B766' },
+        { name: 'Burnt orange', hex: '#E07A3C' },
+        { name: 'Working', hex: '#4DF2D8' },
+        { name: 'Needs you', hex: '#FF5A5F' },
+        { name: 'Your turn', hex: '#7FB2FF' },
+      ],
+      fonts: [
+        { name: 'System sans (SF Pro Display)', use: 'The headline and body text, with no web fonts to load' },
+        { name: 'System mono (SF Mono)', use: 'The clone command, buttons, labels and the robot’s speech bubble' },
+      ],
+    },
+
+    structure: {
+      heading: 'One screen, from the promise down to the product.',
+      body: 'The sales site has no sections to scroll through. It reads top to bottom in four layers, and everything else opens on top of it.',
+      steps: [
+        { title: 'Headline', text: 'Two lines: what was wrong before, and what this is.' },
+        { title: 'Clone command', text: 'The git clone line with a copy button, and the one command that starts it.' },
+        { title: 'Robot', text: 'Follows your cursor, smiles when you tap it and acts out the four states.' },
+        { title: 'Dock', text: 'The state button, the menu, the coffee button and Watch demo.' },
+        { title: 'Panels', text: 'The robots, the office and privacy, each in a few lines, above the dock.' },
+        { title: 'Demo', text: 'The walkthrough video in an overlay over the blurred page.' },
+      ],
+    },
+
+    build: {
+      heading: 'No framework on either side.',
+      body: 'The app is a small Node server and a hand-written WebGL2 renderer. The sales site is one HTML file, one stylesheet and one script. Neither installs a single package.',
+      notes: [
+        { title: 'A renderer of its own', text: 'The 3D office runs on about 650 lines of plain WebGL2, with HDR, 4× MSAA, soft shadows, bloom and ACES tone mapping. Every model, from the robots to the parked cars, is built in code from boxes, spheres and cylinders.' },
+        { title: 'Read-only by default', text: 'The app reads Claude Code’s transcripts without changing them and only listens on your own machine. Hooks are optional and add exact status and browser approvals.' },
+        { title: 'A face on an LED mesh', text: 'The robot’s face is drawn once and masked by a grid, so its eyes light whole cells as they move. A blurred copy underneath lights up the wires around them.' },
+        { title: '3D from parallax', text: 'The sales robot is flat SVG. Its screen and eyes move further toward the cursor than its ears and the back of its head, which reads as the head turning, without WebGL on the page.' },
+        { title: 'Strict content policy', text: 'The sales site loads nothing from anywhere else: no web fonts, no CDN and no trackers, enforced by a content security policy.' },
+        { title: 'Motion with an off switch', text: 'With reduced motion, the background stops drifting, the entrance animations are skipped and the robot only moves when you do.' },
+        { title: 'A demo mode to show it off', text: 'Adding ?demo=1 runs simulated agents, approvals and a team run, so the app can be shown, filmed or screenshotted without exposing real work. The app shots in this case study come from it.' },
+        { title: 'Free to use, not to resell', text: 'The app is source-available under the Functional Source License. Anyone may use it, also at work, and read or change the code, but nobody may sell it or ship a competing copy. Two years after each release, that version also becomes MIT.' },
+      ],
+    },
+
+    figures: {
+      heading: 'Everything on your machine, everything on one screen.',
+      items: [
+        { value: '0', label: 'npm dependencies in the app' },
+        { value: '0', label: 'Outbound requests, accounts or telemetry' },
+        { value: '4', unit: 'states', label: 'The same on the sales site as in the office' },
+        { value: '1', unit: 'screen', label: 'The whole sales site, with no scroll' },
+      ],
+    },
+  },
 ];
