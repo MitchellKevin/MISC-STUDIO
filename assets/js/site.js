@@ -408,4 +408,124 @@
     }, { rootMargin: '-45% 0px -50% 0px' });
     byId.forEach((_, id) => { const s = document.getElementById(id); if (s) spy.observe(s); });
   }
+
+  // MARK: Cursor halo — the seam's dissolve (hero-particles.js), worn
+  // round the pointer and dragged behind it. The pointer drops a stamp
+  // every few px of travel; each stamp is a soft disc that shrinks and
+  // weakens as it ages. Cells on the 4px grid take the strongest stamp
+  // over them, minus a fixed per-cell threshold, so the head is dense and
+  // the tail thins out into single 2px dots before it disappears. White
+  // with mix-blend-mode: difference, so one canvas stays faint on every
+  // surface. The loop sleeps once the last stamp has aged out.
+  if (!reduced && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const canvas = document.createElement('canvas');
+    canvas.setAttribute('aria-hidden', 'true');
+    canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999;mix-blend-mode:difference';
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+
+    const G = 4;          // the site's dot grid
+    const R = 40;         // radius of a fresh stamp, in px
+    const LIFE = 750;     // ms a stamp takes to dissolve — the trail's length
+    const STEP = 6;       // px of travel between stamps
+    const MAX = 90;       // stamps kept at most
+    const ALPHA = 0.22;   // strength — keep it a whisper
+    const rand = (x, y) => {
+      const v = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
+      return v - Math.floor(v);
+    };
+
+    let dpr = 1;
+    let cols = 0, rows = 0;
+    let field = new Float32Array(0);   // strongest stamp per grid cell
+    const touched = [];                // cells written this frame
+    const stamps = [];
+    let last = null;
+    let running = false;
+
+    const resize = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(window.innerWidth * dpr);
+      canvas.height = Math.round(window.innerHeight * dpr);
+      cols = Math.ceil(window.innerWidth / G) + 1;
+      rows = Math.ceil(window.innerHeight / G) + 1;
+      field = new Float32Array(cols * rows);
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const frame = (now) => {
+      while (stamps.length && now - stamps[0].born >= LIFE) stamps.shift();
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      if (!stamps.length) { running = false; return; }
+
+      // splat every stamp into the grid, keeping the max per cell
+      for (const st of stamps) {
+        const k = 1 - (now - st.born) / LIFE;
+        const r = R * (0.3 + 0.7 * k);
+        const s = k * k;
+        const c0 = Math.max(0, Math.floor((st.x - r) / G));
+        const c1 = Math.min(cols - 1, Math.floor((st.x + r) / G));
+        const r0 = Math.max(0, Math.floor((st.y - r) / G));
+        const r1 = Math.min(rows - 1, Math.floor((st.y + r) / G));
+        for (let cy = r0; cy <= r1; cy++) {
+          for (let cx = c0; cx <= c1; cx++) {
+            const d = Math.hypot(cx * G + G / 2 - st.x, cy * G + G / 2 - st.y) / r;
+            if (d >= 1) continue;
+            const v = s * (1 - d);
+            const i = cy * cols + cx;
+            if (field[i] === 0) touched.push(i);
+            if (v > field[i]) field[i] = v;
+          }
+        }
+      }
+
+      // same recipe as the seam: falloff minus a per-cell threshold
+      ctx.globalAlpha = ALPHA;
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      for (const i of touched) {
+        const cx = (i % cols) * G;
+        const cy = Math.floor(i / cols) * G;
+        const v = field[i] * 1.35 - rand(cx, cy) * 0.6;
+        field[i] = 0;
+        if (v <= 0) continue;
+        const s = v >= 0.7 ? 3 : 2;
+        ctx.rect(cx, cy, s, s);
+      }
+      touched.length = 0;
+      ctx.fill();
+      requestAnimationFrame(frame);
+    };
+
+    window.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      const x = e.clientX;
+      const y = e.clientY;
+      const now = performance.now();
+      if (!last) {
+        last = { x, y };
+        stamps.push({ x, y, born: now });
+      } else {
+        // lay stamps evenly along the path, so a fast flick stays unbroken
+        const dx = x - last.x;
+        const dy = y - last.y;
+        const dist = Math.hypot(dx, dy);
+        const n = Math.floor(dist / STEP);
+        for (let s = 1; s <= n; s++) {
+          const f = (s * STEP) / dist;
+          stamps.push({ x: last.x + dx * f, y: last.y + dy * f, born: now });
+        }
+        if (n) last = stamps[stamps.length - 1];
+      }
+      // a resting pointer keeps its head fresh, then lets it dissolve
+      const head = stamps[stamps.length - 1];
+      if (head) head.born = now;
+      if (stamps.length > MAX) stamps.splice(0, stamps.length - MAX);
+      if (!running) { running = true; requestAnimationFrame(frame); }
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => { last = null; });
+  }
 })();
